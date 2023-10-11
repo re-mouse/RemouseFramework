@@ -7,4 +7,12 @@
         <RootNamespace>Shared.Models</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Shared.Serialization\Shared.Serialization.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Shared.Serialization\Shared.Serialization.csproj" />
+    </ItemGroup>
+
 </Project>

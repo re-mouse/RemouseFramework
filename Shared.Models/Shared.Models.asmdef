@@ -1,0 +1,14 @@
+{
+    "name": "Shared.Models",
+    "rootNamespace": "",
+    "references": ["GUID:5cbc53f6aed7d427abf4bbeb2e4f0b1b","GUID:5908636c33e0e421e813f8539528c76d"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

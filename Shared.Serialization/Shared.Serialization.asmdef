@@ -1,0 +1,16 @@
+{
+    "name": "Shared.Serialization",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5908636c33e0e421e813f8539528c76d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}
