@@ -12,6 +12,7 @@ namespace Remouse.Shared.Serialization
         ulong ReadULong();
         bool ReadBool();
         byte ReadByte();
+        byte[] ReadByteArray();
         string ReadString();
     }
 }

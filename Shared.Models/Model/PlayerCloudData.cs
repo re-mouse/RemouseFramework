@@ -4,6 +4,5 @@ namespace Remouse.Shared.Models
     {
         public long id;
         public string name;
-        public string worldName;   
     }
 }

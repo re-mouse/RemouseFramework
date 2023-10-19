@@ -1,10 +1,7 @@
 {
-    "name": "Shared.Serialization",
-    "rootNamespace": "",
-    "references": [
-        "GUID:5908636c33e0e421e813f8539528c76d",
-        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af"
-    ],
+    "name": "Shared.Infrastructure",
+    "rootNamespace": "Shared.Infrastructure",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

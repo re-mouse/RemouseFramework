@@ -1,6 +1,5 @@
 ﻿using Remouse.Shared.Core.World;
 using Remouse.Shared.Utils.Log;
-using Remouse.Shared.Infrastructure;
 using Remouse.Shared.Models;
 
 namespace Remouse.Shared.Core

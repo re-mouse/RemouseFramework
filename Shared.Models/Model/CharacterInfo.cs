@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
 using Remouse.Shared.Math;
 
 namespace Remouse.Shared.Models
@@ -24,7 +23,7 @@ namespace Remouse.Shared.Models
         public Vec3 position;
         public int health;
         public SceneChangeInfo sceneChangeInfo;
-        public Vector3 spawnPoint;
+        public Vec3 spawnPoint;
         public string spawnSceneName;
         public bool isSpawnPointChanged;
     }

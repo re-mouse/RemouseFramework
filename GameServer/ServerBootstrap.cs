@@ -53,7 +53,7 @@ namespace Remouse.GameServer
 
             LoadSimulation();
             
-            _server.Start(_config.port, _config.maxPlayers);
+            _server.Start(_config.port);
             
             _stopwatch = Stopwatch.StartNew();
         }

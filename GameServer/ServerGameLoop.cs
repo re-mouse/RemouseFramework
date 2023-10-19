@@ -14,12 +14,21 @@ namespace Remouse.GameServer
         private SimulationHost _simulationHost;
         private WorldCommandBuffer _commandBuffer;
         private IPlayersProvider _playersProvider;
+        private SimulationFactory _simulationFactory;
         
         public void Construct(Container container)
         {
             container.Get(out _commandBuffer);
             container.Get(out _simulationHost);
             container.Get(out _playersProvider);
+            container.Get(out _simulationFactory);
+        }
+
+        public async Task Initialize()
+        {
+            var simulation = _simulationFactory.CreateGameSimulation();
+            
+            _simulationHost.SetGameSimulation(simulation);
         }
 
         public void Update()
@@ -44,7 +53,7 @@ namespace Remouse.GameServer
                 if (player.Data.sessionData.state != PlayerState.InGame)
                     continue;
                 
-                player.Send(new TickWorldCommandsMessage(commands));
+                player.Send(new WorldCommandsAtTickMessage(commands, _simulationHost.Simulation.CurrentTick));
             }
         }
     }

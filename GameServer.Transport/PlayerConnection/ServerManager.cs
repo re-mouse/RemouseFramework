@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Remouse.GameServer.Authorization;
 using Remouse.GameServer.Players;
 using Remouse.Shared.DIContainer;
@@ -33,17 +34,11 @@ namespace Remouse.GameServer.ServerTransport
             _server.SetHandler(this);
         }
         
-        public void Start(int port, int maxConnections)
+        public void Start(ushort port)
         {
-            Logger.Current.LogInfo(this, $"Starting server on port {port}, maxPlayers = {maxConnections}");
+            Logger.Current.LogInfo(this, $"Starting server on port {port}");
             
-            var args = new ServerArgs
-            {
-                port = port,
-                maxPlayers = maxConnections
-            };
-            
-            _server.Start(args);
+            _server.Start(port);
                 
             Logger.Current.LogInfo(this, "Server started");
         }
@@ -65,8 +60,21 @@ namespace Remouse.GameServer.ServerTransport
         void IServerSocketEventsHandler.HandleConnectionRequest(ConnectionRequest request)
         {
             Logger.Current.LogInfo(this, $"Received connection request from {request.EndPoint}");
+
+            var authRequest = new AuthorizationRequest();
+            var reader = new NetworkBytesReader(request.Data);
             
-            var credentials = _authorizer.Authorize(request.Data, out var result);
+            try
+            {
+                authRequest.Deserialize(reader);
+            }
+            catch (Exception _)
+            {
+                request.Reject();
+                return;
+            }
+            
+            var credentials = _authorizer.Authorize(authRequest, out var result);
 
             if (result == AuthorizeResult.Successful)
             {
@@ -81,7 +89,6 @@ namespace Remouse.GameServer.ServerTransport
                     {
                         id = credentials.playerId, 
                         name = credentials.name, 
-                        worldName = "Top"
                     }
                 };
                 

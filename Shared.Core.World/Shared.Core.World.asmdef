@@ -1,9 +1,8 @@
 {
-    "name": "Shared.Serialization",
-    "rootNamespace": "",
+    "name": "Shared.Core.World",
+    "rootNamespace": "Shared.Core.World",
     "references": [
-        "GUID:5908636c33e0e421e813f8539528c76d",
-        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af"
+        "GUID:095bfa3ea9f844d9995536a7db66046d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -13,5 +12,5 @@
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
-    "noEngineReferences": true
+    "noEngineReferences": false
 }

@@ -54,7 +54,7 @@ namespace Remouse.GameServer.Players
         private void SendCurrentWorldState(IPlayerConnection player)
         {
             var worldState = WorldStatePacker.Pack(_simulationHost.Simulation.World);
-            player.Send(new SetWorldStateMessage(worldState));
+            player.Send(new CurrentWorldStateMessage(worldState));
         }
 
         private void EnqueueSpawnPlayer(IPlayerConnection player)

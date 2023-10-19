@@ -17,6 +17,7 @@ namespace Remouse.Shared.Serialization
         void WriteChar(char value);
         void WriteBool(bool value);
         void WriteByte(byte value);
+        void WriteByteArray(byte[] byteArray);
         void WriteString(string value);
     }
 }

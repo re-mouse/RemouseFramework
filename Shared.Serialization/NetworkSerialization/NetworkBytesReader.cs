@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace Remouse.Shared.Serialization
@@ -81,6 +82,14 @@ namespace Remouse.Shared.Serialization
             byte value = _buffer[_currentPosition];
             _currentPosition++;
             return value;
+        }
+        
+        public byte[] ReadByteArray()
+        {
+            ushort length = ReadUShort();
+            var array = new byte[length];
+            Array.Copy(_buffer, _currentPosition, array, 0, length);
+            return array;
         }
         
         public string ReadString()

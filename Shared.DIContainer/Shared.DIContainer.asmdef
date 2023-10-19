@@ -1,7 +1,7 @@
 {
     "name": "Shared.DIContainer",
     "rootNamespace": "",
-    "references": [],
+    "references": ["GUID:34b9d43b9ab9847b4baffc4ad08890eb"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

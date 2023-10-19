@@ -154,6 +154,19 @@ namespace Remouse.Shared.Serialization
             _currentPosition++;
         }
         
+        public void WriteByteArray(byte[] byteArray)
+        {
+            WriteUShort((ushort)byteArray.Length);
+            
+            if (_currentPosition >= _buffer.Length - byteArray.Length)
+            {
+                Resize();
+            }
+            
+            Array.Copy(byteArray, 0, _buffer, _currentPosition, byteArray.Length);
+            _currentPosition += byteArray.Length;
+        }
+        
         public void WriteString(string value)
         {
             if (string.IsNullOrEmpty(value))

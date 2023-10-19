@@ -5,26 +5,26 @@ namespace Remouse.Shared.DIContainer
 {
     public class ContainerBuilder
     {
-        private List<BindingMetadata> _bindingTokens = new List<BindingMetadata>();
+        private List<BindToken> _bindingTokens = new List<BindToken>();
         private List<FactoryToken> _factoryTokens = new List<FactoryToken>();
         
-        public BindingBuilder<T> Pack<T>() where T : class
+        public PublicBindToken<T> Bind<T>() where T : class
         {
             var valueType = typeof(T);
             
             var token = RegisterToken(valueType, valueType);
 
-            return new BindingBuilder<T>(token);
+            return new PublicBindToken<T>(token);
         }
         
-        public BindingBuilder<T> PackInstance<T>(T t) where T : class
+        public PublicBindToken<T> BindInstance<T>(T t) where T : class
         {
             var valueType = typeof(T);
             
             var token = RegisterToken(valueType, valueType);
-            token.Instance = t;
+            token.value = t;
             
-            return new BindingBuilder<T>(token);
+            return new PublicBindToken<T>(token);
         }
         
         public void BindFactory<T, TA>() where TA : class 
@@ -42,15 +42,15 @@ namespace Remouse.Shared.DIContainer
             return container;
         }
         
-        private BindingMetadata RegisterToken(Type valueType, Type interfaceType)
+        private BindToken RegisterToken(Type valueType, Type interfaceType)
         {
-            var binding = new BindingMetadata();
-            binding.BoundType = valueType;
-            binding.InterfaceTypes.Add(interfaceType);
+            var token = new BindToken();
+            token.valueType = valueType;
+            token.interfaceTypes.Add(interfaceType);
             
-            _bindingTokens.Add(binding);
+            _bindingTokens.Add(token);
             
-            return binding;
+            return token;
         }
         
         private FactoryToken RegisterFactory(Type factoryType, Type producingType)

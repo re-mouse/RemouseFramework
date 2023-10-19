@@ -21,7 +21,7 @@ namespace Remouse.Shared.DIContainer
         
         private bool _isDisposed;
 
-        internal Container(List<BindingMetadata> registerTokens, List<FactoryToken> factoryTokens)
+        internal Container(List<BindToken> registerTokens, List<FactoryToken> factoryTokens)
         {
             Dictionary<Type, ObjectToken> createdTokens = new Dictionary<Type, ObjectToken>();
             
