@@ -1,5 +1,5 @@
 using System;
-using Remouse.Shared.Core;
+using Remouse.Core;
 
 namespace Remouse.GameServer.ServerShards
 {

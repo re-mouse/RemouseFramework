@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Remouse.GameServer.ServerShards;
 using Remouse.GameServer.ServerTransport;
-using Remouse.Shared.Core;
-using Remouse.Shared.Core.World;
+using Remouse.Core;
+using Remouse.Core.World;
 using Remouse.DIContainer;
 using Remouse.Shared.Utils.Log;
 
@@ -25,7 +25,7 @@ namespace Remouse.GameServer
         
         private Container _container;
         
-        private IServer _server;
+        private IPlayerServer _playerServer;
         private ServerGameLoop _gameLoop;
         
         private Stopwatch _stopwatch;
@@ -44,12 +44,12 @@ namespace Remouse.GameServer
 
             _container = containerBuilder.Build();
 
-            _server = _container.Resolve<IServer>();
+            _playerServer = _container.Resolve<IPlayerServer>();
             _gameLoop = _container.Resolve<ServerGameLoop>();
 
             LoadSimulation();
             
-            _server.Start(_config.port);
+            _playerServer.Start(_config.port, 40);
             
             _stopwatch = Stopwatch.StartNew();
         }
@@ -63,7 +63,7 @@ namespace Remouse.GameServer
 
         public void Update()
         {
-            _server.Update();
+            _playerServer.Update();
                 
             double elapsed = _stopwatch.Elapsed.TotalMilliseconds - _lastTickMilliseconds;
             double requiredTicks = Math.Floor(elapsed / _millisecondsPerTick);

@@ -24,8 +24,6 @@ namespace Remouse.DIContainer
     {
         private readonly List<BindingInfo> _bindings = new List<BindingInfo>();
         
-        internal TypeManager() {}
-        
         public BindingConfigurator<T> RegisterType<T>() where T : class
         {
             var binding = new BindingInfo

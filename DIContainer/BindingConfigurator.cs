@@ -9,8 +9,6 @@ namespace Remouse.DIContainer
         public HashSet<Type> AssociatedInterfaces { get; } = new HashSet<Type>();
         public Type BoundType { get; set; }
         public object Instance { get; set; }
-        public bool IsLazyInitialized { get; set; } = true;
-        public bool IsDisposable { get; set; }
     }
     
     public class BindingConfigurator<T>

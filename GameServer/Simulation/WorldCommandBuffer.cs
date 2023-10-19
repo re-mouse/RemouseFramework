@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Remouse.GameServer.ServerShards;
-using Remouse.Shared.Core;
+using Remouse.Core;
 using Remouse.DIContainer;
 using Remouse.Shared.Utils.Buffer;
 using Remouse.Shared.Utils.Log;

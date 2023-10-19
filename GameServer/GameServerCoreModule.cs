@@ -1,9 +1,9 @@
 using Remouse.GameServer.Players;
 using Remouse.GameServer.ServerShards;
-using Remouse.Database;
-using Remouse.Shared.ContentTableTypes;
-using Remouse.Shared.Core;
-using Remouse.Shared.Core.World;
+using Remouse.DatabaseLib;
+using Remouse.Models.ContentTableTypes;
+using Remouse.Core;
+using Remouse.Core.World;
 using Remouse.DIContainer;
 
 namespace Remouse.GameServer

@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Remouse.GameServer.Players;
 using Remouse.GameServer.ServerShards;
-using Remouse.Shared.Core;
+using Remouse.Core;
 using Remouse.DIContainer;
-using Remouse.Shared.Models;
-using Remouse.Shared.Models.Messages;
+using Remouse.GameServer.ServerTransport;
+using Remouse.Models;
+using Remouse.Models.Messages;
 
 namespace Remouse.GameServer
 {
@@ -13,14 +14,14 @@ namespace Remouse.GameServer
     {
         private SimulationHost _simulationHost;
         private WorldCommandBuffer _commandBuffer;
-        private IPlayersProvider _playersProvider;
+        private IConnectedPlayers _connectedPlayers;
         private SimulationFactory _simulationFactory;
         
         public void Construct(Container container)
         {
             _commandBuffer = container.Resolve<WorldCommandBuffer>();
             _simulationHost = container.Resolve<SimulationHost>();
-            _playersProvider = container.Resolve<IPlayersProvider>();
+            _connectedPlayers = container.Resolve<IConnectedPlayers>();
             _simulationFactory = container.Resolve<SimulationFactory>();
         }
 
@@ -48,7 +49,7 @@ namespace Remouse.GameServer
 
         private void SendCommandsToPlayers(HashSet<WorldCommand> commands)
         {
-            foreach (var player in _playersProvider.Players)
+            foreach (var player in _connectedPlayers.Players)
             {
                 if (player.Data.sessionData.state != PlayerState.InGame)
                     continue;

@@ -1,29 +1,29 @@
 using Remouse.GameServer.ServerTransport;
-using Remouse.Shared.Models;
+using Remouse.Models;
 using Remouse.Shared.Utils.Log;
 
 namespace Remouse.GameServer
 {
     public static class LoggerExtensions
     {
-        public static void LogPlayerError(this ILogger logger, object sender, IPlayerConnection playerConnection, string error)
+        public static void LogPlayerError(this ILogger logger, object sender, IPlayer player, string error)
         {
-            logger.LogError(sender, $"[PlayerId:{playerConnection.Data.cloudData.id}]: {error}");
+            logger.LogError(sender, $"[PlayerId:{player.Data.cloudData.id}]: {error}");
         }
         
-        public static void LogPlayerTrace(this ILogger logger, object sender, IPlayerConnection playerConnection, string message)
+        public static void LogPlayerTrace(this ILogger logger, object sender, IPlayer player, string message)
         {
-            logger.LogTrace(sender, $"[PlayerId:{playerConnection.Data.cloudData.id}]: {message}");
+            logger.LogTrace(sender, $"[PlayerId:{player.Data.cloudData.id}]: {message}");
         }
         
-        public static void LogPlayerInfo(this ILogger logger, object sender, IPlayerConnection playerConnection, string error)
+        public static void LogPlayerInfo(this ILogger logger, object sender, IPlayer player, string error)
         {
-            logger.LogInfo(sender, $"[PlayerId:{playerConnection.Data.cloudData.id}]: {error}");
+            logger.LogInfo(sender, $"[PlayerId:{player.Data.cloudData.id}]: {error}");
         }
         
-        public static void LogPlayerWarning(this ILogger logger, object sender, IPlayerConnection playerConnection, string error)
+        public static void LogPlayerWarning(this ILogger logger, object sender, IPlayer player, string error)
         {
-            logger.LogWarning(sender, $"[PlayerId:{playerConnection.Data.cloudData.id}]: {error}");
+            logger.LogWarning(sender, $"[PlayerId:{player.Data.cloudData.id}]: {error}");
         }
         
         public static void LogPlayerError(this ILogger logger, object sender, PlayerData playerData, string error)

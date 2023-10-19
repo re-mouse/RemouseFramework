@@ -1,19 +1,19 @@
 using Remouse.GameServer.ServerTransport;
-using Remouse.Shared.Core.ECS.Utils;
-using Remouse.Shared.Core.World;
+using Remouse.Core.ECS.Utils;
+using Remouse.Core.World;
 
 namespace Remouse.GameServer.Utils
 {
     public static class PlayerConnectionExtensions
     {
-        public static long? GetPlayerId(this IPlayerConnection playerConnection)
+        public static long? GetPlayerId(this IPlayer player)
         {
-            return playerConnection?.Data?.cloudData?.id;
+            return player?.Data?.cloudData?.id;
         }
         
-        public static int? GetPlayerEntityId(this IPlayerConnection playerConnection, IReadOnlyWorld world)
+        public static int? GetPlayerEntityId(this IPlayer player, IReadOnlyWorld world)
         {
-            var playerId = playerConnection.GetPlayerId();
+            var playerId = player.GetPlayerId();
             return playerId != null ? world.GetPlayerEntity(playerId.Value) : null;
         }
     }

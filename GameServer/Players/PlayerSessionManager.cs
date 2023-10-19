@@ -1,40 +1,36 @@
 using System.Collections.Generic;
 using Remouse.GameServer.ServerShards;
 using Remouse.GameServer.ServerTransport;
-using Remouse.Shared.Core;
-using Remouse.Shared.Core.ECS.Utils;
-using Remouse.Shared.Core.Input;
+using Remouse.Core;
+using Remouse.Core.ECS.Utils;
+using Remouse.Core.Input;
 using Remouse.DIContainer;
 using Remouse.Shared.GameSimulation.Commands;
-using Remouse.Shared.Models;
-using Remouse.Shared.Models.Messages;
+using Remouse.Models;
+using Remouse.Models.Messages;
 using Remouse.Shared.Utils.Log;
 
 namespace Remouse.GameServer.Players
 {
-    public class PlayersSessionManager : IPlayersProvider
+    public class PlayersSessionManager
     {
         private SimulationHost _simulationHost;
         private WorldCommandBuffer _commandBuffer;
-        private IServerEvents _serverEvents;
-
-        private HashSet<IPlayerConnection> _players = new();
-
-        public IEnumerable<IPlayerConnection> Players { get => _players; }
+        private IPlayerEvents _playerEvents;
 
         public void Construct(Container container)
         {
             _simulationHost = container.Resolve<SimulationHost>();
-            _serverEvents = container.Resolve<IServerEvents>();
+            _playerEvents = container.Resolve<IPlayerEvents>();
             _commandBuffer = container.Resolve<WorldCommandBuffer>();
             
-            _serverEvents.Connected += HandleConnected;
-            _serverEvents.Disconnected += HandleDisconnected;
-            _serverEvents.SubscribeToMessage<PlayerInputMessage>(HandleInputMessage);
-            _serverEvents.SubscribeToMessage<SimulationLoadedMessage>(HandleSimulationLoadedMessage);
+            _playerEvents.Connected += HandleConnected;
+            _playerEvents.Disconnected += HandleDisconnected;
+            _playerEvents.SubscribeToMessage<PlayerInputMessage>(HandleInputMessage);
+            _playerEvents.SubscribeToMessage<SimulationLoadedMessage>(HandleSimulationLoadedMessage);
         }
 
-        private void HandleSimulationLoadedMessage(IPlayerConnection player, SimulationLoadedMessage message)
+        private void HandleSimulationLoadedMessage(IPlayer player, SimulationLoadedMessage message)
         {
             if (player.Data.sessionData.state != PlayerState.LoadingMap)
             {
@@ -51,20 +47,20 @@ namespace Remouse.GameServer.Players
             Logger.Current.LogPlayerInfo(this, player, "Spawned player");
         }
 
-        private void SendCurrentWorldState(IPlayerConnection player)
+        private void SendCurrentWorldState(IPlayer player)
         {
             var worldState = WorldStatePacker.Pack(_simulationHost.Simulation.World);
             player.Send(new CurrentWorldStateMessage(worldState));
         }
 
-        private void EnqueueSpawnPlayer(IPlayerConnection player)
+        private void EnqueueSpawnPlayer(IPlayer player)
         {
             var command = new SpawnPlayerCommand();
             command.playerId = player.Data.cloudData.id;
             _commandBuffer.Enqueue(command);
         }
 
-        private void HandleInputMessage(IPlayerConnection player, PlayerInputMessage playerInput)
+        private void HandleInputMessage(IPlayer player, PlayerInputMessage playerInput)
         {
             if (player.Data.sessionData.state != PlayerState.InGame)
             {
@@ -77,18 +73,16 @@ namespace Remouse.GameServer.Players
             Logger.Current.LogPlayerTrace(this, player, $"Added message {playerInput} to buffer");
         }
 
-        private void HandleConnected(IPlayerConnection player)
+        private void HandleConnected(IPlayer player)
         { 
             player.Send(new LoadMapMessage(_simulationHost.Simulation.MapId));
             
             player.Data.sessionData.state = PlayerState.LoadingMap;
-
-            _players.Add(player);
             
             Logger.Current.LogPlayerInfo(this, player, "Connected");
         }
 
-        private void HandleDisconnected(IPlayerConnection player)
+        private void HandleDisconnected(IPlayer player)
         {
             if (player.Data.sessionData.state == PlayerState.InGame)
             {
@@ -96,8 +90,6 @@ namespace Remouse.GameServer.Players
             }
             
             player.Data.sessionData.state = PlayerState.Disconnected;
-
-            _players.Remove(player);
             
             Logger.Current.LogPlayerInfo(this, player, $"Disconnected. State {player.Data.sessionData.state}");
         }
