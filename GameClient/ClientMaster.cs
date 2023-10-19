@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.Net;
-using Shared.DIContainer;
-using Shared.GameSimulation;
-using Shared.Online.Commands;
-using Shared.Online.Commands.Client;
+using Remouse.Shared.Core;
+using Remouse.Shared.DIContainer;
+using Remouse.Shared.Models.Messages;
+using Remouse.Shared.Utils.Log;
 
 namespace GameClient
 {
@@ -13,12 +13,12 @@ namespace GameClient
         private ClientSocketManager _socketManager;
         private GameSimulationRunner _gameSimulationRunner;
         private GameSimulationUpdatesBuffer _gameSimulationUpdatesBuffer;
-        private GameSimulationFactory _simulationFactory;
+        private SimulationFactory _simulationFactory;
         
-        private GameSimulation _simulation;
+        private Simulation _simulation;
 
         private Stopwatch _sw = Stopwatch.StartNew();
-        private double _lastTickMilliseconds = 0;
+        private double _lastTickMilliseconds;
 
         private bool _isFirstUpdateReceived;
         
@@ -41,11 +41,11 @@ namespace GameClient
             {
                 _simulation = _simulationFactory.CreateGameSimulation(simulationLoadMessage.simulationName);
                 
-                _socketManager.Send(new SpawnInWorldRequestClientMessage());
+                _socketManager.Send(new SimulationLoadedMessage());
 
                 _isFirstUpdateReceived = false;
             } 
-            else if (message is SimulationUpdateMessage entityUpdateMessage)
+            else if (message is TickWorldCommandsMessage entityUpdateMessage)
             {
                 if (!_isFirstUpdateReceived)
                 {

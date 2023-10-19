@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
-namespace Shared.Content
+namespace Remouse.Shared.Content
 {
     public class DatabaseBuilder
     {

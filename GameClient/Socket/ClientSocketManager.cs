@@ -1,9 +1,10 @@
 using System;
 using System.Net;
 using GameClient.Transport;
-using Shared.Online.Commands;
-using Shared.Serialization;
-using Shared.Utils.Log;
+using Remouse.Shared.DIContainer;
+using Remouse.Shared.Models.Messages;
+using Remouse.Shared.Serialization;
+using Remouse.Shared.Utils.Log;
 
 namespace GameClient
 {
@@ -20,9 +21,9 @@ namespace GameClient
         public Action connected;
         public Action<NetworkMessage> onMessage;
 
-        public bool isConnected { get; private set; }
+        public bool IsConnected { get; private set; }
 
-        public void Construct(Shared.DIContainer.Container container)
+        public void Construct(Container container)
         {
             container.Get(out _logger);
             container.Get(out _socket);
@@ -45,14 +46,14 @@ namespace GameClient
         
         void IClientEventsHandler.HandleConnected()
         {
-            isConnected = true;
+            IsConnected = true;
             
             Logger.Current.LogInfo(this, "Connected to server");
         }
 
         void IClientEventsHandler.HandleDisconnected()
         {
-            isConnected = false;
+            IsConnected = false;
             _isActive = false;
             
             disconnected?.Invoke();

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Shared.Utils.Events
+namespace Remouse.Shared.Utils.Events
 {
     public class EventBus<T> where T : IEvent
     {

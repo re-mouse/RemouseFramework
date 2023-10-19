@@ -1,37 +1,37 @@
 using System;
 using System.Collections.Generic;
 
-namespace Shared.DIContainer
+namespace Remouse.Shared.DIContainer
 {
     public class ContainerBuilder
     {
-        private List<BindToken> _bindingTokens = new List<BindToken>();
+        private List<BindingMetadata> _bindingTokens = new List<BindingMetadata>();
         private List<FactoryToken> _factoryTokens = new List<FactoryToken>();
         
-        public PublicBindToken<T> Bind<T>() where T : class
+        public BindingBuilder<T> Pack<T>() where T : class
         {
             var valueType = typeof(T);
             
             var token = RegisterToken(valueType, valueType);
 
-            return new PublicBindToken<T>(token);
+            return new BindingBuilder<T>(token);
         }
         
-        public PublicBindToken<T> BindInstance<T>(T t) where T : class
+        public BindingBuilder<T> PackInstance<T>(T t) where T : class
         {
             var valueType = typeof(T);
             
             var token = RegisterToken(valueType, valueType);
-            token.value = t;
+            token.Instance = t;
             
-            return new PublicBindToken<T>(token);
+            return new BindingBuilder<T>(token);
         }
         
-        public void BindFactory<T, A>() where A : class 
-                                        where T : class, IFactory<A>
+        public void BindFactory<T, TA>() where TA : class 
+                                        where T : class, IFactory<TA>
         {
             var factoryType = typeof(T);
-            var producingType = typeof(A);
+            var producingType = typeof(TA);
             
             RegisterFactory(factoryType, producingType);
         }
@@ -42,15 +42,15 @@ namespace Shared.DIContainer
             return container;
         }
         
-        private BindToken RegisterToken(Type valueType, Type interfaceType)
+        private BindingMetadata RegisterToken(Type valueType, Type interfaceType)
         {
-            var token = new BindToken();
-            token.valueType = valueType;
-            token.interfaceTypes.Add(interfaceType);
+            var binding = new BindingMetadata();
+            binding.BoundType = valueType;
+            binding.InterfaceTypes.Add(interfaceType);
             
-            _bindingTokens.Add(token);
+            _bindingTokens.Add(binding);
             
-            return token;
+            return binding;
         }
         
         private FactoryToken RegisterFactory(Type factoryType, Type producingType)

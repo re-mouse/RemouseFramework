@@ -1,79 +1,72 @@
 using System;
 using System.Diagnostics;
-using GameServer.ServerTransport;
-using Shared.DIContainer;
-using Shared.Utils.Log;
+using System.Threading.Tasks;
+using Remouse.GameServer.ServerShards;
+using Remouse.GameServer.ServerTransport;
+using Remouse.Shared.Core;
+using Remouse.Shared.Core.World;
+using Remouse.Shared.DIContainer;
+using Remouse.Shared.Utils.Log;
 
-namespace GameServer
+namespace Remouse.GameServer
 {
+    public class ServerConfig
+    {
+        public string databaseJsonPath = "";
+        public double ticksPerSecond = 60;
+        public string mapId = "Start";
+        public ushort port = 5000;
+        public int maxPlayers = 10;
+    }
     public class ServerBootstrap : IDisposable
     {
+        private readonly ServerConfig _config;
         private readonly double _millisecondsPerTick;
         
         private Container _container;
-        private bool _isStarted;
-        private bool _isDisposed;
         
         private IServer _server;
-        private ServerLoop _serverLoop;
+        private ServerGameLoop _gameLoop;
         
         private Stopwatch _stopwatch;
         private double _lastTickMilliseconds;
 
-        public ServerBootstrap(double ticksPerSecond)
+        public ServerBootstrap(ServerConfig config)
         {
-            _millisecondsPerTick = 1000 / ticksPerSecond;
+            _config = config;
+            _millisecondsPerTick = 1000 / _config.ticksPerSecond;
         }
 
-        public async void Start(double ticksPerSecond)
+        public void Start()
         {
-            if (_isDisposed)
-            {
-                Logger.Current.LogError(this, "Trying to start disposed server bootstrap");
-                return;
-            }
-            
-            if (_isStarted)
-            {
-                Logger.Current.LogError(this, "Trying to start bootstrap, when already started");
-                return;
-            }
-            
             var containerBuilder = new ContainerBuilder();
             
-            var serverLoopScope = new ServerLoopScope();
-            var serverScope = new ServerTransportScope();
-            
-            serverLoopScope.InstallScope(containerBuilder);
-            serverScope.InstallScope(containerBuilder);
+            containerBuilder.InstallGameServer();
+            containerBuilder.InstallServerTransport();
+            containerBuilder.InstallWorld();
+            containerBuilder.InstallDatabaseFromJson(_config.databaseJsonPath);
 
             _container = containerBuilder.Build();
 
             _server = _container.Get<IServer>();
-            _serverLoop = _container.Get<ServerLoop>();
+            _gameLoop = _container.Get<ServerGameLoop>();
 
-            _server.Start(5000);
-            await _serverLoop.Initialize();
+            LoadSimulation();
+            
+            _server.Start(_config.port, _config.maxPlayers);
             
             _stopwatch = Stopwatch.StartNew();
-
-            _isStarted = true;
         }
-        
+
+        private void LoadSimulation()
+        {
+            var simulation = _container.Get<SimulationFactory>().CreateGameSimulation();
+            
+            _container.Get<SimulationHost>().SetGameSimulation(simulation);
+        }
+
         public void Update()
         {
-            if (_isDisposed)
-            {
-                Logger.Current.LogError(this, "Trying to update disposed server bootstrap");
-                return;
-            }
-            
-            if (!_isStarted)
-            {
-                Logger.Current.LogError(this, "Trying to update, without started");
-                return;
-            }
-            
             _server.Update();
                 
             double elapsed = _stopwatch.Elapsed.TotalMilliseconds - _lastTickMilliseconds;
@@ -81,21 +74,14 @@ namespace GameServer
 
             for (int i = 0; i < requiredTicks; i++)
             {
-                _serverLoop.Update();
+                _gameLoop.Update();
                 _lastTickMilliseconds += _millisecondsPerTick;
             }
         }
 
         public void Dispose()
         {
-            if (_isDisposed)
-            {
-                Logger.Current.LogError(this, "Trying to dispose server bootstrap twice");
-                return;
-            }
-            
             _container?.Dispose();
-            _isDisposed = true;
         }
     }
 }

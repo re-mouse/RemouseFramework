@@ -1,4 +1,4 @@
-namespace GameServer.Authorization
+namespace Remouse.GameServer.Authorization
 {
     public interface IAuthorizer
     {

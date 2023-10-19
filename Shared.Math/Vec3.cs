@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Shared.Math
+namespace Remouse.Shared.Math
 {
     [Serializable]
     public struct Vec3 : IEquatable<Vec3>
@@ -55,15 +55,15 @@ namespace Shared.Math
             float num11 = rotation.w * num2;
             float num12 = rotation.w * num3;
             Vec3 vector3;
-            vector3.x = (float)((1.0 - ((double)num5 + (double)num6)) * (double)point.x +
-                                ((double)num7 - (double)num12) * (double)point.y +
-                                ((double)num8 + (double)num11) * (double)point.z);
-            vector3.y = (float)(((double)num7 + (double)num12) * (double)point.x +
-                                (1.0 - ((double)num4 + (double)num6)) * (double)point.y +
-                                ((double)num9 - (double)num10) * (double)point.z);
-            vector3.z = (float)(((double)num8 - (double)num11) * (double)point.x +
-                                ((double)num9 + (double)num10) * (double)point.y +
-                                (1.0 - ((double)num4 + (double)num5)) * (double)point.z);
+            vector3.x = (float)((1.0 - (num5 + (double)num6)) * point.x +
+                                (num7 - (double)num12) * point.y +
+                                (num8 + (double)num11) * point.z);
+            vector3.y = (float)((num7 + (double)num12) * point.x +
+                                (1.0 - (num4 + (double)num6)) * point.y +
+                                (num9 - (double)num10) * point.z);
+            vector3.z = (float)((num8 - (double)num11) * point.x +
+                                (num9 + (double)num10) * point.y +
+                                (1.0 - (num4 + (double)num5)) * point.z);
             return vector3;
         }
 

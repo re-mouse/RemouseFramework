@@ -1,6 +1,4 @@
-﻿using Irehon.Entitys;
-
-namespace Shared.Online.Models
+﻿namespace Remouse.Shared.Models
 {
     public struct RegisterInfo
     {

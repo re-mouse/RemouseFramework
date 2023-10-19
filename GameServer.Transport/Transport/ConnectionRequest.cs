@@ -1,16 +1,16 @@
 using System.Net;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     internal abstract class ConnectionRequest
     {
-        public byte[] data { get; }
-        public IPEndPoint endPoint { get; }
+        public byte[] Data { get; }
+        public IPEndPoint EndPoint { get; }
 
         public ConnectionRequest(byte[] data, IPEndPoint endPoint)
         {
-            this.data = data;
-            this.endPoint = endPoint;
+            Data = data;
+            EndPoint = endPoint;
         }
         
         public abstract Connection Accept();

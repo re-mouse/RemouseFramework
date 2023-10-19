@@ -1,7 +1,10 @@
-namespace Shared.Content
+using System;
+
+namespace Remouse.Shared.Content
 {
+    [Serializable]
     public abstract class TableData
     {
-        public string id;
+        public string Id { get; set; }
     }
 }

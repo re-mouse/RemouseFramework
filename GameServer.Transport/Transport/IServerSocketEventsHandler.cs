@@ -1,6 +1,6 @@
-using Shared.Serialization;
+using Remouse.Shared.Serialization;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     internal interface IServerSocketEventsHandler
     {

@@ -1,4 +1,4 @@
-namespace Shared.Content
+namespace Remouse.Shared.Content
 {
     public abstract class Settings
     {

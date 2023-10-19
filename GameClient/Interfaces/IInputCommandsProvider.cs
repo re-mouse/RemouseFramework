@@ -11,7 +11,6 @@ namespace GameClient
     {
         public void GetCommands(List<PlayerNetworkMessage> result)
         {
-            return;
         }
     }
 }

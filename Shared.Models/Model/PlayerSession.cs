@@ -1,4 +1,4 @@
-﻿namespace Shared.Online.Models
+﻿namespace Remouse.Shared.Models
 {
     public struct PlayerSession
     {
@@ -14,13 +14,13 @@
 
         public PlayerSession(AuthInfo authInfo)
         {
-            this.steamId = authInfo.Id;
-            this.isAuthorized = false;
-            this.character = new CharacterInfo();
+            steamId = authInfo.id;
+            isAuthorized = false;
+            character = new CharacterInfo();
             this.authInfo = authInfo;
 
-            this.isSpawnPointChanged = false;
-            this.sceneToChange = null;
+            isSpawnPointChanged = false;
+            sceneToChange = null;
         }
     }
 }

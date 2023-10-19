@@ -1,7 +1,7 @@
 using LiteNetLib;
-using Shared.Serialization;
+using Remouse.Shared.Serialization;
 
-namespace GameServer.ServerTransport.Implementations
+namespace Remouse.GameServer.ServerTransport.Implementations
 {
     public class LiteNetLibReader : INetworkReader
     {

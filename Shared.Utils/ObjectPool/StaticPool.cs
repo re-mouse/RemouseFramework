@@ -1,19 +1,19 @@
 using System;
 
-namespace Shared.Utils.ObjectPool
+namespace Remouse.Shared.Utils.ObjectPool
 {
     public static class StaticPool<T> where T : new()
     {
-        private static ObjectPool<T> _pool = new ObjectPool<T>();
+        private static ObjectPool<T> pool = new ObjectPool<T>();
 
         public static T Get()
         {
-            return _pool.Get();
+            return pool.Get();
         }
 
         public static void Return(StaticPoolToken<T> token)
         {
-            _pool.Return(token.value);
+            pool.Return(token.value);
         }
     }
 

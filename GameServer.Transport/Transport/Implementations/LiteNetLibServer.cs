@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using LiteNetLib;
 
-namespace GameServer.ServerTransport.Implementations
+namespace Remouse.GameServer.ServerTransport.Implementations
 {
     internal class LiteNetLibServer : IServerSocket
     {

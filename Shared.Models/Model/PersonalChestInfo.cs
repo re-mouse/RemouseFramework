@@ -1,8 +1,8 @@
-﻿namespace Shared.Online.Models
+﻿namespace Remouse.Shared.Models
 {
     public class PersonalChestInfo
     {
-        public string ChestName;
-        public int ContainerId;
+        public string chestName;
+        public int containerId;
     }
 }

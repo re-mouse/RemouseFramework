@@ -1,6 +1,8 @@
+using Remouse.Shared.Content;
+
 namespace GameClient.Content
 {
-    public class SettingsScrobject<T> : ScriptableObject where T : Shared.Content.Settings
+    public class SettingsScrobject<T> : ScriptableObject where T : Settings
     {
         public T settings;
     }

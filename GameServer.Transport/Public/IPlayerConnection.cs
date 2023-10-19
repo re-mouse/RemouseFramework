@@ -1,11 +1,11 @@
-using Shared.Online.Commands;
-using Shared.Online.Models;
+using Remouse.Shared.Models;
+using Remouse.Shared.Models.Messages;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     public interface IPlayerConnection
     {
-        public PlayerData data { get; }
+        public PlayerData Data { get; }
         public void Send(NetworkMessage message, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered);
     }
 }

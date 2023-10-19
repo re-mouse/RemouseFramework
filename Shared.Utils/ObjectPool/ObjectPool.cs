@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace Shared.Utils.ObjectPool
+namespace Remouse.Shared.Utils.ObjectPool
 {
     public class ObjectPool<T> where T : new()
     {
-        private const int DEFAULT_CAPACITY = 10;
+        private const int DefaultCapacity = 10;
         
         private readonly List<T> _objects = new List<T>();
         private readonly object _lock = new object();
         private int _count;
 
-        public ObjectPool() : this(DEFAULT_CAPACITY)
+        public ObjectPool() : this(DefaultCapacity)
         {
         }
 

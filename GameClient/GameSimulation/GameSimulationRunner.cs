@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Shared.GameSimulation;
+using Remouse.Shared.Core;
+using Remouse.Shared.DIContainer;
 
 namespace GameClient
 {
@@ -13,18 +14,18 @@ namespace GameClient
 
         private GameSimulationUpdatesApplier _updatesApplier = new GameSimulationUpdatesApplier();
         
-        private GameSimulation _simulation;
+        private Simulation _simulation;
 
         private List<PlayerNetworkMessage> _clientCommandsCached = new List<PlayerNetworkMessage>();
 
-        public void Construct(Shared.DIContainer.Container container)
+        public void Construct(Container container)
         {
             container.Get(out _inputProvider);
             container.Get(out _gameSimulationUpdatesBuffer);
             container.Get(out _commandsSender);
         }
 
-        public void SetSimulation(GameSimulation simulation)
+        public void SetSimulation(Simulation simulation)
         {
             _simulation = simulation;
         }
@@ -46,16 +47,16 @@ namespace GameClient
                 // input.Execute();
             }
             
-            var updateMessage = _gameSimulationUpdatesBuffer.GetAt(_simulation.simulationTick - TickUpdatesLatency);
+            var updateMessage = _gameSimulationUpdatesBuffer.GetAt(_simulation.CurrentTick - TickUpdatesLatency);
 
             if (updateMessage != null)
             {
-                _updatesApplier.ApplyUpdate(_simulation, updateMessage.simulationChanges);
+                _updatesApplier.ApplyUpdate(_simulation, updateMessage.WorldState);
             }
             
             _simulation.Tick();
             
-            _gameSimulationUpdatesBuffer.ClearUntil(_simulation.simulationTick - TickUpdatesLatency);
+            _gameSimulationUpdatesBuffer.ClearUntil(_simulation.CurrentTick - TickUpdatesLatency);
 
             foreach (var inputCommand in _clientCommandsCached)
             {

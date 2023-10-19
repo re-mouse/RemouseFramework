@@ -13,6 +13,7 @@
       <ProjectReference Include="..\Shared.DIContainer\Shared.DIContainer.csproj" />
       <ProjectReference Include="..\Shared.Models\Shared.Models.csproj" />
       <ProjectReference Include="..\Shared.Utils\Shared.Utils.csproj" />
+      <ProjectReference Include="..\Shared.Core\Shared.Core.csproj" />
     </ItemGroup>
     
     <ItemGroup>

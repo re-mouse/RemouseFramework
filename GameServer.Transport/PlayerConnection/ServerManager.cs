@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using GameServer.Authorization;
-using GameServer.Players;
-using Shared.DIContainer;
-using Shared.Online.Commands;
-using Shared.Online.Models;
-using Shared.Serialization;
-using Shared.Utils.Log;
+using Remouse.GameServer.Authorization;
+using Remouse.GameServer.Players;
+using Remouse.Shared.DIContainer;
+using Remouse.Shared.Models;
+using Remouse.Shared.Models.Messages;
+using Remouse.Shared.Serialization;
+using Remouse.Shared.Utils.Log;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     internal class ServerManager : IServerSocketEventsHandler, IServer
     {
@@ -33,30 +33,28 @@ namespace GameServer.ServerTransport
             _server.SetHandler(this);
         }
         
-        public void Start(int port)
+        public void Start(int port, int maxConnections)
         {
-            int maxPlayers = 10;
+            Logger.Current.LogInfo(this, $"Starting server on port {port}, maxPlayers = {maxConnections}");
             
-            Logger.Current.LogInfo(this, $"Starting server on port {port}, maxPlayers = {maxPlayers}");
-            
-            var args = new ServerArgs()
+            var args = new ServerArgs
             {
                 port = port,
-                maxPlayers = maxPlayers
+                maxPlayers = maxConnections
             };
             
             _server.Start(args);
                 
-            Logger.Current.LogInfo(this, $"Server started");
+            Logger.Current.LogInfo(this, "Server started");
         }
 
         public void Stop()
         {
-            Logger.Current.LogInfo(this, $"Server stop requested");
+            Logger.Current.LogInfo(this, "Server stop requested");
             
             _server.Stop();
 
-            Logger.Current.LogInfo(this, $"Server stopped");
+            Logger.Current.LogInfo(this, "Server stopped");
         }
 
         public void Update()
@@ -66,9 +64,9 @@ namespace GameServer.ServerTransport
 
         void IServerSocketEventsHandler.HandleConnectionRequest(ConnectionRequest request)
         {
-            Logger.Current.LogInfo(this, $"Received connection request from {request.endPoint}");
+            Logger.Current.LogInfo(this, $"Received connection request from {request.EndPoint}");
             
-            var credentials = _authorizer.Authorize(request.data, out var result);
+            var credentials = _authorizer.Authorize(request.Data, out var result);
 
             if (result == AuthorizeResult.Successful)
             {
@@ -76,10 +74,10 @@ namespace GameServer.ServerTransport
 
                 var connection = request.Accept();
                 
-                var player = new PlayerData()
+                var player = new PlayerData
                 {
                     sessionData = new PlayerSessionData(),
-                    saveData = new PlayerSaveData()
+                    cloudData = new PlayerCloudData
                     {
                         id = credentials.playerId, 
                         name = credentials.name, 
@@ -87,7 +85,7 @@ namespace GameServer.ServerTransport
                     }
                 };
                 
-                Logger.Current.LogInfo(this, $"{request.endPoint} connection request accept");
+                Logger.Current.LogInfo(this, $"{request.EndPoint} connection request accept");
 
                 _playersByConnection[connection] = new PlayerConnection(player, connection);
             }
@@ -97,13 +95,13 @@ namespace GameServer.ServerTransport
 
                 request.Reject();
 
-                Logger.Current.LogInfo(this, $"{request.endPoint} connection request reject");
+                Logger.Current.LogInfo(this, $"{request.EndPoint} connection request reject");
             }
         }
 
         void IServerSocketEventsHandler.HandleConnected(Connection connection)
         {
-            Logger.Current.LogInfo(this, $"Connected: {connection.endPoint}");
+            Logger.Current.LogInfo(this, $"Connected: {connection.EndPoint}");
             
             var player = _playersByConnection[connection];
             _playersConnectionHandler.HandleConnected(player);
@@ -119,24 +117,24 @@ namespace GameServer.ServerTransport
 
                 if (message == null)
                 {
-                    Logger.Current.LogWarning(this, $"Received invalid network message from {connection.endPoint}");
+                    Logger.Current.LogWarning(this, $"Received invalid network message from {connection.EndPoint}");
                     
                     return;
                 }
                 
-                Logger.Current.LogInfo(this, $"Succesfuly deserialized from {connection.endPoint}, message - {message}");
+                Logger.Current.LogInfo(this, $"Succesfuly deserialized from {connection.EndPoint}, message - {message}");
                 
                 _playersDataHandler.HandleMessage(player, message);
             }
             catch (Exception exception)
             {
-                Logger.Current.LogException(this, exception, $"Received exception on deserialization: {connection.endPoint}");
+                Logger.Current.LogException(this, exception, $"Received exception on deserialization: {connection.EndPoint}");
             }
         }
 
         void IServerSocketEventsHandler.HandleDisconnected(Connection connection)
         {
-            Logger.Current.LogInfo(this, $"Disconnected: {connection.endPoint}");
+            Logger.Current.LogInfo(this, $"Disconnected: {connection.EndPoint}");
 
             if (_playersByConnection.TryGetValue(connection, out var player))
             {

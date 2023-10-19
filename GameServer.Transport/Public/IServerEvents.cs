@@ -1,7 +1,7 @@
 using System;
-using Shared.Online.Commands;
+using Remouse.Shared.Models.Messages;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     public interface IServerEvents
     {

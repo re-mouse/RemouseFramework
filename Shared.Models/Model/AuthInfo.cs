@@ -1,9 +1,9 @@
-﻿namespace Shared.Online.Models
+﻿namespace Remouse.Shared.Models
 {
     public struct AuthInfo
     {
-        public ulong Id;
-        public byte[] AuthData;
+        public ulong id;
+        public byte[] authData;
         public RegisterInfo registerInfo;
         public string version;
     }

@@ -1,6 +1,6 @@
-namespace Shared.Online.Models
+namespace Remouse.Shared.Models
 {
-    public partial class PlayerSessionData
+    public class PlayerSessionData
     {
         public int? playerEntityId;
         public PlayerState state;
@@ -8,8 +8,9 @@ namespace Shared.Online.Models
     
     public enum PlayerState 
     {
-        WaitingLoadMap,
-        Loaded,
-        Spawned
+        LoadingMap,
+        WaitingWorldState,
+        InGame,
+        Disconnected
     }
 }

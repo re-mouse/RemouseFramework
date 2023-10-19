@@ -1,7 +1,7 @@
 using System;
-using Shared.Utils.Log;
+using Remouse.Shared.Utils.Log;
 
-namespace Shared.Utils.Buffer
+namespace Remouse.Shared.Utils.Buffer
 {
     public class RoundBuffer<T> where T : class, new()
     {

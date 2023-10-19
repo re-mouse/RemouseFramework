@@ -1,19 +1,19 @@
 using System.Collections.Generic;
-using Shared.Online.Commands;
+using Remouse.Shared.Models.Messages;
 
 namespace GameClient
 {
     class GameSimulationUpdatesBuffer
     {
-        private readonly Dictionary<long, SimulationUpdateMessage> _entityUpdateMessages = new Dictionary<long, SimulationUpdateMessage>();
+        private readonly Dictionary<long, TickWorldCommandsMessage> _entityUpdateMessages = new Dictionary<long, TickWorldCommandsMessage>();
         
-        public void Enqueue(SimulationUpdateMessage simulationUpdateMessage)
+        public void Enqueue(TickWorldCommandsMessage tickWorldCommandsMessage)
         {
             //implement new
             // _entityUpdateMessages[simulationUpdateMessage.simulationTick] = simulationUpdateMessage;
         }
         
-        public SimulationUpdateMessage? GetAt(long tick)
+        public TickWorldCommandsMessage? GetAt(long tick)
         {
             _entityUpdateMessages.TryGetValue(tick, out var value);
 

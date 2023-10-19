@@ -1,5 +1,5 @@
 using GameClient.Transport;
-using Shared.Online.Commands;
+using Remouse.Shared.Models.Messages;
 
 namespace GameClient
 {

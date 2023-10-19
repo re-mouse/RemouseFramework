@@ -1,13 +1,13 @@
-using Shared.Online.Commands;
-using Shared.Online.Models;
-using Shared.Serialization;
-using Shared.Utils.Log;
+using Remouse.Shared.Models;
+using Remouse.Shared.Models.Messages;
+using Remouse.Shared.Serialization;
+using Remouse.Shared.Utils.Log;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     internal class PlayerConnection : IPlayerConnection
     {
-        public PlayerData data { get; }
+        public PlayerData Data { get; }
         
         private readonly Connection _connection;
 
@@ -15,7 +15,7 @@ namespace GameServer.ServerTransport
 
         internal PlayerConnection(PlayerData playerData, Connection connection)
         {
-            this.data = playerData;
+            Data = playerData;
             _connection = connection;
         }
 
@@ -25,7 +25,7 @@ namespace GameServer.ServerTransport
 
             NetworkMessageSerializer.Serialize(message, _writer);
             
-            Logger.Current.LogInfo(this, $"Sending message to playerId {data?.saveData?.id}, message = {message}, deliveryMethod = {deliveryMethod}");
+            Logger.Current.LogInfo(this, $"Sending message to playerId {Data?.cloudData?.id}, message = {message}, deliveryMethod = {deliveryMethod}");
             
             _connection.Send(_writer, deliveryMethod);
         }

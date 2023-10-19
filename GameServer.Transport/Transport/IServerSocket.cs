@@ -1,4 +1,4 @@
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     internal interface IServerSocket
     {

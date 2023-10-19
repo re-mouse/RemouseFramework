@@ -8,11 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Shared.Core.World\Shared.Core.World.csproj" />
       <ProjectReference Include="..\Shared.Serialization\Shared.Serialization.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Shared.Serialization\Shared.Serialization.csproj" />
     </ItemGroup>
+
+
 
 </Project>

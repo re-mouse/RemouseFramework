@@ -1,6 +1,6 @@
 using System;
 
-namespace Shared.Utils.Log
+namespace Remouse.Shared.Utils.Log
 {
     public class DummyLogger : ILogger
     {

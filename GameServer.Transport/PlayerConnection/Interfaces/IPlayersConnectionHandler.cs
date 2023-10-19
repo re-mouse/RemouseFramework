@@ -1,6 +1,6 @@
-using GameServer.ServerTransport;
+using Remouse.GameServer.ServerTransport;
 
-namespace GameServer.Players
+namespace Remouse.GameServer.Players
 {
     internal interface IPlayersConnectionHandler
     {

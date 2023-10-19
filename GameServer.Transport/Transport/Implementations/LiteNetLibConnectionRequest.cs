@@ -1,4 +1,4 @@
-namespace GameServer.ServerTransport.Implementations
+namespace Remouse.GameServer.ServerTransport.Implementations
 {
     internal class LiteNetLibConnectionRequest : ConnectionRequest
     {

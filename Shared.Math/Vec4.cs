@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Shared.Math
+namespace Remouse.Shared.Math
 {
     public struct Vec4
     {
@@ -8,11 +8,11 @@ namespace Shared.Math
 
         public float x, y, z, w;
 
-        public Vec3 eulerAngles { get { return this.ToEulerAngles(); } }
+        public Vec3 eulerAngles { get => this.ToEulerAngles(); }
 
-        public float squaredLength => x * x + y * y + z * z + w * w;
+        public float squaredLength { get => x * x + y * y + z * z + w * w; }
 
-        public float length => (float) System.Math.Sqrt(x * x + y * y + z * z + w * w);
+        public float length { get => (float)System.Math.Sqrt(x * x + y * y + z * z + w * w); }
 
         public Vec4 normalized
         {

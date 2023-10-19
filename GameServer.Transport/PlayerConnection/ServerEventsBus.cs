@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using GameServer.Players;
-using Shared.Online.Commands;
+using Remouse.GameServer.Players;
+using Remouse.Shared.Models.Messages;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     public class ServerEventsBus : IServerEvents, IPlayersDataHandler, IPlayersConnectionHandler
     {

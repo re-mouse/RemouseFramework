@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Shared.Math
+namespace Remouse.Shared.Math
 {
     [Serializable]
     public struct Fix64 : IEquatable<Fix64>, IComparable<Fix64>

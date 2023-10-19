@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Shared.GameSimulation;
-using Shared.Online.Commands;
-using Shared.Online.Models;
+using Remouse.Shared.Core;
+using Remouse.Shared.Models;
 
 namespace GameClient
 {
@@ -9,9 +8,9 @@ namespace GameClient
     {
         private Dictionary<int, int> _serverToLocalEntityIds = new Dictionary<int, int>();
         
-        public void ApplyUpdate(GameSimulation simulation, SimulationChanges changeses)
+        public void ApplyUpdate(Simulation simulation, WorldState changeses)
         {
-            foreach (var createdEntity in changeses.createdEntities)
+            foreach (var createdEntity in changeses.entityInfos)
             {
                 int localEntityId = simulation.World.CreateEntity(createdEntity.entityName);
 
@@ -32,7 +31,7 @@ namespace GameClient
                 int localId = _serverToLocalEntityIds[updatedComponent.entityId];
 
                 var componentTypeId = updatedComponent.componentContainer.componentTypeId;
-                var componentType = ComponentTypeSerializator.GetComponentType(componentTypeId);
+                var componentType = NetworkComponentTypeSerializer.GetComponentType(componentTypeId);
                 var pool = simulation.World.GetPoolByType(componentType);
 
                 if (!pool.Has(localId))
@@ -49,7 +48,7 @@ namespace GameClient
             {
                 int localId = _serverToLocalEntityIds[deletedComponent.entityId];
 
-                var componentType = ComponentTypeSerializator.GetComponentType(deletedComponent.componentTypeId);
+                var componentType = NetworkComponentTypeSerializer.GetComponentType(deletedComponent.componentTypeId);
                 var pool = simulation.World.GetPoolByType(componentType);
                 
                 pool.Del(localId);

@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace Shared.Content
+namespace Remouse.Shared.Content
 {
     public class Database
     {
@@ -35,5 +36,14 @@ namespace Shared.Content
 
             return table.GetData(id);
         }
+
+        public Settings[] GetSetting()
+        {
+            return _settingsByType.Values.ToArray();
+        }
+        
+        // Inside your Database class
+        public object[] GetTables() => _tablesByDataType.Values.ToArray();
+
     }
 }

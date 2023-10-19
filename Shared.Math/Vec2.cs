@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
-namespace Shared.Math
+namespace Remouse.Shared.Math
 {
     static class MethodImplOptionsEx
     {
@@ -59,7 +59,7 @@ namespace Shared.Math
         /// </summary>
         public float magnitude
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (float) System.Math.Sqrt((double) this.x * (double) this.x + (double) this.y * (double) this.y);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (float) System.Math.Sqrt(x * (double) x + y * (double) y);
         }
         
         // Linearly interpolates between two vectors without clamping the interpolant
@@ -85,7 +85,7 @@ namespace Shared.Math
             if (sqDist == 0 || (maxDistanceDelta >= 0 && sqDist <= maxDistanceDelta * maxDistanceDelta))
                 return target;
 
-            float dist = (float)(sqDist);
+            float dist = sqDist;
 
             return new Vec2(current.x + toVector_x / dist * maxDistanceDelta,
                 current.y + toVector_y / dist * maxDistanceDelta);
@@ -151,10 +151,9 @@ namespace Shared.Math
         public Vec2 Normalize()
         {
             float magnitude = this.magnitude;
-            if ((double) magnitude > 9.999999747378752E-06)
+            if (magnitude > 9.999999747378752E-06)
                 return this / magnitude;
-            else
-                return Vec2.zero;
+            return zero;
         }
 
         [MethodImpl(MethodImplOptionsEx.AggressiveInlining)]
@@ -209,21 +208,21 @@ namespace Shared.Math
 
 
         // Shorthand for writing @@Vector2(0, 0)@@
-        public static Vec2 zero { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return zeroVector; } }
+        public static Vec2 zero { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => zeroVector; }
         // Shorthand for writing @@Vector2(1, 1)@@
-        public static Vec2 one { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return oneVector; }   }
+        public static Vec2 one { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => oneVector; }
         // Shorthand for writing @@Vector2(0, 1)@@
-        public static Vec2 up { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return upVector; } }
+        public static Vec2 up { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => upVector; }
         // Shorthand for writing @@Vector2(0, -1)@@
-        public static Vec2 down { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return downVector; } }
+        public static Vec2 down { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => downVector; }
         // Shorthand for writing @@Vector2(-1, 0)@@
-        public static Vec2 left { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return leftVector; } }
+        public static Vec2 left { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => leftVector; }
         // Shorthand for writing @@Vector2(1, 0)@@
-        public static Vec2 right { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return rightVector; } }
+        public static Vec2 right { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => rightVector; }
         // Shorthand for writing @@Vector2(float.PositiveInfinity, float.PositiveInfinity)@@
-        public static Vec2 positiveInfinity { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return positiveInfinityVector; } }
+        public static Vec2 positiveInfinity { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => positiveInfinityVector; }
         // Shorthand for writing @@Vector2(float.NegativeInfinity, float.NegativeInfinity)@@
-        public static Vec2 negativeInfinity { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get { return negativeInfinityVector; } }
+        public static Vec2 negativeInfinity { [MethodImpl(MethodImplOptionsEx.AggressiveInlining)] get => negativeInfinityVector; }
 
         // *Undocumented*
         public const float kEpsilon = 0.00001F;

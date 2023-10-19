@@ -1,8 +1,8 @@
-namespace Shared.Online.Models
+namespace Remouse.Shared.Models
 {
-    public partial class PlayerData
+    public class PlayerData
     {
-        public PlayerSaveData saveData;
+        public PlayerCloudData cloudData;
         public PlayerSessionData sessionData;
     }
 }

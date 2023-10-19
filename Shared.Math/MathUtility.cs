@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shared.Math
+namespace Remouse.Shared.Math
 {
     public static class MathUtility
     {
@@ -57,7 +57,7 @@ namespace Shared.Math
             if (value == 0 || splitAmount == 0)
             {
                 throw new InvalidOperationException(
-                    $"Provided invalid data - " +
+                    "Provided invalid data - " +
                     $"value: [{value}], " +
                     $"split amount: [{splitAmount}]");
             }

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
-using Irehon.Entitys;
-using Shared.Math;
+using Remouse.Shared.Math;
 
-namespace Shared.Online.Models
+namespace Remouse.Shared.Models
 {
     public class SceneChangeInfo
     {

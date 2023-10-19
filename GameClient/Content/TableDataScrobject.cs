@@ -1,4 +1,4 @@
-using Shared.Content;
+using Remouse.Shared.Content;
 
 namespace GameClient.Content
 {

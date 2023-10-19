@@ -2,16 +2,15 @@ using System;
 using System.Net;
 using GameClient.Transport;
 
-
 namespace GameClient
 {
     public abstract class ClientSocket
     {
-        protected IClientEventsHandler? _eventsHandler { private set; get; }
+        protected IClientEventsHandler? EventsHandler { private set; get; }
 
         public void SetListener(IClientEventsHandler eventsHandler)
         {
-            this._eventsHandler = eventsHandler;
+            EventsHandler = eventsHandler;
         }
         public abstract void Connect(IPEndPoint host);
         public abstract void Disconnect();

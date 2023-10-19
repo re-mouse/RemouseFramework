@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remouse.Shared.Infrastructure;
 
-namespace Shared.DIContainer
+namespace Remouse.Shared.DIContainer
 {
     public class Container : IDisposable
     {
@@ -20,7 +21,7 @@ namespace Shared.DIContainer
         
         private bool _isDisposed;
 
-        internal Container(List<BindToken> registerTokens, List<FactoryToken> factoryTokens)
+        internal Container(List<BindingMetadata> registerTokens, List<FactoryToken> factoryTokens)
         {
             Dictionary<Type, ObjectToken> createdTokens = new Dictionary<Type, ObjectToken>();
             
@@ -86,32 +87,35 @@ namespace Shared.DIContainer
             _isDisposed = true;
         }
         
-        public I Get<I>() where I : class
+        public T Get<T>() where T : class
         {
-            if (_isDisposed)
+            if (_isDisposed && Project.Build == BuildType.Debug)
                 throw new ObjectDisposedException("Container was disposed");
             
-            var objectToken = GetInterfaceObjectTokens<I>()?.FirstOrDefault();
+            var objectToken = GetInterfaceObjectTokens<T>()?.FirstOrDefault();
             
             if (objectToken != null)
             {
-                return (I)GetObject(objectToken);
+                return (T)GetObject(objectToken);
             }
+
+            if (Project.Build == BuildType.Debug)
+                throw new NullReferenceException($"Object {typeof(T)} not registered in container, but trying to get");
 
             return null;
         }
         
-        public void Get<I>(out I value) where I : class
+        public void Get<T>(out T value) where T : class
         {
-            value = Get<I>();
+            value = Get<T>();
         }
         
-        public void GetAll<I>(List<I> result) where I : class
+        public void GetAll<T>(List<T> result) where T : class
         {
             if (_isDisposed)
                 throw new ObjectDisposedException("Container was disposed");
             
-            var objectTokens = GetInterfaceObjectTokens<I>();
+            var objectTokens = GetInterfaceObjectTokens<T>();
 
             if (objectTokens == null)
                 return;
@@ -120,7 +124,7 @@ namespace Shared.DIContainer
             {
                 var @object = GetObject(objectToken);
                 
-                result.Add((I)@object);
+                result.Add((T)@object);
             }
         }
 
@@ -135,9 +139,9 @@ namespace Shared.DIContainer
             return objectToken.value;
         }
 
-        private HashSet<ObjectToken> GetInterfaceObjectTokens<I>()
+        private HashSet<ObjectToken> GetInterfaceObjectTokens<T>()
         {
-            Type requiredType = typeof(I);
+            Type requiredType = typeof(T);
 
             if (_objectTokensByInterface.ContainsKey(requiredType))
             {

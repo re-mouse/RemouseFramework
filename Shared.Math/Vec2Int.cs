@@ -1,16 +1,16 @@
 using System;
 using System.Runtime.CompilerServices;
-using Shared.Math;
+using Remouse.Shared.Math;
 
-namespace Shared.Utils
+namespace Remouse.Shared.Utils
 {
     /// <summary>
   ///   <para>Representation of 2D vectors and points using integers.</para>
   /// </summary>
   public struct Vec2Int : IEquatable<Vec2Int>
   {
-    private int m_X;
-    private int m_Y;
+    private int _x;
+    private int _y;
     private static readonly Vec2Int s_Zero = new Vec2Int(0, 0);
     private static readonly Vec2Int s_One = new Vec2Int(1, 1);
     private static readonly Vec2Int s_Up = new Vec2Int(0, 1);
@@ -23,8 +23,8 @@ namespace Shared.Utils
     /// </summary>
     public int x
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.m_X;
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] set => this.m_X = value;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _x;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _x = value;
     }
 
     /// <summary>
@@ -32,15 +32,15 @@ namespace Shared.Utils
     /// </summary>
     public int y
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.m_Y;
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] set => this.m_Y = value;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _y;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] set => _y = value;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vec2Int(int x, int y)
     {
-      this.m_X = x;
-      this.m_Y = y;
+      _x = x;
+      _y = y;
     }
 
     /// <summary>
@@ -51,8 +51,8 @@ namespace Shared.Utils
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Set(int x, int y)
     {
-      this.m_X = x;
-      this.m_Y = y;
+      _x = x;
+      _y = y;
     }
 
     public int this[int index]
@@ -62,11 +62,11 @@ namespace Shared.Utils
         switch (index)
         {
           case 0:
-            return this.x;
+            return x;
           case 1:
-            return this.y;
+            return y;
           default:
-            throw new IndexOutOfRangeException(string.Format("Invalid Vec2Int index addressed: {0}!", (object) index));
+            throw new IndexOutOfRangeException(string.Format("Invalid Vec2Int index addressed: {0}!", index));
         }
       }
       [MethodImpl(MethodImplOptions.AggressiveInlining)] set
@@ -74,13 +74,13 @@ namespace Shared.Utils
         switch (index)
         {
           case 0:
-            this.x = value;
+            x = value;
             break;
           case 1:
-            this.y = value;
+            y = value;
             break;
           default:
-            throw new IndexOutOfRangeException(string.Format("Invalid Vec2Int index addressed: {0}!", (object) index));
+            throw new IndexOutOfRangeException(string.Format("Invalid Vec2Int index addressed: {0}!", index));
         }
       }
     }
@@ -90,7 +90,7 @@ namespace Shared.Utils
     /// </summary>
     public float magnitude
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (float)System.Math.Sqrt((float) (this.x * this.x + this.y * this.y));
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (float)System.Math.Sqrt((float) (x * x + y * y));
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ namespace Shared.Utils
     /// </summary>
     public int sqrMagnitude
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.x * this.x + this.y * this.y;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => x * x + y * y;
     }
 
     /// <summary>
@@ -109,9 +109,9 @@ namespace Shared.Utils
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Distance(Vec2Int a, Vec2Int b)
     {
-      float num1 = (float) (a.x - b.x);
-      float num2 = (float) (a.y - b.y);
-      return (float) System.Math.Sqrt((double) num1 * (double) num1 + (double) num2 * (double) num2);
+      float num1 = a.x - b.x;
+      float num2 = a.y - b.y;
+      return (float) System.Math.Sqrt(num1 * (double) num1 + num2 * (double) num2);
     }
 
     /// <summary>
@@ -145,8 +145,8 @@ namespace Shared.Utils
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Scale(Vec2Int scale)
     {
-      this.x *= scale.x;
-      this.y *= scale.y;
+      x *= scale.x;
+      y *= scale.y;
     }
 
     /// <summary>
@@ -157,10 +157,10 @@ namespace Shared.Utils
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Clamp(Vec2Int min, Vec2Int max)
     {
-      this.x = System.Math.Max(min.x, this.x);
-      this.x = System.Math.Min(max.x, this.x);
-      this.y = System.Math.Max(min.y, this.y);
-      this.y = System.Math.Min(max.y, this.y);
+      x = System.Math.Max(min.x, x);
+      x = System.Math.Min(max.x, x);
+      y = System.Math.Max(min.y, y);
+      y = System.Math.Min(max.y, y);
     }
     
     /// <summary>
@@ -210,10 +210,10 @@ namespace Shared.Utils
     /// </summary>
     /// <param name="other"></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override bool Equals(object other) => other is Vec2Int other1 && this.Equals(other1);
+    public override bool Equals(object other) => other is Vec2Int other1 && Equals(other1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Equals(Vec2Int other) => this.x == other.x && this.y == other.y;
+    public bool Equals(Vec2Int other) => x == other.x && y == other.y;
 
     /// <summary>
     ///   <para>Gets the hash code for the Vec2Int.</para>
@@ -224,9 +224,9 @@ namespace Shared.Utils
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int GetHashCode()
     {
-      int num1 = this.x;
+      int num1 = x;
       int hashCode = num1.GetHashCode();
-      num1 = this.y;
+      num1 = y;
       int num2 = num1.GetHashCode() << 2;
       return hashCode ^ num2;
     }
@@ -236,7 +236,7 @@ namespace Shared.Utils
     /// </summary>
     public static Vec2Int zero
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Vec2Int.s_Zero;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_Zero;
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ namespace Shared.Utils
     /// </summary>
     public static Vec2Int one
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Vec2Int.s_One;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_One;
     }
 
     /// <summary>
@@ -252,7 +252,7 @@ namespace Shared.Utils
     /// </summary>
     public static Vec2Int up
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Vec2Int.s_Up;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_Up;
     }
 
     /// <summary>
@@ -260,7 +260,7 @@ namespace Shared.Utils
     /// </summary>
     public static Vec2Int down
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Vec2Int.s_Down;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_Down;
     }
 
     /// <summary>
@@ -268,7 +268,7 @@ namespace Shared.Utils
     /// </summary>
     public static Vec2Int left
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Vec2Int.s_Left;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_Left;
     }
 
     /// <summary>
@@ -276,7 +276,7 @@ namespace Shared.Utils
     /// </summary>
     public static Vec2Int right
     {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Vec2Int.s_Right;
+      [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_Right;
     }
   }
 }

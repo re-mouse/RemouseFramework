@@ -1,4 +1,4 @@
-namespace Shared.DIContainer
+namespace Remouse.Shared.DIContainer
 {
     public interface IFactory<T> where T : class
     {

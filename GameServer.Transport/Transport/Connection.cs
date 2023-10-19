@@ -1,15 +1,15 @@
 using System.Net;
-using Shared.Serialization;
+using Remouse.Shared.Serialization;
 
-namespace GameServer.ServerTransport
+namespace Remouse.GameServer.ServerTransport
 {
     internal abstract class Connection
     {
-        public IPEndPoint endPoint { get; }
+        public IPEndPoint EndPoint { get; }
 
         public Connection(IPEndPoint endPoint)
         {
-            this.endPoint = endPoint;
+            EndPoint = endPoint;
         }
         
         public abstract void Send(INetworkWriter data, DeliveryMethod deliveryMethod);
