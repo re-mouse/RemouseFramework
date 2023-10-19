@@ -1,8 +1,8 @@
-﻿using Remouse.Shared.Content;
+﻿using Remouse.Database;
 using Remouse.Shared.Core.ECS.Components;
 using Remouse.Shared.Core.ECS.Systems;
 using Remouse.Shared.Core.World;
-using Remouse.Shared.DIContainer;
+using Remouse.DIContainer;
 
 namespace Remouse.Shared.Core
 {
@@ -13,9 +13,9 @@ namespace Remouse.Shared.Core
 
         public void Construct(Container container)
         {
-            _database = container.Get<Database>();
+            _database = container.Resolve<Database>();
+            _worldBuilder = container.Resolve<IWorldBuilder>();
             
-            _worldBuilder = container.Get<IWorldBuilder>();
             RegisterTypesInBuilder();
         }
         

@@ -4,7 +4,7 @@ using Remouse.GameServer.ServerTransport;
 using Remouse.Shared.Core;
 using Remouse.Shared.Core.ECS.Utils;
 using Remouse.Shared.Core.Input;
-using Remouse.Shared.DIContainer;
+using Remouse.DIContainer;
 using Remouse.Shared.GameSimulation.Commands;
 using Remouse.Shared.Models;
 using Remouse.Shared.Models.Messages;
@@ -24,9 +24,9 @@ namespace Remouse.GameServer.Players
 
         public void Construct(Container container)
         {
-            container.Get(out _simulationHost);
-            container.Get(out _serverEvents);
-            container.Get(out _commandBuffer);
+            _simulationHost = container.Resolve<SimulationHost>();
+            _serverEvents = container.Resolve<IServerEvents>();
+            _commandBuffer = container.Resolve<WorldCommandBuffer>();
             
             _serverEvents.Connected += HandleConnected;
             _serverEvents.Disconnected += HandleDisconnected;

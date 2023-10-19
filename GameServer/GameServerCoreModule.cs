@@ -1,41 +1,30 @@
 using Remouse.GameServer.Players;
 using Remouse.GameServer.ServerShards;
-using Remouse.Shared.Content;
+using Remouse.Database;
 using Remouse.Shared.ContentTableTypes;
 using Remouse.Shared.Core;
-using Remouse.Shared.DIContainer;
+using Remouse.Shared.Core.World;
+using Remouse.DIContainer;
 
 namespace Remouse.GameServer
 {
-    public class GameServerCoreModule
+    public class GameServerCoreModule : Module
     {
-        public void InstallGameServer(ContainerBuilder containerBuilder)
+        public override void BindDependencies(TypeManager typeBinder)
         {
-            var databaseBuilder = new DatabaseBuilder();
-            databaseBuilder.BindSettings(new PlayerSettings() {playerEntityId = "Player"});
-            
-            containerBuilder.PackInstance(databaseBuilder.Build());
-            
-            containerBuilder.Pack<SimulationFactory>();
-            containerBuilder.Pack<SimulationHost>();
+            typeBinder.RegisterType<SimulationHost>().AsSelf();
 
-            containerBuilder.Pack<WorldCommandBuffer>();
+            typeBinder.RegisterType<WorldCommandBuffer>().AsSelf();
             
-            containerBuilder.Pack<PlayersSessionManager>().WithInterfaces();
-            containerBuilder.Pack<ServerGameLoop>().WithInterfaces();
+            typeBinder.RegisterType<PlayersSessionManager>().ImplementingInterfaces();
+            typeBinder.RegisterType<ServerGameLoop>().ImplementingInterfaces();
         }
-        
-        public InstallDatabaseFromJson(ContainerBuilder containerBuilder, string jsonPath)
-        {
-            containerBuilder.PackInstance(DatabaseSerializer.DeserializeDatabase(jsonPath));
-            
-            containerBuilder.Pack<SimulationFactory>();
-            containerBuilder.Pack<SimulationHost>();
 
-            containerBuilder.Pack<WorldCommandBuffer>();
-            
-            containerBuilder.Pack<PlayersSessionManager>().WithInterfaces();
-            containerBuilder.Pack<ServerGameLoop>().WithInterfaces();
+        public override void BindModuleDependencies(ModuleManager moduleBinder)
+        {
+            moduleBinder.RegisterModule<DatabaseModule>();
+            moduleBinder.RegisterModule<SimulationModule>();
+            moduleBinder.RegisterModule<WorldModule>();
         }
     }
 }

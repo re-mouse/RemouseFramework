@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Remouse.GameServer.Players;
 using Remouse.GameServer.ServerShards;
 using Remouse.Shared.Core;
-using Remouse.Shared.DIContainer;
+using Remouse.DIContainer;
 using Remouse.Shared.Models;
 using Remouse.Shared.Models.Messages;
 
@@ -18,10 +18,10 @@ namespace Remouse.GameServer
         
         public void Construct(Container container)
         {
-            container.Get(out _commandBuffer);
-            container.Get(out _simulationHost);
-            container.Get(out _playersProvider);
-            container.Get(out _simulationFactory);
+            _commandBuffer = container.Resolve<WorldCommandBuffer>();
+            _simulationHost = container.Resolve<SimulationHost>();
+            _playersProvider = container.Resolve<IPlayersProvider>();
+            _simulationFactory = container.Resolve<SimulationFactory>();
         }
 
         public async Task Initialize()

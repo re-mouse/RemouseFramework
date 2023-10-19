@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Remouse.GameServer.Authorization;
 using Remouse.GameServer.Players;
-using Remouse.Shared.DIContainer;
+using Remouse.DIContainer;
 using Remouse.Shared.Models;
 using Remouse.Shared.Models.Messages;
 using Remouse.Shared.Serialization;
@@ -26,10 +26,10 @@ namespace Remouse.GameServer.ServerTransport
 
         public void Construct(Container mediator)
         {
-            _server = mediator.Get<IServerSocket>();
-            _authorizer = mediator.Get<IAuthorizer>();
-            _playersConnectionHandler = mediator.Get<IPlayersConnectionHandler>();
-            _playersDataHandler = mediator.Get<IPlayersDataHandler>();
+            _server = mediator.Resolve<IServerSocket>();
+            _authorizer = mediator.Resolve<IAuthorizer>();
+            _playersConnectionHandler = mediator.Resolve<IPlayersConnectionHandler>();
+            _playersDataHandler = mediator.Resolve<IPlayersDataHandler>();
             
             _server.SetHandler(this);
         }

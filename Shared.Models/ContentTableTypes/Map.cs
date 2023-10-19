@@ -1,4 +1,4 @@
-using Remouse.Shared.Content;
+using Remouse.Database;
 using Remouse.Shared.Math;
 
 namespace Remouse.Shared.ContentTableTypes

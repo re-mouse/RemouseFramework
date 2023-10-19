@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using Remouse.Shared.Content;
+using Remouse.Database;
 using System;
 
-namespace Remouse.Shared.Content.Tests
+namespace Remouse.Database.Tests
 {
     public class TableTests
     {

@@ -1,5 +1,5 @@
 using System;
-using Remouse.Shared.Content;
+using Remouse.Database;
 
 namespace Remouse.Shared.ContentTableTypes
 {

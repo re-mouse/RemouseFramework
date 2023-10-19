@@ -4,7 +4,7 @@ using Remouse.Shared.Serialization;
 
 namespace Remouse.Shared.Core.Input
 {
-    public abstract class PlayerInputMessage : NetworkMessage
+    public abstract partial class PlayerInputMessage : NetworkMessage
     {
         public long simulationTick;
         

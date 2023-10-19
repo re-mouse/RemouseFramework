@@ -1,4 +1,6 @@
-﻿using Remouse.GameServer;
+﻿#if !UNITY_5_3_OR_NEWER
+
+using Remouse.GameServer;
 using Remouse.Shared.Infrastructure;
 using Remouse.Shared.Utils.Log;
 
@@ -25,3 +27,5 @@ while (true)
 {
     bootstrap.Update();
 }
+
+#endif

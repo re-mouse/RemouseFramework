@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Remouse.GameServer.ServerShards;
 using Remouse.Shared.Core;
-using Remouse.Shared.DIContainer;
+using Remouse.DIContainer;
 using Remouse.Shared.Utils.Buffer;
 using Remouse.Shared.Utils.Log;
 
@@ -22,7 +22,7 @@ namespace Remouse.GameServer
 
         private void Construct(Container container)
         {
-            container.Get(out _simulationHost);
+            _simulationHost = container.Resolve<SimulationHost>();
             
             _currentBufferTick = _simulationHost.Simulation.CurrentTick;
         }

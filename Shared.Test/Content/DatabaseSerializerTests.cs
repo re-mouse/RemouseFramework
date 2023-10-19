@@ -1,8 +1,10 @@
+using NUnit.Framework;
 using NUnit.Framework.Internal;
 
-namespace Remouse.Shared.Content.Test;
+namespace Remouse.Database.Test
+{
 
-public class DatabaseSerializerTests
+    public class DatabaseSerializerTests
     {
         [Test]
         public void SerializeDeserialize_EmptyDatabase_ReturnsEquivalentDatabase()
@@ -26,7 +28,7 @@ public class DatabaseSerializerTests
 
             string serializedDb = DatabaseSerializer.SerializeDatabase(originalDb);
             TestContext.WriteLine($"Serialized Database: {serializedDb}"); // Logging the serialized JSON
-            
+
             Database deserializedDb = DatabaseSerializer.DeserializeDatabase(serializedDb);
 
             Assert.IsNotNull(deserializedDb);
@@ -44,7 +46,7 @@ public class DatabaseSerializerTests
 
             string serializedDb = DatabaseSerializer.SerializeDatabase(originalDb);
             TestContext.WriteLine($"Serialized Database: {serializedDb}"); // Logging the serialized JSON
-            
+
             Database deserializedDb = DatabaseSerializer.DeserializeDatabase(serializedDb);
 
             Assert.IsNotNull(deserializedDb);
@@ -80,3 +82,4 @@ public class DatabaseSerializerTests
             public string Name { get; set; }
         }
     }
+}

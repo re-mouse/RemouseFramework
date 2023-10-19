@@ -5,7 +5,7 @@ using Remouse.GameServer.ServerShards;
 using Remouse.GameServer.ServerTransport;
 using Remouse.Shared.Core;
 using Remouse.Shared.Core.World;
-using Remouse.Shared.DIContainer;
+using Remouse.DIContainer;
 using Remouse.Shared.Utils.Log;
 
 namespace Remouse.GameServer
@@ -40,16 +40,12 @@ namespace Remouse.GameServer
         public void Start()
         {
             var containerBuilder = new ContainerBuilder();
-            
-            containerBuilder.InstallGameServer();
-            containerBuilder.InstallServerTransport();
-            containerBuilder.InstallWorld();
-            containerBuilder.InstallDatabaseFromJson(_config.databaseJsonPath);
+            containerBuilder.AddModule<GameServerCoreModule>();
 
             _container = containerBuilder.Build();
 
-            _server = _container.Get<IServer>();
-            _gameLoop = _container.Get<ServerGameLoop>();
+            _server = _container.Resolve<IServer>();
+            _gameLoop = _container.Resolve<ServerGameLoop>();
 
             LoadSimulation();
             
@@ -60,9 +56,9 @@ namespace Remouse.GameServer
 
         private void LoadSimulation()
         {
-            var simulation = _container.Get<SimulationFactory>().CreateGameSimulation();
+            var simulation = _container.Resolve<SimulationFactory>().CreateGameSimulation();
             
-            _container.Get<SimulationHost>().SetGameSimulation(simulation);
+            _container.Resolve<SimulationHost>().SetGameSimulation(simulation);
         }
 
         public void Update()
