@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Shared.Content\Shared.Content.csproj" />
       <ProjectReference Include="..\Shared.Core.World\Shared.Core.World.csproj" />
       <ProjectReference Include="..\Shared.Serialization\Shared.Serialization.csproj" />
     </ItemGroup>
