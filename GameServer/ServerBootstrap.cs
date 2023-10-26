@@ -1,12 +1,9 @@
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Remouse.GameServer.ServerShards;
 using Remouse.GameServer.ServerTransport;
 using Remouse.Core;
-using Remouse.Core.World;
 using Remouse.DIContainer;
-using Remouse.Shared.Utils.Log;
 
 namespace Remouse.GameServer
 {
@@ -56,7 +53,7 @@ namespace Remouse.GameServer
 
         private void LoadSimulation()
         {
-            var simulation = _container.Resolve<SimulationFactory>().CreateGameSimulation();
+            var simulation = _container.Resolve<SimulationFactory>().CreateGameSimulation(_config.mapId);
             
             _container.Resolve<SimulationHost>().SetGameSimulation(simulation);
         }

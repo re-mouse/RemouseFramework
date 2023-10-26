@@ -1,5 +1,3 @@
-using Remouse.Shared.EcsLib.LeoEcsLite;
-
 namespace Remouse.Core.World
 {
     public interface IWorldBuilder

@@ -6,8 +6,8 @@ namespace Remouse.DatabaseLib
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.RegisterType<DatabaseHost>().AsSelf();
-            typeBinder.RegisterType<DatabaseBuilder>().WithTransientLifetime();
+            typeBinder.AddSingleton<DatabaseHost>();
+            typeBinder.AddTransient<DatabaseBuilder>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

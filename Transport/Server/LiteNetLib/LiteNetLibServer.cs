@@ -7,10 +7,10 @@ namespace Remouse.Transport.Implementations
 {
     public class LiteNetLibServer : IServerSocket
     {
-        private NetManager _netManager;
+        private readonly NetManager _netManager;
+        private readonly Dictionary<NetPeer, Connection> _connections = new Dictionary<NetPeer, Connection>();
+        private int _maxConnections;
 
-        private Dictionary<NetPeer, Connection> _connections = new Dictionary<NetPeer, Connection>();
-        
         public event Action<ConnectionRequest> GotConnectionRequest;
         public event Action<Connection> Connected;
         public event Action<Connection> Disconnected;
@@ -34,6 +34,7 @@ namespace Remouse.Transport.Implementations
         void IServerSocket.Start(ushort port, int maxConnections)
         {
             _netManager.Start(port);
+            _maxConnections = maxConnections;
         }
 
         void IServerSocket.Stop()
@@ -57,6 +58,12 @@ namespace Remouse.Transport.Implementations
 
         private void HandleConnectionRequest(LiteNetLib.ConnectionRequest request)
         {
+            if (_connections.Count >= _maxConnections)
+            {
+                request.Reject();
+                return;
+            }
+            
             GotConnectionRequest?.Invoke(new LiteNetLibConnectionRequest(request, this));
         }
         

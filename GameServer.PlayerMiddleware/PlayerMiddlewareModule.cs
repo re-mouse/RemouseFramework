@@ -9,11 +9,11 @@ namespace Remouse.GameServer.ServerTransport
     {
         public override void BindDependencies(TypeManager typeBinder) 
         { 
-            typeBinder.RegisterType<PlayerMiddleware>().ImplementingInterfaces();
-            typeBinder.RegisterType<PlayerEventsBus>().ImplementingInterfaces();
+            typeBinder.AddSingleton<PlayerMiddleware>().ImplementingInterfaces();
+            typeBinder.AddSingleton<PlayerEventsBus>().ImplementingInterfaces();
             
             //containerBuilder.Bind<IAuthorizer>().As<JWTAuthorizer>();
-            typeBinder.RegisterType<IAuthorizer>().As<DebugAuthorizer>(); 
+            typeBinder.AddSingleton<IAuthorizer, DebugAuthorizer>(); 
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

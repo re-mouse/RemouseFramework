@@ -4,5 +4,6 @@ namespace Remouse.Infrastructure
     {
         public BuildType buildType;
         public Platform platform;
+        public IResources folderResourcesProvider;
     }
 }

@@ -3,7 +3,7 @@ using Remouse.Serialization;
 
 namespace Remouse.Models
 {
-    public struct AuthorizationRequest : INetworkSerializable
+    public struct AuthenticationCredentials : INetworkSerializable
     {
         public byte[] authData;
         public Method method;

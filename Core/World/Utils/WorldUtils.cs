@@ -1,4 +1,4 @@
-using Remouse.Core.ECS.Components;
+using Remouse.Core.Components;
 using Remouse.Core.World;
 
 namespace Remouse.Core.ECS.Utils
@@ -7,12 +7,12 @@ namespace Remouse.Core.ECS.Utils
     {
         public static int? GetPlayerEntity(this IReadOnlyWorld world, long playerId)
         {
-            var filter = world.Query().Inc<PlayerTag>().Inc<Transform>().Exc<MovementDirection>().End();
+            var filter = world.Query().Inc<PlayerTag>().Inc<Transform>().Exc<MoveInDirection>().End();
 
             foreach (var playerEntityId in filter)
             {
                 var playerTag = world.GetComponent<PlayerTag>(playerEntityId);
-                if (playerTag.playerId == playerId)
+                if (playerTag.Value.playerId == playerId)
                 {
                     return playerEntityId;
                 }

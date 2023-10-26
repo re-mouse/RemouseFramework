@@ -2,7 +2,8 @@
     "name": "DatabaseLib",
     "rootNamespace": "",
     "references": [
-        "GUID:095bfa3ea9f844d9995536a7db66046d"
+        "GUID:095bfa3ea9f844d9995536a7db66046d",
+        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,4 +1,4 @@
-using Remouse.Core.ECS.Components;
+using Remouse.Core.Components;
 using Remouse.Core.World;
 using Remouse.MathLib;
 
@@ -16,7 +16,7 @@ namespace Remouse.Core.Factories
             ref var moveSpeed = ref world.AddComponent<MovementSpeed>(entity);
             moveSpeed.speed = 5f;
             
-            ref var moveDirection = ref world.AddComponent<MovementDirection>(entity);
+            ref var moveDirection = ref world.AddComponent<MoveInDirection>(entity);
             moveDirection.movementDirection = Vec2.one;
 
             ref var networkIdentity = ref world.AddComponent<NetworkIdentity>(entity);

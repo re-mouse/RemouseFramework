@@ -4,7 +4,7 @@ namespace Remouse.GameServer.Authorization
 {
     public interface IAuthorizer
     {
-        public AuthorizeCredentials Authorize(AuthorizationRequest request, out AuthorizeResult result);
+        public AuthorizeCredentials Authorize(AuthenticationCredentials credentials, out AuthorizeResult result);
     }
 
     public enum AuthorizeResult

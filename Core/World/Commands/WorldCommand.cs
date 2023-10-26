@@ -1,5 +1,4 @@
 using Remouse.Core.World;
-using Remouse.Models;
 using Remouse.Serialization;
 
 namespace Remouse.Core

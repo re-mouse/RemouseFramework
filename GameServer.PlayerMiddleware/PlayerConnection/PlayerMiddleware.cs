@@ -60,7 +60,7 @@ namespace Remouse.GameServer.ServerTransport
         {
             Logger.Current.LogInfo(this, $"Received connection request from {request.EndPoint}");
 
-            var authRequest = new AuthorizationRequest();
+            var authRequest = new AuthenticationCredentials();
             var reader = new NetworkBytesReader(request.Data);
             
             try

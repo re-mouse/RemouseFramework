@@ -6,7 +6,7 @@ namespace Remouse.Core.World
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.RegisterType<IWorldBuilder>().As<LeoEcsWorldBuilder>().WithTransientLifetime();
+            typeBinder.AddTransient<IWorldBuilder, LeoEcsWorldBuilder>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder) { }

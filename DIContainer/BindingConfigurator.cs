@@ -5,10 +5,12 @@ namespace Remouse.DIContainer
 {
     internal class BindingInfo
     {
-        public bool AlwaysNewInstance { get; set; }
-        public HashSet<Type> AssociatedInterfaces { get; } = new HashSet<Type>();
-        public Type BoundType { get; set; }
-        public object Instance { get; set; }
+        public bool alwaysNewInstance;
+        public readonly HashSet<Type> associatedInterfaces = new HashSet<Type>();
+        public Type boundType;
+        public object instance;
+        public bool constructOnBuild;
+        public bool isDisposable;
     }
     
     public class BindingConfigurator<T>
@@ -20,39 +22,28 @@ namespace Remouse.DIContainer
             _binding = binding;
         }
 
-        public BindingConfigurator<T> AsType<TImplementation>() where TImplementation : T
-        {
-            _binding.BoundType = typeof(TImplementation);
-            return this;
-        }
-
-        public BindingConfigurator<T> WithSingletonLifetime()
-        {
-            _binding.AlwaysNewInstance = false;
-            return this;
-        }
-
-        public BindingConfigurator<T> WithTransientLifetime()
-        {
-            _binding.AlwaysNewInstance = true;
-            return this;
-        }
-
         public BindingConfigurator<T> ImplementingInterfaces()
         {
-            _binding.AssociatedInterfaces.UnionWith(_binding.BoundType.GetInterfaces());
+            _binding.associatedInterfaces.UnionWith(_binding.boundType.GetInterfaces());
+            return this;
+        }
+        
+        public BindingConfigurator<T> AsDisposable()
+        {
+            
+            _binding.isDisposable = true;
             return this;
         }
 
-        public BindingConfigurator<T> AsSelf()
+        public BindingConfigurator<T> As<TInterface>()
         {
-            _binding.AssociatedInterfaces.Add(_binding.BoundType);
+            _binding.associatedInterfaces.Add(typeof(TInterface));
             return this;
         }
 
-        public BindingConfigurator<T> As<TInterface>() where TInterface : class
+        public BindingConfigurator<T> ConstructOnContainerBuild()
         {
-            _binding.AssociatedInterfaces.Add(typeof(TInterface));
+            _binding.constructOnBuild = true;
             return this;
         }
     }

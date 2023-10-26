@@ -12,9 +12,20 @@ namespace Remouse.Serialization
         private int _max2BytesPosition = MaxBufferSize - 2;
         private int _max1BytesPosition = MaxBufferSize - 1;
         
-        private byte[] _buffer = new byte[MaxBufferSize];
+        private byte[] _buffer;
 
         private int _currentPosition;
+
+        public NetworkBytesWriter()
+        {
+            _buffer = new byte[MaxBufferSize];
+        }
+        
+        public NetworkBytesWriter(byte[] data)
+        {
+            _buffer = data;
+            _currentPosition = data.Length;
+        }
 
         public ReadOnlySpan<byte> GetBytes()
         {

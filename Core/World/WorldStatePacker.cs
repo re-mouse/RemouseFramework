@@ -1,6 +1,4 @@
-using System;
 using Remouse.Core.World;
-using Remouse.Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Models
 {

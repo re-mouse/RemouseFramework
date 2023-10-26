@@ -1,6 +1,4 @@
-using Remouse.DatabaseLib;
-
-namespace Remouse.Models.ContentTableTypes
+namespace Remouse.DatabaseLib.Tables
 {
     public class GameSimulationSettings : Settings
     {

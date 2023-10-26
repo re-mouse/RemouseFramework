@@ -21,23 +21,28 @@ namespace Remouse.Models
     public struct EntityInfo : INetworkSerializable
     {
         public int entityId;
+        public string entityTypeId;
         public List<SerializableComponentContainer> componentsContainers;
 
-        public EntityInfo(int entityId, string entityName)
+        public EntityInfo(int entityId, string entityTypeId)
         {
             this.entityId = entityId;
+            this.entityTypeId = entityTypeId;
             componentsContainers = new List<SerializableComponentContainer>();
         }
 
         public void Serialize(INetworkWriter writer)
         {
             writer.WriteInt(entityId);
+            writer.WriteString(entityTypeId);
+            
             writer.WriteList(componentsContainers);
         }
 
         public void Deserialize(INetworkReader reader)
         {
             entityId = reader.ReadInt();
+            entityTypeId = reader.ReadString();
             
             reader.ReadList(ref componentsContainers);
         }

@@ -4,7 +4,6 @@ using Remouse.GameServer.Players;
 using Remouse.GameServer.ServerShards;
 using Remouse.Core;
 using Remouse.DIContainer;
-using Remouse.GameServer.ServerTransport;
 using Remouse.Models;
 using Remouse.Models.Messages;
 
@@ -23,13 +22,6 @@ namespace Remouse.GameServer
             _simulationHost = container.Resolve<SimulationHost>();
             _connectedPlayers = container.Resolve<IConnectedPlayers>();
             _simulationFactory = container.Resolve<SimulationFactory>();
-        }
-
-        public async Task Initialize()
-        {
-            var simulation = _simulationFactory.CreateGameSimulation();
-            
-            _simulationHost.SetGameSimulation(simulation);
         }
 
         public void Update()

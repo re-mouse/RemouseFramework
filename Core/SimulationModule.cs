@@ -8,7 +8,7 @@ namespace Remouse.Core
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.RegisterType<SimulationFactory>();
+            typeBinder.AddSingleton<SimulationFactory>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

@@ -8,6 +8,11 @@ namespace Remouse.DIContainer
         {
             _moduleManager.RegisterModule<TModule>();
         }
+        
+        public void AddModule<TModule>(TModule module) where TModule : Module, new()
+        {
+            _moduleManager.RegisterModule<TModule>(module);
+        }
 
         public Container Build()
         {

@@ -8,10 +8,10 @@ namespace Remouse.DIContainer
     {
         private class ServiceRegistration
         {
-            public bool AlwaysNewInstance;
-            public object Instance;
-            public Type ServiceType;
-            public bool IsDisposable;
+            public bool alwaysNewInstance;
+            public object instance;
+            public Type serviceType;
+            public bool isDisposable;
         }
 
         private readonly List<ServiceRegistration> _registrations = new List<ServiceRegistration>();
@@ -21,16 +21,19 @@ namespace Remouse.DIContainer
 
         internal Container(IEnumerable<BindingInfo> bindings)
         {
+            var toConstruct = new HashSet<Type>();
+            
             foreach (var binding in bindings)
             {
                 var registration = new ServiceRegistration
                 {
-                    ServiceType = binding.BoundType,
-                    AlwaysNewInstance = binding.AlwaysNewInstance,
-                    Instance = binding.Instance
+                    serviceType = binding.boundType,
+                    alwaysNewInstance = binding.alwaysNewInstance,
+                    instance = binding.instance,
+                    isDisposable = binding.isDisposable
                 };
                 
-                foreach (var interfaceType in binding.AssociatedInterfaces)
+                foreach (var interfaceType in binding.associatedInterfaces)
                 {
                     if (!_registrationsByInterface.TryGetValue(interfaceType, out var existingRegistrations))
                     {
@@ -41,7 +44,15 @@ namespace Remouse.DIContainer
                     existingRegistrations.Add(registration);
                 }
 
+                if (binding.constructOnBuild)
+                    toConstruct.Add(binding.boundType);
+                
                 _registrations.Add(registration);
+            }
+
+            foreach (var constructType in toConstruct)
+            {
+                CreateInstance(constructType);
             }
         }
 
@@ -54,7 +65,7 @@ namespace Remouse.DIContainer
 
             foreach (var registration in _registrations)
             {
-                if (registration.IsDisposable && registration.Instance is IDisposable disposable)
+                if (registration.isDisposable && registration.instance is IDisposable disposable)
                 {
                     disposable.Dispose();
                 }
@@ -83,12 +94,12 @@ namespace Remouse.DIContainer
         {
             if (registration == null) return null;
 
-            if (registration.AlwaysNewInstance || registration.Instance == null)
+            if (registration.alwaysNewInstance || registration.instance == null)
             {
-                registration.Instance = CreateInstance(registration.ServiceType);
+                registration.instance = CreateInstance(registration.serviceType);
             }
 
-            return registration.Instance;
+            return registration.instance;
         }
 
         private object CreateInstance(Type type)

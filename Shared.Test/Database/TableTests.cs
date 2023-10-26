@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Remouse.DatabaseLib;
 using System;
 
 namespace Remouse.DatabaseLib.Tests

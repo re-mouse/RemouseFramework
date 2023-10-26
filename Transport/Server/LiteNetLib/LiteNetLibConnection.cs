@@ -12,9 +12,9 @@ namespace Remouse.Transport.Implementations
             _peer = peer;
         }
         
-        public override void Send(byte[] data, DeliveryMethod deliveryMethod)
+        public override void Send(INetworkWriter data, DeliveryMethod deliveryMethod)
         {
-            _peer.Send(data, (LiteNetLib.DeliveryMethod)deliveryMethod);
+            _peer.Send(data.GetBytes().ToArray(), (LiteNetLib.DeliveryMethod)deliveryMethod);
         }
 
         public override void Disconnect()

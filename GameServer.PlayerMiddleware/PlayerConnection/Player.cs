@@ -28,7 +28,7 @@ namespace Remouse.GameServer.ServerTransport
             
             Logger.Current.LogInfo(this, $"Sending message to playerId {Data?.cloudData?.id}, message = {message}, deliveryMethod = {deliveryMethod}");
             
-            _connection.Send(_writer.GetBytes().ToArray(), deliveryMethod);
+            _connection.Send(_writer, deliveryMethod);
         }
     }
 }

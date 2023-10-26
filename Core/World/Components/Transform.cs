@@ -2,12 +2,12 @@
 using Remouse.Models;
 using Remouse.Serialization;
 
-namespace Remouse.Core.ECS.Components
+namespace Remouse.Core.Components
 {
     public struct Transform : INetworkComponent
     {
         public Vec2 position;
-        public float angle;
+        public float rotationAngle;
         public void Serialize(INetworkWriter writer)
         {
             position.Serialize(writer);

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Remouse.Serialization;
+﻿using Remouse.Serialization;
 
 namespace Remouse.Models.Messages
 {

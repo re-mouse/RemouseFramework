@@ -1,6 +1,5 @@
 ﻿using Remouse.Core.World;
 using Remouse.Shared.Utils.Log;
-using Remouse.Models;
 
 namespace Remouse.Core
 {

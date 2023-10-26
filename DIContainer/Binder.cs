@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Remouse.DIContainer
 {
@@ -13,7 +12,19 @@ namespace Remouse.DIContainer
             var moduleType = typeof(TModule);
             if (!_modules.ContainsKey(moduleType))
             {
-                _modules[moduleType] = new TModule();
+                var module = new TModule();
+                module.BindModuleDependencies(this);
+                _modules[moduleType] = module;
+            }
+        }
+        
+        public void RegisterModule<TModule>(TModule module) where TModule : Module, new()
+        {
+            var moduleType = typeof(TModule);
+            if (!_modules.ContainsKey(moduleType))
+            {
+                module.BindModuleDependencies(this);
+                _modules[moduleType] = module;
             }
         }
 
@@ -24,11 +35,55 @@ namespace Remouse.DIContainer
     {
         private readonly List<BindingInfo> _bindings = new List<BindingInfo>();
         
-        public BindingConfigurator<T> RegisterType<T>() where T : class
+        public BindingConfigurator<I> AddSingleton<I, T>() where T : class, I
         {
             var binding = new BindingInfo
             {
-                BoundType = typeof(T)
+                boundType = typeof(T),
+                associatedInterfaces = { typeof(I) },
+                alwaysNewInstance = false
+            };
+            
+            _bindings.Add(binding);
+            
+            return new BindingConfigurator<I>(binding);
+        }
+        
+        public BindingConfigurator<I> AddTransient<I, T>() where T : class, I
+        {
+            var binding = new BindingInfo
+            {
+                boundType = typeof(T),
+                associatedInterfaces = { typeof(I) },
+                alwaysNewInstance = true
+            };
+            
+            _bindings.Add(binding);
+            
+            return new BindingConfigurator<I>(binding);
+        }
+        
+        public BindingConfigurator<T> AddSingleton<T>() where T : class
+        {
+            var binding = new BindingInfo
+            {
+                boundType = typeof(T),
+                associatedInterfaces = { typeof(T) },
+                alwaysNewInstance = false
+            };
+            
+            _bindings.Add(binding);
+            
+            return new BindingConfigurator<T>(binding);
+        }
+        
+        public BindingConfigurator<T> AddTransient<T>() where T : class
+        {
+            var binding = new BindingInfo
+            {
+                boundType = typeof(T),
+                associatedInterfaces = { typeof(T) },
+                alwaysNewInstance = true
             };
             
             _bindings.Add(binding);

@@ -12,7 +12,7 @@ namespace Remouse.Transport
             EndPoint = endPoint;
         }
         
-        public abstract void Send(byte[] data, DeliveryMethod deliveryMethod);
+        public abstract void Send(INetworkWriter writer, DeliveryMethod deliveryMethod);
         public abstract void Disconnect();
     }
 }

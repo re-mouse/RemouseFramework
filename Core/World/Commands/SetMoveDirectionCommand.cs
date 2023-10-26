@@ -1,4 +1,4 @@
-using Remouse.Core.ECS.Components;
+using Remouse.Core.Components;
 using Remouse.Core.World;
 using Remouse.MathLib;
 using Remouse.Serialization;
@@ -12,7 +12,7 @@ namespace Remouse.Core.Input
         
         public override void Apply(IWorld ecsWorld)
         {
-            ref var directionComponent = ref ecsWorld.GetComponentRef<MovementDirection>(entityId);
+            ref var directionComponent = ref ecsWorld.GetComponentRef<MoveInDirection>(entityId);
             directionComponent.movementDirection = movementDirection;
         }
 

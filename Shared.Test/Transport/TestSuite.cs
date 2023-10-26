@@ -1,13 +1,13 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using Remouse.DIContainer;
-using Remouse.GameClient.Transport;
+using Remouse.Serialization;
 
 namespace Remouse.Transport.Tests
 {
@@ -36,7 +36,7 @@ namespace Remouse.Transport.Tests
             localServerSocket.GotConnectionRequest += request => request.Accept();
 
             localServerSocket.Start((ushort)Interlocked.Increment(ref currentPort), 5);
-            localClientSocket.Connect(new IPEndPoint(IPAddress.Loopback, currentPort));
+            localClientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -65,17 +65,17 @@ namespace Remouse.Transport.Tests
             serverSocket.Start(port, maxConnections);
             serverSocket.GotConnectionRequest += request => request.Accept();
             
-            var clients = new List<IClientSocket>();
+            var clients = new List<IClientToServerSocket>();
             int successfulConnections = 0;
 
             for (int i = 0; i < maxConnections + 10; i++) // Trying to connect more than the max limit
             {
-                var clientSocket = container.Resolve<IClientSocket>();
+                var clientSocket = container.Resolve<IClientToServerSocket>();
                 clientSocket.Connected += () =>
                 {
                     successfulConnections++;
                 };
-                clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, port));
+                clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, port));
                 clients.Add(clientSocket);
             }
 
@@ -91,7 +91,7 @@ namespace Remouse.Transport.Tests
             }
             stopwatch.Stop();
 
-            Assert.AreEqual(maxConnections, successfulConnections, "More connections than expected were successfully made.");
+            Assert.AreEqual(maxConnections, successfulConnections, "Invalid connections than expected were successfully made.");
 
             foreach (var client in clients)
                 client.Dispose();
@@ -104,7 +104,7 @@ namespace Remouse.Transport.Tests
         {
             var clientCount = 500; // Большое количество клиентов для "флуда"
             var serverSocket = container.Resolve<IServerSocket>();
-            var clients = new List<IClientSocket>();
+            var clients = new List<IClientToServerSocket>();
             byte[] testData = new byte[1024 * 10]; // 10 MB
             new Random().NextBytes(testData);
 
@@ -124,13 +124,13 @@ namespace Remouse.Transport.Tests
 
             for (int i = 0; i < clientCount; i++)
             {
-                var clientSocket = container.Resolve<IClientSocket>();
+                var clientSocket = container.Resolve<IClientToServerSocket>();
                 clientSocket.Connected += () => 
                 {
                     Interlocked.Increment(ref successfulConnections);
-                    clientSocket.Send(testData, DeliveryMethod.ReliableOrdered);
+                    clientSocket.Send(new NetworkBytesWriter(testData), DeliveryMethod.ReliableOrdered);
                 };
-                clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, currentPort));
+                clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
                 clients.Add(clientSocket);
             }
 
@@ -162,9 +162,10 @@ namespace Remouse.Transport.Tests
             int nonExistentPort = 12345;
             bool connectionAttempted = false;
 
-            var clientSocket = container.Resolve<IClientSocket>();
-            clientSocket.ConnectionFailed += () => connectionAttempted = true;
-            clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, nonExistentPort));
+            var clientSocket = container.Resolve<IClientToServerSocket>();
+            clientSocket.Disconnected += () => connectionAttempted = true;
+            
+            clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, nonExistentPort));
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -206,12 +207,12 @@ namespace Remouse.Transport.Tests
                 connections.Remove(con);
                 disconnectCount++;
             };
-            var clients = new List<IClientSocket>();
+            var clients = new List<IClientToServerSocket>();
 
             for (int i = 0; i < clientCount; i++)
             {
-                var clientSocket = container.Resolve<IClientSocket>();
-                clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, currentPort));
+                var clientSocket = container.Resolve<IClientToServerSocket>();
+                clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
                 clients.Add(clientSocket);
                 if (i % 10 == 0) // Randomly disconnect some clients
                 {
@@ -255,6 +256,50 @@ namespace Remouse.Transport.Tests
             Assert.AreEqual(clientCount, disconnectCount);
         }
 
+        [Test]
+        public async void Client_ShouldConnectAsync()
+        {
+            var (clientSocket, serverSocket) = GetClientServerSockets();
+
+            serverSocket.GotConnectionRequest += request =>
+            {
+                request.Accept();
+            };
+
+            serverSocket.Start((ushort)Interlocked.Increment(ref currentPort), 5);
+            
+            var resultTask = clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
+
+            while (!resultTask.IsCompleted)
+            {
+                clientSocket.Update();
+                serverSocket.Update();
+                Thread.Sleep(15);
+            }
+            
+            var result = resultTask.Result;
+            
+            Assert.AreEqual(true, clientSocket.IsConnected);
+            Assert.AreEqual(SocketConnectResult.Successful, result);
+
+            clientSocket.Dispose();
+            serverSocket.Dispose();
+        }
+        
+        [Test]
+        public async void Client_CorrectStatusCodeOnInvalidIPAsync()
+        {
+            var (clientSocket, serverSocket) = GetClientServerSockets();
+
+            IPAddress invalidAddress = IPAddress.Parse("127.0.0.3");
+            var result = await clientSocket.ConnectAsync(new IPEndPoint(invalidAddress, currentPort));
+            
+            Assert.AreEqual(false, clientSocket.IsConnected);
+            Assert.AreEqual(SocketConnectResult.Timeout, result);
+            
+            clientSocket.Dispose();
+            serverSocket.Dispose();
+        }
 
         [Test]
         public void Client_ShouldHandleDataFlood()
@@ -280,11 +325,11 @@ namespace Remouse.Transport.Tests
             serverSocket.GotConnectionRequest += request =>
             {
                 TestContext.Out.WriteLine($"Server send data. Size - {testData.Length}");
-                request.Accept().Send(testData, DeliveryMethod.ReliableOrdered);
+                request.Accept().Send(new NetworkBytesWriter(testData), DeliveryMethod.ReliableOrdered);
             };
 
             serverSocket.Start((ushort)Interlocked.Increment(ref currentPort), 5);
-            clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, currentPort));
+            clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -317,11 +362,11 @@ namespace Remouse.Transport.Tests
             {
                 bool isConnected = false;
                 bool isDisconnected = false;
-                var clientSocket = container.Resolve<IClientSocket>();
+                var clientSocket = container.Resolve<IClientToServerSocket>();
                 clientSocket.Connected += () => { isConnected = true; };
                 clientSocket.Disconnected += () => { isDisconnected = true; };
 
-                clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, currentPort));
+                clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -359,7 +404,7 @@ namespace Remouse.Transport.Tests
         public void Server_ShouldHandle100SimultaneousConnections()
         {
             var serverSocket = container.Resolve<IServerSocket>();
-            var clients = new List<IClientSocket>();
+            var clients = new List<IClientToServerSocket>();
             int connectedClientsCount = 0;
 
             serverSocket.GotConnectionRequest += request =>
@@ -372,8 +417,8 @@ namespace Remouse.Transport.Tests
 
             for (int i = 0; i < 100; i++)
             {
-                var clientSocket = container.Resolve<IClientSocket>();
-                clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, currentPort));
+                var clientSocket = container.Resolve<IClientToServerSocket>();
+                clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
                 clients.Add(clientSocket);
             }
 
@@ -405,7 +450,7 @@ namespace Remouse.Transport.Tests
             var messageBaseSize = 10;
 
             var serverSocket = container.Resolve<IServerSocket>();
-            var clients = new List<IClientSocket>();
+            var clients = new List<IClientToServerSocket>();
 
             Dictionary<Connection, byte[]> connectionToData = new Dictionary<Connection, byte[]>();
             Dictionary<Connection, int> connectionToCycle = new Dictionary<Connection, int>();
@@ -417,7 +462,7 @@ namespace Remouse.Transport.Tests
                 new Random().NextBytes(initialMessage);
                 connectionToData[connection] = initialMessage;
                 connectionToCycle[connection] = 1; // Initialize the cycle count for this connection
-                connection.Send(initialMessage, DeliveryMethod.ReliableOrdered);
+                connection.Send(new NetworkBytesWriter(initialMessage), DeliveryMethod.ReliableOrdered);
             };
 
             serverSocket.DataReceived += (connection, data) =>
@@ -429,7 +474,7 @@ namespace Remouse.Transport.Tests
                     {
                         var nextMessage = new byte[originalMessage.Length + 4];
                         Array.Copy(originalMessage, nextMessage, originalMessage.Length);
-                        connection.Send(nextMessage, DeliveryMethod.ReliableOrdered);
+                        connection.Send(new NetworkBytesWriter(nextMessage), DeliveryMethod.ReliableOrdered);
                         connectionToData[connection] = nextMessage;
                         connectionToCycle[connection]++;
                     }
@@ -449,14 +494,14 @@ namespace Remouse.Transport.Tests
 
             for (int i = 0; i < clientCount; i++)
             {
-                var clientSocket = container.Resolve<IClientSocket>();
+                var clientSocket = container.Resolve<IClientToServerSocket>();
                 clientSocket.DataReceived += (data) =>
                 {
                     var responseMessage = new byte[data.RawAvailable.Length + 2];
                     Array.Copy(data.RawAvailable.ToArray(), responseMessage, data.RawAvailable.Length);
-                    clientSocket.Send(responseMessage, DeliveryMethod.ReliableOrdered);
+                    clientSocket.Send(new NetworkBytesWriter(responseMessage), DeliveryMethod.ReliableOrdered);
                 };
-                clientSocket.Connect(new IPEndPoint(IPAddress.Loopback, currentPort));
+                clientSocket.ConnectAsync(new IPEndPoint(IPAddress.Loopback, currentPort));
                 clients.Add(clientSocket);
             }
 
@@ -482,9 +527,9 @@ namespace Remouse.Transport.Tests
                 $"Not all clients went through the message exchange cycles. Expected {clientCount}, Got {connectionToCycle.Count}");
         }
 
-        private (IClientSocket clientSocket, IServerSocket serverSocket) GetClientServerSockets()
+        private (IClientToServerSocket clientSocket, IServerSocket serverSocket) GetClientServerSockets()
         {
-            var clientSocket = container.Resolve<IClientSocket>();
+            var clientSocket = container.Resolve<IClientToServerSocket>();
             var serverSocket = container.Resolve<IServerSocket>();
             return (clientSocket, serverSocket);
         }

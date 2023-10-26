@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Remouse.MathLib;
 
-namespace Remouse.Shared.Utils
+namespace Remouse.Mathlib
 {
     /// <summary>
   ///   <para>Representation of 2D vectors and points using integers.</para>

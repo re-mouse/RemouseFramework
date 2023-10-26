@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Remouse.GameServer.Players;
 
 namespace Remouse.GameServer.ServerTransport

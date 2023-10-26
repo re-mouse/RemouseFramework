@@ -1,10 +1,9 @@
 using NUnit.Framework;
 using System.Collections.Generic;
-using Remouse.DatabaseLib;
 
 namespace Remouse.DatabaseLib.Tests
 {
-    public class DatabaseTests
+    public class TableDataAndSettingsTests
     {
         private Database _database;
         private Settings _exampleSetting;

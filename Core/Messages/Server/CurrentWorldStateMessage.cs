@@ -1,6 +1,4 @@
 using Remouse.Serialization;
-using Remouse.Core;
-using Remouse.Shared.World.Commands;
 
 namespace Remouse.Models.Messages
 {

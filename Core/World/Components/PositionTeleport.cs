@@ -2,7 +2,7 @@ using Remouse.MathLib;
 using Remouse.Models;
 using Remouse.Serialization;
 
-namespace Remouse.Core.ECS.Components
+namespace Remouse.Core.Components
 {
     public struct PositionTeleport : INetworkComponent
     {

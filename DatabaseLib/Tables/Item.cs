@@ -1,7 +1,6 @@
 using System;
-using Remouse.DatabaseLib;
 
-namespace Remouse.Models.ContentTableTypes
+namespace Remouse.DatabaseLib.Tables
 {
     [Serializable]
     public class Item : TableData

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Remouse.Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Core.World
@@ -72,34 +73,56 @@ namespace Remouse.Core.World
             return _componentTypes;
         }
 
-        public T GetComponent<T>(int entityId) where T : struct, IComponent
+        public T? GetComponent<T>(int entityId) where T : struct, IComponent
         {
             var pool = _world.GetPoolByType(typeof(T));
-            return (T)pool?.GetRaw(entityId);
+            return pool?.Has(entityId) ?? false ? (T)pool?.GetRaw(entityId) : null;
         }
 
-        public ref T GetComponentRef<T>(int entityId) where T : struct
+        public ref T GetComponentRef<T>(int entityId) where T : struct, IComponent
         {
             var pool = (EcsPool<T>)_world.GetPoolByType(typeof(T));
             
             return ref pool.Get(entityId);
         }
-
-        public ref T AddComponent<T>(int entityId) where T : struct
+        
+        public ref T AddComponent<T>(int entityId) where T : struct, IComponent
         {
             var pool = (EcsPool<T>)_world.GetPoolByType(typeof(T));
             
             return ref pool.Add(entityId);
         }
 
-        public void DelComponent<T>(int entityId) where T : struct
+
+        public void DelComponent<T>(int entityId) where T : struct, IComponent
         {
             var pool = _world.GetPoolByType(typeof(T));
             
-            pool.Del(entityId);
+            pool?.Del(entityId);
         }
 
-        public bool HasComponent<T>(int entityId) where T : struct
+        public void SetComponent(Type type, int entityId, object component)
+        {
+            var pool = _world.GetPoolByType(type);
+            
+            if (pool.Has(entityId))
+            {
+                pool?.SetRaw(entityId, component);
+            }
+            else
+            {
+                pool.AddRaw(entityId, component);
+            }
+        }
+
+        public void DelComponent(Type type, int entityId)
+        {
+            var pool = _world.GetPoolByType(type);
+            
+            pool?.Del(entityId);
+        }
+
+        public bool HasComponent<T>(int entityId) where T : struct, IComponent
         {
             return HasComponent(typeof(T), entityId);
         }
