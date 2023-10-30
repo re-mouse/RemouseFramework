@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Remouse.DIContainer
 {
@@ -111,7 +112,12 @@ namespace Remouse.DIContainer
                 return Activator.CreateInstance(type, this);
             }
             
-            return Activator.CreateInstance(type);
+            object instance = Activator.CreateInstance(type);
+            
+            var methodWithContainerParam = type.GetMethod("Construct", new[] { typeof(Container) });
+            methodWithContainerParam?.Invoke(instance, new object[] {this});
+ 
+            return instance;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Remouse.GameServer.ServerTransport
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)
         {
-            moduleBinder.RegisterModule<TransportModule>();
+            moduleBinder.RegisterModule<NetworkSocketsModule>();
         }
     }
 }

@@ -6,26 +6,26 @@ namespace Remouse.Models.Messages
 {
     public class SetWorldStateMessage : ServerWorldMessage
     {
-        public WorldState worldState { get; }
+        public PackedWorld PackedWorld { get; }
 
-        public SetWorldStateMessage(WorldState worldState)
+        public SetWorldStateMessage(PackedWorld packedWorld)
         {
-            this.worldState = worldState;
+            this.PackedWorld = packedWorld;
         }
 
         public override void Serialize(INetworkWriter writer)
         {
-            worldState.Serialize(writer);
+            PackedWorld.Serialize(writer);
         }
 
         public override void Deserialize(INetworkReader reader)
         {
-            worldState.Deserialize(reader);
+            PackedWorld.Deserialize(reader);
         }
 
         public override WorldCommand AsCommand()
         {
-            return new ApplyWorldStateCommand(worldState);
+            return new ApplyWorldStateCommand(PackedWorld);
         }
     }
 }

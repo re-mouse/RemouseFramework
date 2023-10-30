@@ -6,7 +6,6 @@ namespace Remouse.Infrastructure
     {
         public static BuildType Build { get; private set; }
         public static Platform Platform { get; private set; }
-        public static IResources Resources { get; private set; }
         private static bool isInitialized;
 
         public static void Initialize(ProjectConfiguration configuration)
@@ -16,7 +15,6 @@ namespace Remouse.Infrastructure
 
             Build = configuration.buildType;
             Platform = configuration.platform;
-            Resources = configuration.folderResourcesProvider;
             
             isInitialized = true;
         }

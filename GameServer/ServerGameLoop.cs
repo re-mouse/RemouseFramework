@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Remouse.GameServer.Players;
-using Remouse.GameServer.ServerShards;
 using Remouse.Core;
 using Remouse.DIContainer;
 using Remouse.Models;

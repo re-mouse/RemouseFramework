@@ -1,3 +1,5 @@
+using System;
+
 namespace Remouse.Core.World
 {
     public interface IWorldBuilder

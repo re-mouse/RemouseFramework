@@ -32,7 +32,7 @@ namespace Remouse.Core.Configs
             {
                 name = obj["name"].Value<string>(),
                 componentValues = obj.Properties().Where(p => p.Name != "name")
-                    .ToDictionary(p => p.Name, p => p.Value.ToObject<object>(serializer))
+                    .ToDictionary(p => p.Name, p => p.Value.ToObject<string>(serializer))
             };
             return component;
         }

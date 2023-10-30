@@ -22,7 +22,7 @@ namespace Remouse.Transport.Tests
         public void SetUp()
         {
             var containerBuilder = new ContainerBuilder();
-            containerBuilder.AddModule<TransportModule>();
+            containerBuilder.AddModule<NetworkSocketsModule>();
             container = containerBuilder.Build();
         }
 

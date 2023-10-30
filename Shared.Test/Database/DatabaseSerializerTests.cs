@@ -11,8 +11,8 @@ namespace Remouse.DatabaseLib.Tests
             DatabaseBuilder builder = new DatabaseBuilder();
             Database originalDb = builder.Build();
 
-            string serializedDb = DatabaseSerializer.SerializeDatabase(originalDb);
-            Database deserializedDb = DatabaseSerializer.DeserializeDatabase(serializedDb);
+            string serializedDb = new DatabaseSerializer().SerializeAsJson(originalDb);
+            Database deserializedDb = new DatabaseSerializer().DeserializeFromJson(serializedDb);
 
             // Here, you might want to add more detailed assertions depending on what constitutes two databases being "equivalent"
             Assert.IsNotNull(deserializedDb);
@@ -25,10 +25,10 @@ namespace Remouse.DatabaseLib.Tests
             builder.BindSettings(new SampleSettings { Value = "TestValue" });
             Database originalDb = builder.Build();
 
-            string serializedDb = DatabaseSerializer.SerializeDatabase(originalDb);
-            TestContext.WriteLine($"Serialized Database: {serializedDb}"); // Logging the serialized JSON
+            string serializedDbJson = new DatabaseSerializer().SerializeAsJson(originalDb);
+            TestContext.WriteLine($"Serialized Database: {serializedDbJson}"); // Logging the serialized JSON
 
-            Database deserializedDb = DatabaseSerializer.DeserializeDatabase(serializedDb);
+            Database deserializedDb = new DatabaseSerializer().DeserializeFromJson(serializedDbJson);
 
             Assert.IsNotNull(deserializedDb);
             Assert.AreEqual("TestValue", deserializedDb.GetSettings<SampleSettings>().Value);
@@ -43,10 +43,10 @@ namespace Remouse.DatabaseLib.Tests
             builder.BindTable(table);
             Database originalDb = builder.Build();
 
-            string serializedDb = DatabaseSerializer.SerializeDatabase(originalDb);
+            string serializedDb = new DatabaseSerializer().SerializeAsJson(originalDb);
             TestContext.WriteLine($"Serialized Database: {serializedDb}"); // Logging the serialized JSON
 
-            Database deserializedDb = DatabaseSerializer.DeserializeDatabase(serializedDb);
+            Database deserializedDb = new DatabaseSerializer().DeserializeFromJson(serializedDb);
 
             Assert.IsNotNull(deserializedDb);
             Assert.AreEqual("Row1", deserializedDb.GetTableData<SampleTableData>("1").Name);
@@ -63,8 +63,8 @@ namespace Remouse.DatabaseLib.Tests
             builder.BindTable(table);
             Database originalDb = builder.Build();
 
-            string serializedDb = DatabaseSerializer.SerializeDatabase(originalDb);
-            Database deserializedDb = DatabaseSerializer.DeserializeDatabase(serializedDb);
+            string serializedDb = new DatabaseSerializer().SerializeAsJson(originalDb);
+            Database deserializedDb = new DatabaseSerializer().DeserializeFromJson(serializedDb);
 
             Assert.IsNotNull(deserializedDb);
             Assert.AreEqual("TestValue", deserializedDb.GetSettings<SampleSettings>().Value);

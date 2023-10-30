@@ -1,5 +1,4 @@
 using Remouse.GameServer.Players;
-using Remouse.GameServer.ServerShards;
 using Remouse.DatabaseLib;
 using Remouse.Core;
 using Remouse.Core.World;

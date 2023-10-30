@@ -5,6 +5,7 @@ namespace Remouse.DatabaseLib
     [Serializable]
     public abstract class TableData
     {
-        public string Id { get; set; }
+        public string id;
+        public string Id { get => id; set => id = value; }
     }
 }

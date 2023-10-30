@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remouse.Core.Configs;
 using Remouse.Core.Components;
@@ -19,7 +20,7 @@ namespace Remouse.Core
 
         public void Construct(Container container)
         {
-            _database = container.Resolve<DatabaseLib.Database>();
+            _database = container.Resolve<Database>();
             _worldBuilder = container.Resolve<IWorldBuilder>();
             
             RegisterTypesInWorldBuilder();
@@ -37,7 +38,7 @@ namespace Remouse.Core
             _worldBuilder.RegisterComponentType<NetworkIdentity>();
             _worldBuilder.RegisterComponentType<PlayerTag>();
             _worldBuilder.RegisterComponentType<PositionTeleport>();
-            _worldBuilder.RegisterComponentType<Transform>();
+            _worldBuilder.RegisterComponentType<ReTransform>();
             _worldBuilder.RegisterComponentType<WaypointPath>();
         }
         
@@ -95,7 +96,7 @@ namespace Remouse.Core
                 ApplyComponentConfigs(typeConfig.components, world, entity);
                 ApplyComponentConfigs(entityConfig.overrideComponents, world, entity);
                 
-                ref var transform = ref  world.AddComponent<Transform>(entity);
+                ref var transform = ref  world.AddComponent<ReTransform>(entity);
                 transform.position = new Vec2(entityConfig.position.x, entityConfig.position.z);
                 transform.rotationAngle = entityConfig.rotation.y;
             }
@@ -103,19 +104,11 @@ namespace Remouse.Core
 
         private void ApplyComponentConfigs(ComponentConfig[] componentConfigs, IWorld world, int entity)
         {
-            foreach (var overrideComponent in componentConfigs)
+            foreach (var componentConfig in componentConfigs)
             {
-                var componentName = overrideComponent.name;
-                IComponent component = CreateComponentFromName(componentName, world);
+                IComponent component = componentConfig.Create(world);
                 world.SetComponent(component.GetType(), entity, component);
             }
-        }
-
-        private IComponent CreateComponentFromName(string componentName, IWorld world)
-        {
-            var componentType = world.GetComponentTypes().FirstOrDefault(c => c.Name == componentName);
-            var component = Activator.CreateInstance(componentType);
-            return component as IComponent;
         }
     }
 }

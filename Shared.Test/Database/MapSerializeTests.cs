@@ -23,8 +23,8 @@ namespace Remouse.DatabaseLib.Tests
             
             var database = new Database(new List<Settings>(), tables);
 
-            var json = DatabaseSerializer.SerializeDatabase(database);
-            database = DatabaseSerializer.DeserializeDatabase(json);
+            var json = new DatabaseSerializer().SerializeAsJsonUTF8(database);
+            database = new DatabaseSerializer().DeserializeDatabase(json);
 
             var defaultMap = database.GetTableData<MapConfig>("Map");
             Assert.IsNotNull(defaultMap);
@@ -67,7 +67,7 @@ namespace Remouse.DatabaseLib.Tests
             
             var database = new Database(new List<Settings>(), tables);
 
-            var json = DatabaseSerializer.SerializeDatabase(database);
+            var json = new DatabaseSerializer().SerializeAsJson(database);
             TestContext.Out.WriteLine(json);
         }
 
@@ -85,7 +85,7 @@ namespace Remouse.DatabaseLib.Tests
                         new ComponentConfig
                         {
                             name = "movementSpeed",
-                            componentValues = new Dictionary<string, object>
+                            componentValues = new Dictionary<string, string>
                             {
                                 { "speed", 15.ToString() }
                             }
@@ -93,7 +93,7 @@ namespace Remouse.DatabaseLib.Tests
                         new ComponentConfig
                         {
                             name = "health",
-                            componentValues = new Dictionary<string, object>
+                            componentValues = new Dictionary<string, string>
                             {
                                 { "startHealth", 20.ToString() },
                                 { "maxHealth", 50.ToString() }
@@ -129,7 +129,7 @@ namespace Remouse.DatabaseLib.Tests
                         new ComponentConfig
                         {
                             name = "movementSpeed",
-                            componentValues = new Dictionary<string, object>
+                            componentValues = new Dictionary<string, string>
                             {
                                 { "speed", 15.ToString() }
                             }
@@ -137,7 +137,7 @@ namespace Remouse.DatabaseLib.Tests
                         new ComponentConfig
                         {
                             name = "health",
-                            componentValues = new Dictionary<string, object>
+                            componentValues = new Dictionary<string, string>
                             {
                                 { "startHealth", 20.ToString() },
                                 { "maxHealth", 50.ToString() }
@@ -155,18 +155,18 @@ namespace Remouse.DatabaseLib.Tests
                         new ComponentConfig
                         {
                             name = "playerCapacity",
-                            componentValues = new Dictionary<string, object>
+                            componentValues = new Dictionary<string, string>
                             {
-                                { "capacity", 20 }
+                                { "capacity", 20.ToString() }
                             }
                         },
                         new ComponentConfig
                         {
                             name = "health",
-                            componentValues = new Dictionary<string, object>
+                            componentValues = new Dictionary<string, string>
                             {
-                                { "startHealth", 40 },
-                                { "maxHealth", 50 }
+                                { "startHealth", 40.ToString() },
+                                { "maxHealth", 50.ToString() }
                             }
                         }
                     },

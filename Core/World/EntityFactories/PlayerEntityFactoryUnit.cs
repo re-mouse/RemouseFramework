@@ -10,7 +10,7 @@ namespace Remouse.Core.Factories
         {
             int entity = world.NewEntity();
 
-            ref var transform = ref world.AddComponent<Transform>(entity);
+            ref var transform = ref world.AddComponent<ReTransform>(entity);
             transform.position = Vec2.zero;
             
             ref var moveSpeed = ref world.AddComponent<MovementSpeed>(entity);

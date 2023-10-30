@@ -1,14 +1,13 @@
 using System;
-using Remouse.Core;
 
-namespace Remouse.GameServer.ServerShards
+namespace Remouse.Core
 {
     public class SimulationHost
     {
         public Simulation? Simulation { get; private set; }
         public event Action<Simulation> SimulationChanged; 
 
-        public void SetGameSimulation(Simulation simulation)
+        public void Set(Simulation simulation)
         {
             Simulation = simulation;
             SimulationChanged?.Invoke(simulation);

@@ -1,4 +1,3 @@
-using Remouse.GameServer.ServerShards;
 using Remouse.GameServer.ServerTransport;
 using Remouse.Core;
 using Remouse.Core.Input;
@@ -47,7 +46,7 @@ namespace Remouse.GameServer.Players
 
         private void SendCurrentWorldState(IPlayer player)
         {
-            var worldState = WorldStatePacker.Pack(_simulationHost.Simulation.World);
+            var worldState = _simulationHost?.Simulation?.PackWorld();
             player.Send(new CurrentWorldStateMessage(worldState));
         }
 
@@ -73,7 +72,7 @@ namespace Remouse.GameServer.Players
 
         private void HandleConnected(IPlayer player)
         { 
-            player.Send(new LoadMapMessage(_simulationHost.Simulation.MapId));
+            player.Send(new MapInfoMessage(_simulationHost.Simulation.MapId));
             
             player.Data.sessionData.state = PlayerState.LoadingMap;
             

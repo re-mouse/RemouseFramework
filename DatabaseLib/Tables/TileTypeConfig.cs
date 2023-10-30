@@ -1,5 +1,8 @@
+using System;
+
 namespace Remouse.DatabaseLib.Tables
 {
+    [Serializable]
     public class TileTypeConfig : TableData
     {
         public string renderId;

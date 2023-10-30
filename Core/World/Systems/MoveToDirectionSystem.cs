@@ -26,12 +26,12 @@ namespace Remouse.Core.ECS.Systems
         
         public void Run(IWorld world)
         {
-            var query = world.Query().Inc<MoveInDirection>().Inc<MovementSpeed>().Inc<Transform>().End();
+            var query = world.Query().Inc<MoveInDirection>().Inc<MovementSpeed>().Inc<ReTransform>().End();
 
             foreach (var entity in query)
             {
                 ref MoveInDirection direction = ref world.GetComponentRef<MoveInDirection>(entity);
-                ref Transform transform = ref world.GetComponentRef<Transform>(entity);
+                ref ReTransform transform = ref world.GetComponentRef<ReTransform>(entity);
                 ref MovementSpeed speed = ref world.GetComponentRef<MovementSpeed>(entity);
 
                 if (direction.movementDirection == Vec2.zero)

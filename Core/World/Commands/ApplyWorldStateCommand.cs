@@ -7,14 +7,14 @@ namespace Remouse.Shared.World.Commands
 {
     public class ApplyWorldStateCommand : WorldCommand
     {
-        private readonly WorldState _worldState;
+        private readonly PackedWorld _packedWorld;
 
-        public ApplyWorldStateCommand(WorldState worldState)
+        public ApplyWorldStateCommand(PackedWorld packedWorld)
         {
-            _worldState = worldState;
+            _packedWorld = packedWorld;
         }
 
-        public override void Apply(IWorld world)
+        public override void Run(IWorld world)
         {
             
         }

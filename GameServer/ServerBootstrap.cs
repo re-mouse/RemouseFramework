@@ -1,20 +1,20 @@
 using System;
 using System.Diagnostics;
-using Remouse.GameServer.ServerShards;
 using Remouse.GameServer.ServerTransport;
 using Remouse.Core;
 using Remouse.DIContainer;
 
 namespace Remouse.GameServer
 {
+    [Serializable]
     public class ServerConfig
     {
-        public string databaseJsonPath = "";
         public double ticksPerSecond = 60;
         public string mapId = "Start";
         public ushort port = 5000;
         public int maxPlayers = 10;
     }
+    
     public class ServerBootstrap : IDisposable
     {
         private readonly ServerConfig _config;
@@ -55,7 +55,7 @@ namespace Remouse.GameServer
         {
             var simulation = _container.Resolve<SimulationFactory>().CreateGameSimulation(_config.mapId);
             
-            _container.Resolve<SimulationHost>().SetGameSimulation(simulation);
+            _container.Resolve<SimulationHost>().Set(simulation);
         }
 
         public void Update()

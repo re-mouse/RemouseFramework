@@ -9,7 +9,7 @@ namespace Remouse.Core
     {
         public long playerId;
         
-        public override void Apply(IWorld ecsWorld)
+        public override void Run(IWorld ecsWorld)
         {
             int entityId = PlayerEntityFactory.Create(ecsWorld);
             ref var playerTag = ref ecsWorld.GetComponentRef<PlayerTag>(entityId);

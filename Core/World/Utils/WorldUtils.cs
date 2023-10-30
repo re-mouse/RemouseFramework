@@ -7,7 +7,7 @@ namespace Remouse.Core.ECS.Utils
     {
         public static int? GetPlayerEntity(this IReadOnlyWorld world, long playerId)
         {
-            var filter = world.Query().Inc<PlayerTag>().Inc<Transform>().Exc<MoveInDirection>().End();
+            var filter = world.Query().Inc<PlayerTag>().Inc<ReTransform>().Exc<MoveInDirection>().End();
 
             foreach (var playerEntityId in filter)
             {

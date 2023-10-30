@@ -4,21 +4,21 @@ namespace Remouse.Models.Messages
 {
     public class CurrentWorldStateMessage : NetworkMessage
     {
-        public WorldState worldState { get; }
+        public PackedWorld PackedWorld { get; }
 
-        public CurrentWorldStateMessage(WorldState worldState)
+        public CurrentWorldStateMessage(PackedWorld packedWorld)
         {
-            this.worldState = worldState;
+            this.PackedWorld = packedWorld;
         }
 
         public override void Serialize(INetworkWriter writer)
         {
-            worldState.Serialize(writer);
+            PackedWorld.Serialize(writer);
         }
 
         public override void Deserialize(INetworkReader reader)
         {
-            worldState.Deserialize(reader);
+            PackedWorld.Deserialize(reader);
         }
     }
 }

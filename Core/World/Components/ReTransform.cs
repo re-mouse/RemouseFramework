@@ -4,7 +4,7 @@ using Remouse.Serialization;
 
 namespace Remouse.Core.Components
 {
-    public struct Transform : INetworkComponent
+    public struct ReTransform : INetworkComponent
     {
         public Vec2 position;
         public float rotationAngle;

@@ -5,6 +5,7 @@ namespace Remouse.Core.World
     public interface IReadOnlyWorld
     {
         public int[] GetEntities();
+        public IPackedEntity PackEntity(int entityId);
         
         public Type[] GetComponentTypes();
         

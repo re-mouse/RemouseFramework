@@ -2,11 +2,11 @@ using Remouse.Serialization;
 
 namespace Remouse.Models.Messages
 {
-    public class LoadMapMessage : NetworkMessage
+    public class MapInfoMessage : NetworkMessage
     {
         public string MapId { get; private set; }
 
-        public LoadMapMessage(string mapId)
+        public MapInfoMessage(string mapId)
         {
             MapId = mapId;
         }

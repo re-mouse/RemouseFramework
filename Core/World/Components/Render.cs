@@ -1,7 +1,10 @@
+using Remouse.Core.World;
+
 namespace Remouse.Core.Components
 {
-    public struct Render
+    public struct Render : IComponent
     {
-        public string id;
+        public string renderId;
+        public bool preload;
     }
 }

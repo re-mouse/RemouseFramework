@@ -10,7 +10,7 @@ namespace Remouse.Core.Input
         public int entityId;
         public Vec2 movementDirection;
         
-        public override void Apply(IWorld ecsWorld)
+        public override void Run(IWorld ecsWorld)
         {
             ref var directionComponent = ref ecsWorld.GetComponentRef<MoveInDirection>(entityId);
             directionComponent.movementDirection = movementDirection;

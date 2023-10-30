@@ -9,7 +9,7 @@ namespace Remouse.Shared.GameSimulation.Commands
     {
         public long playerId;
 
-        public override void Apply(IWorld ecsWorld)
+        public override void Run(IWorld ecsWorld)
         {
             var playerEntityId = ecsWorld.GetPlayerEntity(playerId);
             

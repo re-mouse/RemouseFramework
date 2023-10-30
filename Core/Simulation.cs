@@ -1,4 +1,6 @@
-﻿using Remouse.Core.World;
+﻿using System;
+using Remouse.Core.World;
+using Remouse.Models;
 using Remouse.Shared.Utils.Log;
 
 namespace Remouse.Core
@@ -12,6 +14,8 @@ namespace Remouse.Core
         public string MapId { get; }
         public IReadOnlyWorld World { get; }
         public long CurrentTick { get; private set; }
+
+        public event Action<WorldCommand> WorldCommandRunned;
 
         private bool _initialized = false;
         
@@ -53,7 +57,18 @@ namespace Remouse.Core
                 return;
             }
             
-            command.Apply(_world);
+            command.Run(_world);
+            WorldCommandRunned?.Invoke(command);
+        }
+
+        public PackedWorld PackWorld()
+        {
+            return PackedWorld.Pack(World);
+        }
+
+        public void UnpackWorld(PackedWorld packedWorld)
+        {
+            PackedWorld.Unpack(packedWorld, _world);
         }
     }
 }

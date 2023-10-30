@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Remouse.GameServer.ServerShards;
 using Remouse.Core;
 using Remouse.DIContainer;
 using Remouse.Shared.Utils.Buffer;
@@ -25,29 +24,6 @@ namespace Remouse.GameServer
             _simulationHost = container.Resolve<SimulationHost>();
             
             _currentBufferTick = _simulationHost.Simulation.CurrentTick;
-        }
-
-        //input accepting only on next tick
-        public void Enqueue(WorldCommand command, long tick)
-        {
-            long tickDifference = (int)(tick - _currentBufferTick);
-            
-            if (tickDifference < -InputExpireTicksTime)
-            {
-                Logger.Current.LogTrace(this, $"Received tick is earlier than current. Received - {tick}, current - {SimulationTick}");
-                return;
-            }
-
-            if (tickDifference > InputBufferCapacity)
-            {
-                Logger.Current.LogTrace(this, $"exceeds buffer's future capacity. Received - {tick}, current - {SimulationTick}");
-                return;
-            }
-
-            int bufferIndex = tickDifference < 0 ? 0 : (int)tickDifference;
-            
-            var inputs = _roundBuffer.GetAt(bufferIndex);
-            inputs.Add(command);
         }
         
         public void Enqueue(WorldCommand command)

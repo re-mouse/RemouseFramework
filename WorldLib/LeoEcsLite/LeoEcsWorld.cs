@@ -13,7 +13,7 @@ namespace Remouse.Core.World
         private readonly HashSet<ISystem> _systems = new HashSet<ISystem>();
         private readonly HashSet<IRunSystem> _runSystems = new HashSet<IRunSystem>();
         private readonly HashSet<IPostRunSystem> _postRunSystems = new HashSet<IPostRunSystem>();
-
+        
         public LeoEcsWorld(EcsWorld world, HashSet<ISystem> systems, HashSet<Type> componentTypes)
         {
             _world = world;
@@ -61,9 +61,14 @@ namespace Remouse.Core.World
             return entityArray;
         }
 
+        public IPackedEntity PackEntity(int entityId)
+        {
+            return new PackedEntity(_world, entityId);
+        }
+
         public object? GetComponent(Type type, int entityId)
         {
-            var pool = (IEcsPool)_world.GetPoolByType(type);
+            var pool = _world.GetPoolByType(type);
             
             return pool?.Has(entityId) ?? false ? pool.GetRaw(entityId) : null;
         }

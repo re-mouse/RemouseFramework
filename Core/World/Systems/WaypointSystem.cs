@@ -8,12 +8,12 @@ namespace Remouse.Core.ECS.Systems
     {
         public void Run(IWorld world)
         {
-            var query = world.Query().Inc<WaypointPath>().Inc<MovementSpeed>().Inc<Transform>().End();
+            var query = world.Query().Inc<WaypointPath>().Inc<MovementSpeed>().Inc<ReTransform>().End();
         
             foreach (var entity in query)
             {
                 ref WaypointPath waypointPath = ref world.GetComponentRef<WaypointPath>(entity);
-                ref Transform transform = ref world.GetComponentRef<Transform>(entity);
+                ref ReTransform transform = ref world.GetComponentRef<ReTransform>(entity);
                 ref MovementSpeed speed = ref world.GetComponentRef<MovementSpeed>(entity);
             
                 if (waypointPath.waypoints.Count > 0)

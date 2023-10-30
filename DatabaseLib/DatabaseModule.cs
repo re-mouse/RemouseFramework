@@ -12,6 +12,7 @@ namespace Remouse.DatabaseLib
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)
         {
+            
         }
     }
 }
