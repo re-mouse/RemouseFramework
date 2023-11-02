@@ -1,6 +1,8 @@
 using Remouse.Core.Components;
-using Remouse.Core.Factories;
+using Remouse.Core.Configs;
 using Remouse.Core.World;
+using Remouse.DatabaseLib;
+using Remouse.Models.Database;
 using Remouse.Serialization;
 
 namespace Remouse.Core
@@ -9,11 +11,11 @@ namespace Remouse.Core
     {
         public long playerId;
         
-        public override void Run(IWorld ecsWorld)
+        public override void Run(IWorld ecsWorld, Database database)
         {
-            int entityId = PlayerEntityFactory.Create(ecsWorld);
-            ref var playerTag = ref ecsWorld.GetComponentRef<PlayerTag>(entityId);
-            
+            var playerSettings = database.GetSetting<PlayerSettings>();
+            var entity = playerSettings.playerEntityId.GetTableData(database).CreateEntity(ecsWorld);
+            var playerTag = ecsWorld.GetComponentRef<PlayerTag>(entity);
             playerTag.playerId = playerId;
         }
 

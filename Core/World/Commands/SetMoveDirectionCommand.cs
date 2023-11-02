@@ -1,5 +1,6 @@
 using Remouse.Core.Components;
 using Remouse.Core.World;
+using Remouse.DatabaseLib;
 using Remouse.MathLib;
 using Remouse.Serialization;
 
@@ -10,7 +11,7 @@ namespace Remouse.Core.Input
         public int entityId;
         public Vec2 movementDirection;
         
-        public override void Run(IWorld ecsWorld)
+        public override void Run(IWorld ecsWorld, Database database)
         {
             ref var directionComponent = ref ecsWorld.GetComponentRef<MoveInDirection>(entityId);
             directionComponent.movementDirection = movementDirection;

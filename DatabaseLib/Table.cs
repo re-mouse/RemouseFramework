@@ -16,7 +16,7 @@ namespace Remouse.DatabaseLib
         
         public T GetData(string id)
         {
-            return rows.FirstOrDefault(t => t.Id == id);
+            return rows.FirstOrDefault(t => t.id == id);
         }
         
         public void ValidateRows()
@@ -27,11 +27,11 @@ namespace Remouse.DatabaseLib
                 if (row == null)
                     throw new NullReferenceException($"One of row in table {GetType()} is null");
 
-                if (string.IsNullOrEmpty(row.Id))
+                if (string.IsNullOrEmpty(row.id))
                     throw new NullReferenceException($"Id of row in table {GetType()} is null");
 
-                if (!ids.Add(row.Id))
-                    throw new AggregateException($"Duplicate id found in table {GetType()}, rowId: {row.Id}");
+                if (!ids.Add(row.id))
+                    throw new AggregateException($"Duplicate id found in table {GetType()}, rowId: {row.id}");
             }
         }
     }

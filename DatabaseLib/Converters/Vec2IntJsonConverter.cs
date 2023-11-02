@@ -1,11 +1,11 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Remouse.Mathlib;
+using Remouse.MathLib;
 
 namespace Remouse.Core.Configs
 {
-    public class Vec2IntConverter : JsonConverter
+    public class Vec2IntJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType) => objectType == typeof(Vec2Int);
 

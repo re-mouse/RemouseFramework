@@ -1,4 +1,6 @@
-namespace Remouse.DatabaseLib.Tables
+using Remouse.DatabaseLib;
+
+namespace Remouse.Models.Database
 {
     public class GameSimulationSettings : Settings
     {

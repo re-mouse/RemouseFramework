@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics;
 using Remouse.GameServer.ServerTransport;
 using Remouse.Core;
+using Remouse.DatabaseLib;
 using Remouse.DIContainer;
+using Remouse.Infrastructure;
 
 namespace Remouse.GameServer
 {
@@ -15,34 +17,37 @@ namespace Remouse.GameServer
         public int maxPlayers = 10;
     }
     
-    public class ServerBootstrap : IDisposable
+    public class ServerBootstrap
     {
-        private readonly ServerConfig _config;
-        private readonly double _millisecondsPerTick;
-        
-        private Container _container;
+        private ServerConfig _config;
+        private double _millisecondsPerTick;
         
         private IPlayerServer _playerServer;
         private ServerGameLoop _gameLoop;
         
-        private Stopwatch _stopwatch;
+        private Stopwatch _stopwatch = new Stopwatch();
         private double _lastTickMilliseconds;
+        private SimulationHost _simulationHost;
+        private MapLoader _mapLoader;
+        private IResources _resources;
+        private DatabaseHost _databaseHost;
 
-        public ServerBootstrap(ServerConfig config)
+        public void Construct(Container container)
+        {
+            _playerServer = container.Resolve<IPlayerServer>();
+            _gameLoop = container.Resolve<ServerGameLoop>();
+            _mapLoader = container.Resolve<MapLoader>();
+            _databaseHost = container.Resolve<DatabaseHost>();
+            _resources = container.Resolve<IResources>();
+            _simulationHost = container.Resolve<SimulationHost>();
+        }
+
+        public void Start(ServerConfig config)
         {
             _config = config;
             _millisecondsPerTick = 1000 / _config.ticksPerSecond;
-        }
 
-        public void Start()
-        {
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.AddModule<GameServerCoreModule>();
-
-            _container = containerBuilder.Build();
-
-            _playerServer = _container.Resolve<IPlayerServer>();
-            _gameLoop = _container.Resolve<ServerGameLoop>();
+            _databaseHost.LoadFromResources();
 
             LoadSimulation();
             
@@ -53,9 +58,9 @@ namespace Remouse.GameServer
 
         private void LoadSimulation()
         {
-            var simulation = _container.Resolve<SimulationFactory>().CreateGameSimulation(_config.mapId);
+            var simulation = _mapLoader.Load(_config.mapId);
             
-            _container.Resolve<SimulationHost>().Set(simulation);
+            _simulationHost.Set(simulation);
         }
 
         public void Update()
@@ -70,11 +75,6 @@ namespace Remouse.GameServer
                 _gameLoop.Update();
                 _lastTickMilliseconds += _millisecondsPerTick;
             }
-        }
-
-        public void Dispose()
-        {
-            _container?.Dispose();
         }
     }
 }

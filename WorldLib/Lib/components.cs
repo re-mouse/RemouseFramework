@@ -113,7 +113,7 @@ namespace Remouse.Shared.EcsLib.LeoEcsLite {
         [UnityEngine.Scripting.Preserve]
 #endif
         void ReflectionSupportHack () {
-            _world.GetPool<T> ();
+            _world.GetPoolOrCreate<T> ();
             _world.Filter<T> ().Exc<T> ().End ();
         }
 

@@ -21,6 +21,23 @@ namespace Remouse.DatabaseLib
 
             _tablesByDataType[dataType] = table;
         }
+        
+        public void BindTable(Table table, bool overrideIfExist)
+        {
+            if (table == null)
+                throw new NullReferenceException("Table is null");
+
+            if (table.GetType().GetGenericTypeDefinition() != typeof(Table<>))
+                throw new ArgumentException("Invalid table type");
+            
+            var genericArguments = table.GetType()?.GetGenericArguments();
+            var dataType = genericArguments?.FirstOrDefault();
+            
+            if (_tablesByDataType.ContainsKey(dataType) && !overrideIfExist)
+                throw new ArgumentException("Table of this type of data already added");
+
+            _tablesByDataType[dataType] = table;
+        }
 
         public void BindSettings<T>(T settings) where T : Settings
         {
@@ -33,6 +50,21 @@ namespace Remouse.DatabaseLib
                 throw new ArgumentException("Settings of this type of data already added");
 
             _settingsByType[settingsType] = settings;
+        }
+
+        public void Fetch(Database database)
+        {
+            var settings = database.GetSettings();
+            foreach (var setting in settings)
+            {
+                _settingsByType[setting.GetType()] = setting;
+            }
+            
+            var tables = database.GetTables();
+            foreach (var table in tables)
+            {
+                _tablesByDataType[table.GetType()] = table;
+            }
         }
 
         public Database Build()

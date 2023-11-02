@@ -3,12 +3,12 @@ using System.IO;
 
 namespace Remouse.Infrastructure
 {
-    public class FolderResourcesProvider : IResources
+    public class NamedResourcesProvider : IResources
     {
         public const string DatabaseRelativePath = "/database.json";
         private readonly string _resourcesFolder;
 
-        public FolderResourcesProvider(string resourcesFolder)
+        public NamedResourcesProvider(string resourcesFolder)
         {
             _resourcesFolder = resourcesFolder;
         }
@@ -32,7 +32,7 @@ namespace Remouse.Infrastructure
             File.WriteAllBytes(filePath, data);
         }
 
-        private string GetResourceFilePath(ResourceType type)
+        public string GetResourceFilePath(ResourceType type)
         {
             switch (type)
             {

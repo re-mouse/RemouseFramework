@@ -16,7 +16,7 @@ namespace Remouse.DatabaseLib.Tests
                     {
                         new TestData()
                         {
-                            Id = "Test", x = 12
+                            id = "Test", x = 12
                         }
                     } 
                 }
@@ -27,7 +27,7 @@ namespace Remouse.DatabaseLib.Tests
                     {
                         new TestDataWithLink()
                         {
-                            Id = "TestLink", data = new TableDataLink<TestData>()
+                            id = "TestLink", data = new TableDataLink<TestData>()
                             {
                                 Id = "Test"
                             } 
@@ -42,7 +42,7 @@ namespace Remouse.DatabaseLib.Tests
             var data = dataWithLink.data.GetTableData(database);
             
             Assert.AreEqual(12, data.x);
-            Assert.AreEqual("Test", data.Id);
+            Assert.AreEqual("Test", data.id);
         }
 
         private class TestData : TableData

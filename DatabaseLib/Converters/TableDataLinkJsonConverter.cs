@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Remouse.Core.Configs
 {
-    public class TableDataLinkConverter : JsonConverter
+    public class TableDataLinkJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

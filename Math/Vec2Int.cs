@@ -1,12 +1,12 @@
 using System;
 using System.Runtime.CompilerServices;
-using Remouse.MathLib;
 
-namespace Remouse.Mathlib
+namespace Remouse.MathLib
 {
     /// <summary>
   ///   <para>Representation of 2D vectors and points using integers.</para>
   /// </summary>
+  [Serializable]
   public struct Vec2Int : IEquatable<Vec2Int>
   {
     private int _x;

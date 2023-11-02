@@ -1,5 +1,6 @@
 using Remouse.Core;
 using Remouse.Core.World;
+using Remouse.DatabaseLib;
 using Remouse.Models;
 using Remouse.Serialization;
 
@@ -14,7 +15,7 @@ namespace Remouse.Shared.World.Commands
             _packedWorld = packedWorld;
         }
 
-        public override void Run(IWorld world)
+        public override void Run(IWorld world, Database database)
         {
             
         }

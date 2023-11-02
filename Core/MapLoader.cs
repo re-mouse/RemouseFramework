@@ -6,53 +6,45 @@ using Remouse.Core.Components;
 using Remouse.Core.ECS.Systems;
 using Remouse.Core.World;
 using Remouse.DatabaseLib;
-using Remouse.DatabaseLib.Tables;
+using Remouse.Models.Database;
 using Remouse.DIContainer;
-using Remouse.Mathlib;
+using Remouse.Infrastructure;
 using Remouse.MathLib;
+using Remouse.Shared.Utils.Log;
+using Remouse.Utils;
+using Tile = Remouse.Core.Components.Tile;
 
 namespace Remouse.Core
 {
-    public class SimulationFactory
+    public class MapLoader
     {
-        private Database _database;
+        private DatabaseHost _databaseHost;
         private IWorldBuilder _worldBuilder;
 
         public void Construct(Container container)
         {
-            _database = container.Resolve<Database>();
+            _databaseHost = container.Resolve<DatabaseHost>();
             _worldBuilder = container.Resolve<IWorldBuilder>();
-            
-            RegisterTypesInWorldBuilder();
         }
         
-        private void RegisterTypesInWorldBuilder()
+        public Simulation Load(string mapId)
         {
-            _worldBuilder.RegisterSystem<WaypointSystem>();
-            _worldBuilder.RegisterSystem<PositionTeleportSystem>();
-            _worldBuilder.RegisterSystem<MoveToDirectionSystem>();
-            
-            _worldBuilder.RegisterComponentType<TilesSingleton>();
-            _worldBuilder.RegisterComponentType<MoveInDirection>();
-            _worldBuilder.RegisterComponentType<MovementSpeed>();
-            _worldBuilder.RegisterComponentType<NetworkIdentity>();
-            _worldBuilder.RegisterComponentType<PlayerTag>();
-            _worldBuilder.RegisterComponentType<PositionTeleport>();
-            _worldBuilder.RegisterComponentType<ReTransform>();
-            _worldBuilder.RegisterComponentType<WaypointPath>();
-        }
-        
-        public Simulation CreateGameSimulation(string mapId)
-        {
-            var mapConfig = _database.GetTableData<MapConfig>(mapId);
             var world = _worldBuilder.Build();
             
-            AddTilesFromConfig(mapConfig, world);
-            AddEntitiesFromConfig(mapConfig, world);
+            if (!mapId.IsNullOrEmpty())
+            {
+                var mapConfig = _databaseHost.Get().GetTableData<MapConfig>(mapId);
+                if (mapConfig == null)
+                {
+                    Logger.Current.LogError(this, $"Map of type {mapId} not found");
+                }
+                AddTilesFromConfig(mapConfig, world);
+                AddEntitiesFromConfig(mapConfig, world);
+            }
             
             Simulation simulation = new Simulation(world);
             
-            simulation.Initialize();
+            simulation.Initialize(_databaseHost.Get());
 
             return simulation;
         }
@@ -74,7 +66,7 @@ namespace Remouse.Core
                     if (tileConfig.position.x == iX)
                     {
                         ref var tile = ref tiles[iX][tileConfig.position.y];
-                        var tileTypeConfig = tileConfig.typeId.GetTableData(_database);
+                        var tileTypeConfig = tileConfig.typeId.GetTableData(_databaseHost.Get());
                         
                         tile.walkable = tileTypeConfig.type == TileType.Walkable;
                     }
@@ -89,16 +81,12 @@ namespace Remouse.Core
         {
             foreach (var entityConfig in config.entities)
             {
-                var typeConfig = entityConfig.typeId.GetTableData(_database);
+                var typeConfig = entityConfig.typeId.GetTableData(_databaseHost.Get());
                 
                 var entity = world.NewEntity();
 
                 ApplyComponentConfigs(typeConfig.components, world, entity);
                 ApplyComponentConfigs(entityConfig.overrideComponents, world, entity);
-                
-                ref var transform = ref  world.AddComponent<ReTransform>(entity);
-                transform.position = new Vec2(entityConfig.position.x, entityConfig.position.z);
-                transform.rotationAngle = entityConfig.rotation.y;
             }
         }
 
@@ -106,7 +94,13 @@ namespace Remouse.Core
         {
             foreach (var componentConfig in componentConfigs)
             {
-                IComponent component = componentConfig.Create(world);
+                IComponent component = componentConfig.CreateComponentWithConfigValues();
+                if (component == null)
+                {
+                    Logger.Current.LogError(this, $"Component type not found for config with name {componentConfig.name}" );
+                    continue;
+                }
+                
                 world.SetComponent(component.GetType(), entity, component);
             }
         }

@@ -1,7 +1,8 @@
 using System;
 using Remouse.Core.Configs;
+using Remouse.DatabaseLib;
 
-namespace Remouse.DatabaseLib.Tables
+namespace Remouse.Models.Database
 {
     [Serializable]
     public class EntityTypeConfig : TableData

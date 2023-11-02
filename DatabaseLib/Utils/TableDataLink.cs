@@ -1,7 +1,9 @@
+using System;
 using Remouse.DatabaseLib;
 
 namespace Remouse.Core.Configs
 {
+    [Serializable]
     public class TableDataLink<T> where T : TableData
     {
         public string Id;

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Remouse.Core.Configs
 {
-    public class ComponentConfigConverter : JsonConverter
+    public class ComponentConfigJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType) => objectType == typeof(ComponentConfig);
 

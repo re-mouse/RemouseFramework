@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Remouse.Core.Configs;
+using Utils;
 
 namespace Remouse.DatabaseLib
 {
     public class DatabaseSerializer
     {
+        private static Type[] _settingTypes = TypeUtils<Settings>.DerivedInstanceTypes;
+        private static Type[] _tableDataTypes = TypeUtils<TableData>.DerivedInstanceTypes;
+        
         private readonly HashSet<Type> _converterTypes = new HashSet<Type>();
         private readonly JsonSerializerSettings _settings;
         
@@ -17,11 +22,11 @@ namespace Remouse.DatabaseLib
         {
             var defaultConverters = new List<JsonConverter>()
             {
-                new Vec2IntConverter(),
-                new Vec3Converter(),
-                new Vec4Converter(),
-                new TableDataLinkConverter(),
-                new ComponentConfigConverter()
+                new Vec2IntJsonConverter(),
+                new Vec3JsonConverter(),
+                new Vec4JsonConverter(),
+                new TableDataLinkJsonConverter(),
+                new ComponentConfigJsonConverter()
             };
             
             _settings = new JsonSerializerSettings()
@@ -30,62 +35,33 @@ namespace Remouse.DatabaseLib
             };
         }
         
-        public string SerializeAsJson(Database database)
+        public byte[] SerializeToJsonBytes(Database database)
+        {
+            return DefaultEncoding.GetBytes(SerializeToJson(database));
+        }
+        
+        public string SerializeToJson(Database database)
         {
             var jsonKeyValue = new Dictionary<string, object>();
 
             foreach (var table in database.GetTables())
             {
                 var genericArg = table.GetType().GenericTypeArguments[0];
-                jsonKeyValue[genericArg.AssemblyQualifiedName ?? string.Empty] = table;
+                jsonKeyValue[genericArg.Name ?? string.Empty] = table;
             }
 
-            foreach (var setting in database.GetSetting())
+            foreach (var setting in database.GetSettings())
             {
-                jsonKeyValue[setting.GetType().AssemblyQualifiedName ?? string.Empty] = setting;
+                jsonKeyValue[setting.GetType().Name] = setting;
             }
 
             return JsonConvert.SerializeObject(jsonKeyValue, _settings);
         }
         
-        public byte[] SerializeAsJsonUTF8(Database database)
+        public Database DeserializeFromBytes(byte[] json)
         {
-            var result = new Dictionary<string, object>();
-
-            foreach (var table in database.GetTables())
-            {
-                var genericArg = table.GetType().GenericTypeArguments[0];
-                result[genericArg.AssemblyQualifiedName] = table;
-            }
-
-            foreach (var setting in database.GetSetting())
-            {
-                result[setting.GetType().AssemblyQualifiedName] = setting;
-            }
-
-            var json = JsonConvert.SerializeObject(result, _settings);
-            return DefaultEncoding.GetBytes(json);
-        }
-
-        public Database DeserializeDatabase(byte[] data)
-        {
-            var jsonString = DefaultEncoding.GetString(data);
-            
-            var serializedData = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString, _settings);
-            if (serializedData == null)
-            {
-                throw new InvalidOperationException("Failed to deserialize the provided JSON string.");
-            }
-
-            var tableList = new List<Table>();
-            var settingsList = new List<Settings>();
-
-            foreach (var item in serializedData)
-            {
-                DeserializeItem(item, tableList, settingsList);
-            }
-
-            return new Database(settingsList, tableList);
+            string jsonString = DefaultEncoding.GetString(json);
+            return DeserializeFromJson(jsonString);
         }
         
         public Database DeserializeFromJson(string jsonString)
@@ -106,30 +82,11 @@ namespace Remouse.DatabaseLib
 
             return new Database(settingsList, tableList);
         }
-        
-        public Database DeserializeFromJsonUTF8(byte[] json)
-        {
-            string jsonString = DefaultEncoding.GetString(json);
-            var serializedData = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString, _settings);
-            if (serializedData == null)
-            {
-                throw new InvalidOperationException("Failed to deserialize the provided JSON string.");
-            }
-
-            var tableList = new List<Table>();
-            var settingsList = new List<Settings>();
-
-            foreach (var item in serializedData)
-            {
-                DeserializeItem(item, tableList, settingsList);
-            }
-
-            return new Database(settingsList, tableList);
-        }
 
         private void DeserializeItem(KeyValuePair<string, object> item, List<Table> tableList, List<Settings> settingsList)
         {
-            var type = Type.GetType(item.Key);
+            var type = _settingTypes.FirstOrDefault(s => s.Name == item.Key) ?? _tableDataTypes.FirstOrDefault(t => t.Name == item.Key);
+            
             if (type == null)
             {
                 throw new InvalidOperationException($"Unable to resolve type for key: {item.Key}");

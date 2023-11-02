@@ -48,7 +48,7 @@ namespace Remouse.Models
             var entityInfo = new EntityInfo();
             entityInfo.componentsContainers = new List<SerializableComponentContainer>();
             
-            foreach (var componentType in world.GetComponentTypes())
+            foreach (var componentType in world.ComponentTypes)
             {
                 var component = world.GetComponent(componentType, entityId) as INetworkComponent;
                 if (component == null)

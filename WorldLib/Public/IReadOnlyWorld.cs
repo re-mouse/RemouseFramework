@@ -4,10 +4,10 @@ namespace Remouse.Core.World
 {
     public interface IReadOnlyWorld
     {
+        public Type[] ComponentTypes { get; }
+        
         public int[] GetEntities();
         public IPackedEntity PackEntity(int entityId);
-        
-        public Type[] GetComponentTypes();
         
         public T? GetComponent<T>(int entityId) where T : struct, IComponent;
         public bool HasComponent<T>(int entityId) where T : struct, IComponent;

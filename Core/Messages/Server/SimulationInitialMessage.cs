@@ -2,11 +2,11 @@ using Remouse.Serialization;
 
 namespace Remouse.Models.Messages
 {
-    public class CurrentWorldStateMessage : NetworkMessage
+    public class SimulationInitialMessage : NetworkMessage
     {
         public PackedWorld PackedWorld { get; }
 
-        public CurrentWorldStateMessage(PackedWorld packedWorld)
+        public SimulationInitialMessage(PackedWorld packedWorld)
         {
             this.PackedWorld = packedWorld;
         }

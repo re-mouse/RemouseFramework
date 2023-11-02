@@ -10,13 +10,11 @@ namespace Remouse.Core.Input
         
         public override void Deserialize(INetworkReader reader)
         {
-            base.Deserialize(reader);
             movementVector.Deserialize(reader);
         }
 
         public override void Serialize(INetworkWriter writer)
         {
-            base.Serialize(writer);
             movementVector.Serialize(writer);
         }
 

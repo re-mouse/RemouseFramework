@@ -3,14 +3,16 @@ using Remouse.DatabaseLib;
 using Remouse.Core;
 using Remouse.Core.World;
 using Remouse.DIContainer;
+using Remouse.GameServer.ServerTransport;
 
 namespace Remouse.GameServer
 {
-    public class GameServerCoreModule : Module
+    public class ServerCoreModule : Module
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
             typeBinder.AddSingleton<SimulationHost>();
+            typeBinder.AddSingleton<ServerBootstrap>();
             typeBinder.AddSingleton<WorldCommandBuffer>();
             typeBinder.AddSingleton<PlayersSessionManager>();
             typeBinder.AddSingleton<ServerGameLoop>();
@@ -19,6 +21,7 @@ namespace Remouse.GameServer
         public override void BindModuleDependencies(ModuleManager moduleBinder)
         {
             moduleBinder.RegisterModule<DatabaseModule>();
+            moduleBinder.RegisterModule<PlayerMiddlewareModule>();
             moduleBinder.RegisterModule<SimulationModule>();
             moduleBinder.RegisterModule<WorldModule>();
         }

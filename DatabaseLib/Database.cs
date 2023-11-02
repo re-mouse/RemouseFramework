@@ -26,7 +26,7 @@ namespace Remouse.DatabaseLib
             }
         }
         
-        public T GetSettings<T>() where T : Settings
+        public T GetSetting<T>() where T : Settings
         {
             var settingsType = typeof(T);
 
@@ -48,12 +48,14 @@ namespace Remouse.DatabaseLib
             return table?.GetData(id);
         }
 
-        internal Settings[] GetSetting()
+        public Settings[] GetSettings()
         {
             return _settingsByType.Values.ToArray();
         }
-        
-        internal object[] GetTables() => _tablesByDataType.Values.ToArray();
 
+        public Table[] GetTables()
+        {
+            return _tablesByDataType.Values.ToArray();
+        }
     }
 }

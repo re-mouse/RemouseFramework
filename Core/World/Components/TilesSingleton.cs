@@ -1,5 +1,4 @@
 using Remouse.Core.World;
-using Remouse.Mathlib;
 
 namespace Remouse.Core.Components
 {

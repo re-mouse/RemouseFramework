@@ -11,8 +11,8 @@ namespace Remouse.DatabaseLib.Tests
         public void Setup()
         { 
             _sampleTable = new Table<SampleTableData>();
-            _sampleTable.rows.Add(new SampleTableData { Id = "1", Name = "Row1" });
-            _sampleTable.rows.Add(new SampleTableData { Id = "2", Name = "Row2" });
+            _sampleTable.rows.Add(new SampleTableData { id = "1", Name = "Row1" });
+            _sampleTable.rows.Add(new SampleTableData { id = "2", Name = "Row2" });
         }
 
         [Test]
@@ -26,14 +26,14 @@ namespace Remouse.DatabaseLib.Tests
         [Test]
         public void Table_Initialization_DuplicateIds()
         {
-            _sampleTable.rows.Add(new SampleTableData { Id = "1", Name = "DuplicateRow" });
+            _sampleTable.rows.Add(new SampleTableData { id = "1", Name = "DuplicateRow" });
             Assert.Throws<AggregateException>(() => _sampleTable.ValidateRows());
         }
 
         [Test]
         public void Table_Initialization_NullId()
         {
-            _sampleTable.rows.Add(new SampleTableData { Id = null, Name = "NullIdRow" });
+            _sampleTable.rows.Add(new SampleTableData { id = null, Name = "NullIdRow" });
             Assert.Throws<NullReferenceException>(() => _sampleTable.ValidateRows());
         }
 

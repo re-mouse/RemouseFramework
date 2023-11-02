@@ -1,8 +1,7 @@
 using NUnit.Framework;
 using Remouse.Core.Configs;
 using System.Collections.Generic;
-using Remouse.DatabaseLib.Tables;
-using Remouse.Mathlib;
+using Remouse.Models.Database;
 using Remouse.MathLib;
 
 namespace Remouse.DatabaseLib.Tests
@@ -23,12 +22,12 @@ namespace Remouse.DatabaseLib.Tests
             
             var database = new Database(new List<Settings>(), tables);
 
-            var json = new DatabaseSerializer().SerializeAsJsonUTF8(database);
-            database = new DatabaseSerializer().DeserializeDatabase(json);
+            var json = new DatabaseSerializer().SerializeToJsonBytes(database);
+            database = new DatabaseSerializer().DeserializeFromBytes(json);
 
             var defaultMap = database.GetTableData<MapConfig>("Map");
             Assert.IsNotNull(defaultMap);
-            Assert.AreEqual("Map", defaultMap.Id);
+            Assert.AreEqual("Map", defaultMap.id);
 
             // Проверка для EntityConfig
             var defaultEntity = defaultMap.entities[0];
@@ -44,10 +43,6 @@ namespace Remouse.DatabaseLib.Tests
             Assert.AreEqual("20", healthComponent.componentValues["startHealth"]);
             Assert.AreEqual("50", healthComponent.componentValues["maxHealth"]);
     
-            // Проверка для Position и Rotation
-            Assert.AreEqual(new Vec3(10.45f, 12f, 123f), defaultEntity.position);
-            Assert.AreEqual(new Vec4(0f, 0f, 90f, 1f), defaultEntity.rotation);
-
             // Проверка для TileConfig
             var defaultTile = defaultMap.tiles[0];
             Assert.AreEqual("grass", defaultTile.typeId.Id);
@@ -67,14 +62,14 @@ namespace Remouse.DatabaseLib.Tests
             
             var database = new Database(new List<Settings>(), tables);
 
-            var json = new DatabaseSerializer().SerializeAsJson(database);
+            var json = new DatabaseSerializer().SerializeToJson(database);
             TestContext.Out.WriteLine(json);
         }
 
         private static MapConfig GetMapConfig()
         {
             var item = new MapConfig();
-            item.Id = "Map";
+            item.id = "Map";
             item.entities = new EntityConfig[]
             {
                 new EntityConfig
@@ -100,8 +95,6 @@ namespace Remouse.DatabaseLib.Tests
                             }
                         }
                     },
-                    position = new Vec3(10.45f, 12f, 123f),
-                    rotation = new Vec4(0f, 0f, 90f, 1f)
                 },
             };
             item.tiles = new TileConfig[]
@@ -118,7 +111,7 @@ namespace Remouse.DatabaseLib.Tests
         private static MapConfig GetStartMapConfig()
         {
             var item = new MapConfig();
-            item.Id = "Start";
+            item.id = "Start";
             item.entities = new EntityConfig[]
             {
                 new EntityConfig
@@ -144,8 +137,6 @@ namespace Remouse.DatabaseLib.Tests
                             }
                         }
                     },
-                    position = new Vec3(10.45f, 12f, 123f),
-                    rotation = new Vec4(0f, 0f, 90f, 1f)
                 },
                 new EntityConfig()
                 {
@@ -170,8 +161,6 @@ namespace Remouse.DatabaseLib.Tests
                             }
                         }
                     },
-                    position = new Vec3(102.45f, 132f, 123f),
-                    rotation = new Vec4(0f, 0f, 90f, 1f)
                 }
             };
             item.tiles = new TileConfig[]

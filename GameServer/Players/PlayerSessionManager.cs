@@ -24,10 +24,10 @@ namespace Remouse.GameServer.Players
             _playerEvents.Connected += HandleConnected;
             _playerEvents.Disconnected += HandleDisconnected;
             _playerEvents.SubscribeToMessage<PlayerInputMessage>(HandleInputMessage);
-            _playerEvents.SubscribeToMessage<SimulationLoadedMessage>(HandleSimulationLoadedMessage);
+            _playerEvents.SubscribeToMessage<RequestSimulationInitialMessage>(HandleSimulationLoadedMessage);
         }
 
-        private void HandleSimulationLoadedMessage(IPlayer player, SimulationLoadedMessage message)
+        private void HandleSimulationLoadedMessage(IPlayer player, RequestSimulationInitialMessage message)
         {
             if (player.Data.sessionData.state != PlayerState.LoadingMap)
             {
@@ -47,7 +47,7 @@ namespace Remouse.GameServer.Players
         private void SendCurrentWorldState(IPlayer player)
         {
             var worldState = _simulationHost?.Simulation?.PackWorld();
-            player.Send(new CurrentWorldStateMessage(worldState));
+            player.Send(new SimulationInitialMessage(worldState));
         }
 
         private void EnqueueSpawnPlayer(IPlayer player)
@@ -72,7 +72,7 @@ namespace Remouse.GameServer.Players
 
         private void HandleConnected(IPlayer player)
         { 
-            player.Send(new MapInfoMessage(_simulationHost.Simulation.MapId));
+            player.Send(new SimulationMapInfoMessage(_simulationHost.Simulation.MapId));
             
             player.Data.sessionData.state = PlayerState.LoadingMap;
             

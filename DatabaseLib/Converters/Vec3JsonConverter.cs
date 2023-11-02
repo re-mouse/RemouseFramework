@@ -1,23 +1,22 @@
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using Remouse.MathLib;
 
 namespace Remouse.Core.Configs
 {
-    public class Vec4Converter : JsonConverter
+    public class Vec3JsonConverter : JsonConverter
     {
-        public override bool CanConvert(Type objectType) => objectType == typeof(Vec4);
+        public override bool CanConvert(Type objectType) => objectType == typeof(Vec3);
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var vec = (Vec4)value;
+            var vec = (Vec3)value;
             var obj = new JObject
             {
                 ["x"] = vec.x,
                 ["y"] = vec.y,
-                ["z"] = vec.z,
-                ["w"] = vec.w
+                ["z"] = vec.z
             };
             obj.WriteTo(writer);
         }
@@ -26,12 +25,11 @@ namespace Remouse.Core.Configs
             JsonSerializer serializer)
         {
             var obj = JObject.Load(reader);
-            return new Vec4
+            return new Vec3
             {
                 x = obj["x"].Value<float>(),
                 y = obj["y"].Value<float>(),
-                z = obj["z"].Value<float>(),
-                w = obj["w"].Value<float>()
+                z = obj["z"].Value<float>()
             };
         }
     }

@@ -13,7 +13,7 @@ namespace Remouse.DatabaseLib.Tests
         public void Setup()
         {
             _exampleSetting = new ExampleSettings();
-            _exampleTable = new Table<ExampleTableData> { rows = new List<ExampleTableData> { new ExampleTableData { Id = "1" } } };
+            _exampleTable = new Table<ExampleTableData> { rows = new List<ExampleTableData> { new ExampleTableData { id = "1" } } };
 
             var settings = new List<Settings> { _exampleSetting };
             var tables = new List<Table> { _exampleTable };
@@ -23,7 +23,7 @@ namespace Remouse.DatabaseLib.Tests
         [Test]
         public void GetSettings_ReturnsCorrectSettingsType()
         {
-            var retrievedSetting = _database.GetSettings<ExampleSettings>();
+            var retrievedSetting = _database.GetSetting<ExampleSettings>();
             Assert.IsNotNull(retrievedSetting);
             Assert.AreEqual(typeof(ExampleSettings), retrievedSetting.GetType());
         }

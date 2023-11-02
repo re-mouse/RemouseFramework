@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 #if ENABLE_IL2CPP
 using Unity.IL2CPP.CompilerServices;
@@ -249,7 +250,7 @@ namespace Remouse.Shared.EcsLib.LeoEcsLite {
             return _entities;
         }
 
-        public EcsPool<T> GetPool<T> () where T : struct {
+        public EcsPool<T> GetPoolOrCreate<T> () where T : struct {
             var poolType = typeof (T);
             if (_poolHashes.TryGetValue (poolType, out var rawPool)) {
                 return (EcsPool<T>) rawPool;
@@ -275,8 +276,28 @@ namespace Remouse.Shared.EcsLib.LeoEcsLite {
         }
 
         [MethodImpl (MethodImplOptions.AggressiveInlining)]
-        public IEcsPool? GetPoolByType (Type type) {
-            return _poolHashes.TryGetValue (type, out var pool) ? pool : null;
+        public IEcsPool? GetPoolOrCreateByType (Type type) {
+            if (_poolHashes.TryGetValue (type, out var pool))
+                return pool;
+            
+            if (type.IsValueType && !type.IsPrimitive)
+            {
+                MethodInfo method = typeof(EcsWorld).GetMethod(nameof(GetPoolOrCreate));
+
+                MethodInfo genericMethod = method.MakeGenericMethod(type);
+
+                var result = genericMethod.Invoke(this, null);
+
+                return result as IEcsPool;
+            }
+            else
+            {
+#if DEBUG
+                throw new AggregateException("Cannot create pool of type {type");
+#endif
+                
+                return null;
+            }
         }
 
         public int GetAllEntities (ref int[]? entities) {
@@ -579,7 +600,7 @@ namespace Remouse.Shared.EcsLib.LeoEcsLite {
 
             [MethodImpl (MethodImplOptions.AggressiveInlining)]
             public Mask Inc<T> () where T : struct {
-                var poolId = _world.GetPool<T> ().GetId ();
+                var poolId = _world.GetPoolOrCreate<T> ().GetId ();
 #if DEBUG && !LEOECSLITE_NO_SANITIZE_CHECKS
                 if (_built) { throw new Exception ("Cant change built mask."); }
                 if (Array.IndexOf (include, poolId, 0, includeCount) != -1) { throw new Exception ($"{typeof (T).Name} already in constraints list."); }
@@ -595,7 +616,7 @@ namespace Remouse.Shared.EcsLib.LeoEcsLite {
 #endif
             [MethodImpl (MethodImplOptions.AggressiveInlining)]
             public Mask Exc<T> () where T : struct {
-                var poolId = _world.GetPool<T> ().GetId ();
+                var poolId = _world.GetPoolOrCreate<T> ().GetId ();
 #if DEBUG && !LEOECSLITE_NO_SANITIZE_CHECKS
                 if (_built) { throw new Exception ("Cant change built mask."); }
                 if (Array.IndexOf (include, poolId, 0, includeCount) != -1) { throw new Exception ($"{typeof (T).Name} already in constraints list."); }

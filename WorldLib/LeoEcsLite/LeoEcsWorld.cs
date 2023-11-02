@@ -14,12 +14,11 @@ namespace Remouse.Core.World
         private readonly HashSet<IRunSystem> _runSystems = new HashSet<IRunSystem>();
         private readonly HashSet<IPostRunSystem> _postRunSystems = new HashSet<IPostRunSystem>();
         
-        public LeoEcsWorld(EcsWorld world, HashSet<ISystem> systems, HashSet<Type> componentTypes)
+        public LeoEcsWorld(EcsWorld world, HashSet<ISystem> systems)
         {
             _world = world;
 
             _systems = systems;
-            _componentTypes = componentTypes.ToArray();
             foreach (var system in systems)
             {
                 if (system is IRunSystem runSystem)
@@ -68,32 +67,29 @@ namespace Remouse.Core.World
 
         public object? GetComponent(Type type, int entityId)
         {
-            var pool = _world.GetPoolByType(type);
+            var pool = _world.GetPoolOrCreateByType(type);
             
             return pool?.Has(entityId) ?? false ? pool.GetRaw(entityId) : null;
         }
 
-        public Type[] GetComponentTypes()
-        {
-            return _componentTypes;
-        }
+        public Type[] ComponentTypes { get => _componentTypes; }
 
         public T? GetComponent<T>(int entityId) where T : struct, IComponent
         {
-            var pool = _world.GetPoolByType(typeof(T));
-            return pool?.Has(entityId) ?? false ? (T)pool?.GetRaw(entityId) : null;
+            var pool = _world.GetPoolOrCreate<T>();
+            return pool.Has(entityId) ? pool.Get(entityId) : null;
         }
 
         public ref T GetComponentRef<T>(int entityId) where T : struct, IComponent
         {
-            var pool = (EcsPool<T>)_world.GetPoolByType(typeof(T));
+            var pool = _world.GetPoolOrCreate<T>();
             
             return ref pool.Get(entityId);
         }
         
         public ref T AddComponent<T>(int entityId) where T : struct, IComponent
         {
-            var pool = (EcsPool<T>)_world.GetPoolByType(typeof(T));
+            var pool = _world.GetPoolOrCreate<T>();
             
             return ref pool.Add(entityId);
         }
@@ -101,18 +97,18 @@ namespace Remouse.Core.World
 
         public void DelComponent<T>(int entityId) where T : struct, IComponent
         {
-            var pool = _world.GetPoolByType(typeof(T));
+            var pool = _world.GetPoolOrCreate<T>();
             
             pool?.Del(entityId);
         }
 
         public void SetComponent(Type type, int entityId, object component)
         {
-            var pool = _world.GetPoolByType(type);
+            var pool = _world.GetPoolOrCreateByType(type);
             
             if (pool.Has(entityId))
             {
-                pool?.SetRaw(entityId, component);
+                pool.SetRaw(entityId, component);
             }
             else
             {
@@ -122,7 +118,7 @@ namespace Remouse.Core.World
 
         public void DelComponent(Type type, int entityId)
         {
-            var pool = _world.GetPoolByType(type);
+            var pool = _world.GetPoolOrCreateByType(type);
             
             pool?.Del(entityId);
         }
@@ -134,7 +130,7 @@ namespace Remouse.Core.World
 
         public bool HasComponent(Type type, int entityId)
         {
-            var pool = _world.GetPoolByType(type);
+            var pool = _world.GetPoolOrCreateByType(type);
 
             return pool.Has(entityId);
         }

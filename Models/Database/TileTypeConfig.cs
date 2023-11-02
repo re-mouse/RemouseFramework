@@ -1,11 +1,11 @@
 using System;
+using Remouse.DatabaseLib;
 
-namespace Remouse.DatabaseLib.Tables
+namespace Remouse.Models.Database
 {
     [Serializable]
     public class TileTypeConfig : TableData
     {
-        public string renderId;
         public TileType type;
     }
     

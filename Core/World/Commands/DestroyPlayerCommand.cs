@@ -2,6 +2,7 @@ using Remouse.Core;
 using Remouse.Core.World;
 using Remouse.Serialization;
 using Remouse.Core.ECS.Utils;
+using Remouse.DatabaseLib;
 
 namespace Remouse.Shared.GameSimulation.Commands
 {
@@ -9,7 +10,7 @@ namespace Remouse.Shared.GameSimulation.Commands
     {
         public long playerId;
 
-        public override void Run(IWorld ecsWorld)
+        public override void Run(IWorld ecsWorld, Database database)
         {
             var playerEntityId = ecsWorld.GetPlayerEntity(playerId);
             

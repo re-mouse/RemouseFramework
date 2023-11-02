@@ -8,7 +8,7 @@ namespace Remouse.Core
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.AddSingleton<SimulationFactory>();
+            typeBinder.AddSingleton<MapLoader>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

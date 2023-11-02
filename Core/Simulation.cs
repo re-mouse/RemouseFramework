@@ -1,5 +1,6 @@
 ﻿using System;
 using Remouse.Core.World;
+using Remouse.DatabaseLib;
 using Remouse.Models;
 using Remouse.Shared.Utils.Log;
 
@@ -18,13 +19,14 @@ namespace Remouse.Core
         public event Action<WorldCommand> WorldCommandRunned;
 
         private bool _initialized = false;
-        
+        private Database _database;
+
         public Simulation(IWorld world)
         {
             _world = world;
         }
 
-        public void Initialize()
+        public void Initialize(Database database)
         {
             if (_initialized)
             {
@@ -32,6 +34,7 @@ namespace Remouse.Core
                 return;
             }
             
+            _database = database;
             _world.Initialize();
             _initialized = true;
         }
@@ -57,7 +60,7 @@ namespace Remouse.Core
                 return;
             }
             
-            command.Run(_world);
+            command.Run(_world, _database);
             WorldCommandRunned?.Invoke(command);
         }
 
