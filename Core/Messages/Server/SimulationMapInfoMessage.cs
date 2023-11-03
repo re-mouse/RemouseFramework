@@ -6,6 +6,11 @@ namespace Remouse.Models.Messages
     {
         public string MapId { get; private set; }
 
+        public SimulationMapInfoMessage()
+        {
+            
+        }
+
         public SimulationMapInfoMessage(string mapId)
         {
             MapId = mapId;

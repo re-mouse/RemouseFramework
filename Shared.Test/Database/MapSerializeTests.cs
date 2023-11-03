@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Remouse.Core.Configs;
 using System.Collections.Generic;
+using System.Linq;
 using Remouse.Models.Database;
 using Remouse.MathLib;
 
@@ -35,13 +36,13 @@ namespace Remouse.DatabaseLib.Tests
     
             // Проверка для ComponentConfig
             var movementSpeedComponent = defaultEntity.overrideComponents[0];
-            Assert.AreEqual("movementSpeed", movementSpeedComponent.name);
-            Assert.AreEqual("15", movementSpeedComponent.componentValues["speed"]);
+            Assert.AreEqual("movementSpeed", movementSpeedComponent.componentType);
+            Assert.AreEqual("15", movementSpeedComponent.fieldValues.FirstOrDefault(f => f.fieldName == "speed").value);
     
             var healthComponent = defaultEntity.overrideComponents[1];
-            Assert.AreEqual("health", healthComponent.name);
-            Assert.AreEqual("20", healthComponent.componentValues["startHealth"]);
-            Assert.AreEqual("50", healthComponent.componentValues["maxHealth"]);
+            Assert.AreEqual("health", healthComponent.componentType);
+            Assert.AreEqual("20", healthComponent.fieldValues.FirstOrDefault(f => f.fieldName == "startHealth").value);
+            Assert.AreEqual("50", healthComponent.fieldValues.FirstOrDefault(f => f.fieldName == "maxHealth").value);
     
             // Проверка для TileConfig
             var defaultTile = defaultMap.tiles[0];
@@ -75,23 +76,23 @@ namespace Remouse.DatabaseLib.Tests
                 new EntityConfig
                 {
                     typeId = new TableDataLink<EntityTypeConfig>() { Id = "monster" },
-                    overrideComponents = new ComponentConfig[]
+                    overrideComponents = new List<ComponentConfig>()
                     {
                         new ComponentConfig
                         {
-                            name = "movementSpeed",
-                            componentValues = new Dictionary<string, string>
+                            componentType = "movementSpeed",
+                            fieldValues = new List<ComponentFieldValue>()
                             {
-                                { "speed", 15.ToString() }
+                                new ComponentFieldValue("speed", 15.ToString())
                             }
                         },
                         new ComponentConfig
                         {
-                            name = "health",
-                            componentValues = new Dictionary<string, string>
+                            componentType = "health",
+                            fieldValues = new List<ComponentFieldValue>()
                             {
-                                { "startHealth", 20.ToString() },
-                                { "maxHealth", 50.ToString() }
+                                new ComponentFieldValue( "startHealth", 20.ToString() ),
+                                new ComponentFieldValue( "maxHealth", 50.ToString() )
                             }
                         }
                     },
@@ -117,23 +118,23 @@ namespace Remouse.DatabaseLib.Tests
                 new EntityConfig
                 {
                     typeId = new TableDataLink<EntityTypeConfig>() { Id = "monster" },
-                    overrideComponents = new ComponentConfig[]
+                    overrideComponents = new List<ComponentConfig>()
                     {
                         new ComponentConfig
                         {
-                            name = "movementSpeed",
-                            componentValues = new Dictionary<string, string>
+                            componentType = "movementSpeed",
+                            fieldValues = new List<ComponentFieldValue>()
                             {
-                                { "speed", 15.ToString() }
+                                new ComponentFieldValue( "speed", 15.ToString())
                             }
-                        },
+                    },
                         new ComponentConfig
                         {
-                            name = "health",
-                            componentValues = new Dictionary<string, string>
+                            componentType = "health",
+                            fieldValues = new List<ComponentFieldValue>()
                             {
-                                { "startHealth", 20.ToString() },
-                                { "maxHealth", 50.ToString() }
+                                new ComponentFieldValue( "startHealth", 20.ToString() ),
+                                new ComponentFieldValue( "maxHealth", 50.ToString() )
                             }
                         }
                     },
@@ -141,23 +142,23 @@ namespace Remouse.DatabaseLib.Tests
                 new EntityConfig()
                 {
                     typeId = new TableDataLink<EntityTypeConfig>() { Id = "playerSpawnPoint" },
-                    overrideComponents = new ComponentConfig[]
+                    overrideComponents = new List<ComponentConfig>()
                     {
                         new ComponentConfig
                         {
-                            name = "playerCapacity",
-                            componentValues = new Dictionary<string, string>
+                            componentType = "playerCapacity",
+                            fieldValues = new List<ComponentFieldValue>()
                             {
-                                { "capacity", 20.ToString() }
-                            }
-                        },
+                                new ComponentFieldValue( "capacity", 20.ToString() )
+                        }
+                    },
                         new ComponentConfig
                         {
-                            name = "health",
-                            componentValues = new Dictionary<string, string>
+                            componentType = "health",
+                            fieldValues = new List<ComponentFieldValue>()
                             {
-                                { "startHealth", 40.ToString() },
-                                { "maxHealth", 50.ToString() }
+                                new ComponentFieldValue( "startHealth", 40.ToString() ), 
+                                new ComponentFieldValue( "maxHealth", 50.ToString() )
                             }
                         }
                     },

@@ -7,7 +7,7 @@ namespace Remouse.Transport
     {
         public void Start(ushort port, int maxConnections);
         public void Stop();
-        public void Update();
+        public void PollEvents();
     }
     
     public interface IServerSocketEvents

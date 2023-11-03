@@ -14,7 +14,7 @@ namespace Remouse.Core
         public override void Run(IWorld ecsWorld, Database database)
         {
             var playerSettings = database.GetSetting<PlayerSettings>();
-            var entity = playerSettings.playerEntityId.GetTableData(database).CreateEntity(ecsWorld);
+            var entity = playerSettings.playerEntityType.GetTableData(database).CreateEntity(ecsWorld);
             var playerTag = ecsWorld.GetComponentRef<PlayerTag>(entity);
             playerTag.playerId = playerId;
         }

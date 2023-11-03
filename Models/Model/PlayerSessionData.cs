@@ -10,6 +10,7 @@ namespace Remouse.Models
     {
         LoadingMap,
         WaitingWorldState,
+        WaitingMapInfo,
         InGame,
         Disconnected
     }

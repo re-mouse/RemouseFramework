@@ -12,7 +12,7 @@ namespace Remouse.Transport
         public Task<SocketConnectResult> ConnectAsync(IPEndPoint host, INetworkWriter connectData = null, int timeOutMilliseconds = 2000, CancellationToken cancellationToken = default);
         public void Disconnect();
         public void Send(INetworkWriter data, DeliveryMethod deliveryMethod);
-        public void Update();
+        public void PollEvents();
     }
 
     public interface IClientSocketEvents

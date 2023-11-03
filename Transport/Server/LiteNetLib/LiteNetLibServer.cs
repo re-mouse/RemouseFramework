@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using LiteNetLib;
 using Remouse.Serialization;
+using Remouse.Shared.Utils.Log;
 
 namespace Remouse.Transport.Implementations
 {
@@ -42,7 +43,7 @@ namespace Remouse.Transport.Implementations
             _netManager.Stop();
         }
 
-        void IServerSocket.Update()
+        void IServerSocket.PollEvents()
         {
             _netManager.PollEvents();
         }
@@ -60,11 +61,15 @@ namespace Remouse.Transport.Implementations
         {
             if (_connections.Count >= _maxConnections)
             {
+                Logger.Current.LogTrace(this, $"Rejected from {request.RemoteEndPoint}: connections max");
+
                 request.Reject();
                 return;
             }
-            
-            GotConnectionRequest?.Invoke(new LiteNetLibConnectionRequest(request, this));
+
+            var data = new byte[request.Data.AvailableBytes];
+            Array.Copy(request.Data.RawData, request.Data.Position, data, 0, request.Data.AvailableBytes);
+            GotConnectionRequest?.Invoke(new LiteNetLibConnectionRequest(data, request, this));
         }
         
         private void HandlePeerConnected(NetPeer peer)
@@ -72,6 +77,8 @@ namespace Remouse.Transport.Implementations
             if (!_connections.ContainsKey(peer))
                 return;
 
+            Logger.Current.LogTrace(this, $"Connected from {peer.EndPoint}");
+            
             var connection = _connections[peer];
             
             Connected?.Invoke(connection);
@@ -84,6 +91,8 @@ namespace Remouse.Transport.Implementations
 
             var connection = _connections[peer];
             
+            Logger.Current.LogTrace(this, $"{peer.EndPoint} disconnected. Reason - {disconnectinfo.Reason}. SocketError - {disconnectinfo.SocketErrorCode}");
+            
             Disconnected?.Invoke(connection);
             
             _connections.Remove(peer);
@@ -91,6 +100,8 @@ namespace Remouse.Transport.Implementations
         
         private void HandleNetworkReceive(NetPeer peer, NetPacketReader reader, byte channel, LiteNetLib.DeliveryMethod deliverymethod)
         {
+            Logger.Current.LogTrace(this, $"Received data from {peer.EndPoint}. Size - {reader.AvailableBytes}");
+
             var connection = _connections[peer];
 
             DataReceived?.Invoke(connection, new LiteNetLibReader(reader));

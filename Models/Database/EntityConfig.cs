@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Remouse.Core.Configs;
 
 namespace Remouse.Models.Database
@@ -7,6 +8,6 @@ namespace Remouse.Models.Database
     public class EntityConfig
     {
         public TableDataLink<EntityTypeConfig> typeId;
-        public ComponentConfig[] overrideComponents;
+        public List<ComponentConfig> overrideComponents;
     }
 }

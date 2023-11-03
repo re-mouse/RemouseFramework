@@ -1,3 +1,4 @@
+using Core.Messages.Client;
 using Remouse.GameServer.ServerTransport;
 using Remouse.Core;
 using Remouse.Core.Input;
@@ -25,6 +26,19 @@ namespace Remouse.GameServer.Players
             _playerEvents.Disconnected += HandleDisconnected;
             _playerEvents.SubscribeToMessage<PlayerInputMessage>(HandleInputMessage);
             _playerEvents.SubscribeToMessage<RequestSimulationInitialMessage>(HandleSimulationLoadedMessage);
+            _playerEvents.SubscribeToMessage<RequestSimulationMapInfoMessage>(HandleSimulationRequestMessage);
+        }
+
+        private void HandleSimulationRequestMessage(IPlayer player, RequestSimulationMapInfoMessage message)
+        {
+            if (player.Data.sessionData.state != PlayerState.WaitingMapInfo)
+            {
+                Logger.Current.LogPlayerError(this, player, $"Received request simulation map info message, incorrect player state. Current state - {player.Data.sessionData.state}");
+                return;
+            }
+            
+            player.Send(new SimulationMapInfoMessage(_simulationHost.Simulation.MapId));
+            player.Data.sessionData.state = PlayerState.LoadingMap;
         }
 
         private void HandleSimulationLoadedMessage(IPlayer player, RequestSimulationInitialMessage message)

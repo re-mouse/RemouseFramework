@@ -53,7 +53,7 @@ namespace Remouse.GameServer.ServerTransport
 
         public void Update()
         {
-            _socket.Update();
+            _socket.PollEvents();
         }
 
         void HandleConnectionRequest(ConnectionRequest request)
@@ -67,8 +67,10 @@ namespace Remouse.GameServer.ServerTransport
             {
                 authRequest.Deserialize(reader);
             }
-            catch (Exception _)
+            catch (Exception fuckyouExException)
             {
+                Logger.Current.LogInfo(this, $"Got exception. {request.EndPoint} connection request reject");
+                Logger.Current.LogException(this, fuckyouExException);
                 request.Reject();
                 return;
             }

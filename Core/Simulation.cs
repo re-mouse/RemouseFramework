@@ -13,7 +13,7 @@ namespace Remouse.Core
         public static float TicksInSecond { get => 60f; }
 
         public string MapId { get; }
-        public IReadOnlyWorld World { get; }
+        public IReadOnlyWorld World { get => _world; }
         public long CurrentTick { get; private set; }
 
         public event Action<WorldCommand> WorldCommandRunned;

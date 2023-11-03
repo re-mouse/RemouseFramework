@@ -4,6 +4,7 @@ using Remouse.GameServer.ServerTransport;
 using Remouse.Core;
 using Remouse.DatabaseLib;
 using Remouse.DIContainer;
+using Remouse.GameServer.Players;
 using Remouse.Infrastructure;
 
 namespace Remouse.GameServer
@@ -40,6 +41,7 @@ namespace Remouse.GameServer
             _databaseHost = container.Resolve<DatabaseHost>();
             _resources = container.Resolve<IResources>();
             _simulationHost = container.Resolve<SimulationHost>();
+            container.Resolve<PlayersSessionManager>();
         }
 
         public void Start(ServerConfig config)

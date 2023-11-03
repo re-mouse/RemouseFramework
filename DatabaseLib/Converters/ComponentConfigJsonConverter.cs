@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Remouse.Utils;
+using UnityEngine;
 
 namespace Remouse.Core.Configs
 {
@@ -12,13 +15,26 @@ namespace Remouse.Core.Configs
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var component = (ComponentConfig)value;
+            if (component == null)
+            {
+                Debug.LogError($"Error on deserializing, component not found {value}, type - {value.GetType()}");
+                return;
+            }
+            
             var obj = new JObject
             {
-                ["name"] = component.name
+                ["componentType"] = component.componentType
             };
-            foreach (var prop in component.componentValues)
+
+            if (component.fieldValues == null || component.fieldValues.Count == 0)
             {
-                obj[prop.Key] = JToken.FromObject(prop.Value, serializer);
+                obj.WriteTo(writer);
+                return;
+            }
+
+            foreach (var prop in component.fieldValues)
+            {
+                obj[prop.fieldName] = JToken.FromObject(prop.value, serializer);
             }
 
             obj.WriteTo(writer);
@@ -28,12 +44,23 @@ namespace Remouse.Core.Configs
             JsonSerializer serializer)
         {
             var obj = JObject.Load(reader);
+            
+            List<ComponentFieldValue> fieldValues = obj
+                .Properties()
+                .Where(p => p.Name != "componentType")
+                .Select(p => new ComponentFieldValue(p.Name, p.Value.ToString()))
+                .ToList();
+            
+            var fieldName = obj["componentType"]?.ToString();
+            if (fieldName.IsNullOrEmpty())
+                return default;
+            
             var component = new ComponentConfig
             {
-                name = obj["name"].Value<string>(),
-                componentValues = obj.Properties().Where(p => p.Name != "name")
-                    .ToDictionary(p => p.Name, p => p.Value.ToObject<string>(serializer))
+                componentType = fieldName,
+                fieldValues = fieldValues
             };
+            
             return component;
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remouse.Core.Configs;
@@ -33,14 +34,14 @@ namespace Remouse.Core
             return entity;
         }
 
-        public static void ApplyOnEntity(this ComponentConfig[] configs, int entity, IWorld world)
+        public static void ApplyOnEntity(this IEnumerable<ComponentConfig> configs, int entity, IWorld world)
         {
             foreach (var componentConfig in configs)
             {
                 IComponent component = componentConfig.CreateComponentWithConfigValues();
                 if (component == null)
                 {
-                    Logger.Current.LogError("ConfigExtension", $"Component type not found for config with name {componentConfig.name}" );
+                    Logger.Current.LogError("ConfigExtension", $"Component type not found for config with name {componentConfig.componentType}" );
                     continue;
                 }
                 
@@ -50,7 +51,7 @@ namespace Remouse.Core
         
         public static IComponent CreateComponentWithConfigValues(this ComponentConfig config)
         {
-            var componentType = componentTypes.FirstOrDefault(c => c.Name == config.name);
+            var componentType = componentTypes.FirstOrDefault(c => c.Name == config.componentType);
             
             if (componentType == null)
                 return null;
@@ -61,9 +62,11 @@ namespace Remouse.Core
             FieldInfo[] fields = componentType.GetFields();
             foreach (var field in fields)
             {
-                if (config.componentValues.TryGetValue(field.Name, out var value) && field.FieldType == value.GetType())
+                var componentFieldValue = config.fieldValues.FirstOrDefault(f => f.fieldName == componentType.Name);
+
+                if (componentFieldValue != null)
                 {
-                    field.SetValue(component, value);
+                    field.SetValue(component, componentFieldValue.value);
                 }
             }
 
@@ -78,9 +81,11 @@ namespace Remouse.Core
             FieldInfo[] fields = componentType.GetFields();
             foreach (var field in fields)
             {
-                if (config.componentValues.TryGetValue(field.Name, out var value) && field.FieldType == value.GetType())
+                var componentFieldValue = config.fieldValues.FirstOrDefault(f => f.fieldName == field.FieldType.Name);
+                
+                if (componentFieldValue != null)
                 {
-                    field.SetValue(component, value);
+                    field.SetValue(component, componentFieldValue.value);
                 }
             }
 
@@ -89,7 +94,7 @@ namespace Remouse.Core
         
         public static T CreateComponentWithConfigValues<T>(this EntityTypeConfig entityTypeConfig) where T : IComponent
         {
-            var componentConfig = entityTypeConfig.components.FirstOrDefault(c => c.name == typeof(T).Name);
+            var componentConfig = entityTypeConfig.components.FirstOrDefault(c => c.componentType == typeof(T).Name);
 
             return componentConfig.CreateComponentWithConfigValues<T>();
         }
@@ -97,13 +102,13 @@ namespace Remouse.Core
         public static bool ContainComponent<T>(this EntityConfig entityConfig) where T : IComponent
         {
             var componentName = typeof(T).Name;
-            return entityConfig.overrideComponents.FirstOrDefault(c => c.name == componentName) != default;
+            return entityConfig.overrideComponents.FirstOrDefault(c => c.componentType == componentName) != default;
         }
         
         public static bool ContainComponent<T>(this EntityTypeConfig entityTypeConfig) where T : IComponent
         {
             var componentName = typeof(T).Name;
-            return entityTypeConfig.components.FirstOrDefault(c => c.name == componentName) != default;
+            return entityTypeConfig.components.FirstOrDefault(c => c.componentType == componentName) != default;
         }
     }
 }

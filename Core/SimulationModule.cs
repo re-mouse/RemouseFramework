@@ -9,6 +9,7 @@ namespace Remouse.Core
         public override void BindDependencies(TypeManager typeBinder)
         {
             typeBinder.AddSingleton<MapLoader>();
+            typeBinder.AddSingleton<SimulationHost>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

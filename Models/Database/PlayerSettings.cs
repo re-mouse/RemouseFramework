@@ -7,6 +7,6 @@ namespace Remouse.Models.Database
     [Serializable]
     public class PlayerSettings : Settings
     {
-        public TableDataLink<EntityTypeConfig> playerEntityId;
+        public TableDataLink<EntityTypeConfig> playerEntityType;
     }
 }

@@ -85,19 +85,31 @@ namespace Remouse.Core
                 
                 var entity = world.NewEntity();
 
-                ApplyComponentConfigs(typeConfig.components, world, entity);
-                ApplyComponentConfigs(entityConfig.overrideComponents, world, entity);
+                if (typeConfig != null && typeConfig.components != null)
+                {
+                    ApplyComponentConfigs(typeConfig.components, world, entity);
+                }
+
+                if (entityConfig.overrideComponents != null)
+                {
+                    ApplyComponentConfigs(entityConfig.overrideComponents, world, entity);
+                }
             }
         }
 
-        private void ApplyComponentConfigs(ComponentConfig[] componentConfigs, IWorld world, int entity)
+        private void ApplyComponentConfigs(List<ComponentConfig> componentConfigs, IWorld world, int entity)
         {
             foreach (var componentConfig in componentConfigs)
             {
+                if (componentConfig == null || componentConfig.componentType.IsNullOrEmpty())
+                {
+                    Logger.Current.LogError(this, "Empty config in map");
+                    continue;
+                }
                 IComponent component = componentConfig.CreateComponentWithConfigValues();
                 if (component == null)
                 {
-                    Logger.Current.LogError(this, $"Component type not found for config with name {componentConfig.name}" );
+                    Logger.Current.LogError(this, $"Component type not found for config with name {componentConfig.componentType}" );
                     continue;
                 }
                 

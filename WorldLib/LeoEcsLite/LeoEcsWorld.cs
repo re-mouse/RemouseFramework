@@ -72,7 +72,16 @@ namespace Remouse.Core.World
             return pool?.Has(entityId) ?? false ? pool.GetRaw(entityId) : null;
         }
 
-        public Type[] ComponentTypes { get => _componentTypes; }
+        public Type[] ComponentTypes
+        {
+            get
+            {
+                //TODO: fix, eto kostyl
+                var ecsPools = new IEcsPool[1];
+                _world.GetAllPools(ref ecsPools);
+                return ecsPools.Select(p => p.GetComponentType()).ToArray();
+            }
+        }
 
         public T? GetComponent<T>(int entityId) where T : struct, IComponent
         {

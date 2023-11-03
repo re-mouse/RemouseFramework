@@ -6,7 +6,25 @@ namespace Remouse.Core.Configs
     [Serializable]
     public class ComponentConfig
     {
-        public string name;
-        public Dictionary<string, string> componentValues;
+        public string componentType;
+        public List<ComponentFieldValue> fieldValues;
+    }
+    
+    [Serializable]
+    public class ComponentFieldValue
+    {
+        public string fieldName;
+        public string value;
+
+        public ComponentFieldValue(string fieldName, string value)
+        {
+            this.fieldName = fieldName;
+            this.value = value;
+        }
+
+        public ComponentFieldValue()
+        {
+            
+        }
     }
 }

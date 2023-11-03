@@ -5,7 +5,7 @@ namespace Remouse.Transport.Implementations
         private readonly LiteNetLib.ConnectionRequest _request;
         private readonly LiteNetLibServer _server;
 
-        public LiteNetLibConnectionRequest(LiteNetLib.ConnectionRequest request, LiteNetLibServer server) : base(request.Data.RawData, request.RemoteEndPoint)
+        public LiteNetLibConnectionRequest(byte[] data, LiteNetLib.ConnectionRequest request, LiteNetLibServer server) : base(data, request.RemoteEndPoint)
         {
             _request = request;
             _server = server;

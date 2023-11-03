@@ -6,6 +6,11 @@ namespace Remouse.Models.Messages
     {
         public PackedWorld PackedWorld { get; }
 
+        public SimulationInitialMessage()
+        {
+            
+        }
+
         public SimulationInitialMessage(PackedWorld packedWorld)
         {
             this.PackedWorld = packedWorld;

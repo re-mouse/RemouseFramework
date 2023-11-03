@@ -91,6 +91,7 @@ namespace Remouse.Serialization
             ushort length = ReadUShort();
             var array = new byte[length];
             Array.Copy(_buffer, _currentPosition, array, 0, length);
+            _currentPosition += length;
             return array;
         }
         
