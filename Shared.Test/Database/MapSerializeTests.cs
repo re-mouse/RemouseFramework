@@ -23,8 +23,8 @@ namespace Remouse.DatabaseLib.Tests
             
             var database = new Database(new List<Settings>(), tables);
 
-            var json = new DatabaseSerializer().SerializeToJsonBytes(database);
-            database = new DatabaseSerializer().DeserializeFromBytes(json);
+            var json = new DatabaseJsonSerializer().SerializeToJsonBytes(database);
+            database = new DatabaseJsonSerializer().DeserializeFromBytes(json);
 
             var defaultMap = database.GetTableData<MapConfig>("Map");
             Assert.IsNotNull(defaultMap);
@@ -63,7 +63,7 @@ namespace Remouse.DatabaseLib.Tests
             
             var database = new Database(new List<Settings>(), tables);
 
-            var json = new DatabaseSerializer().SerializeToJson(database);
+            var json = new DatabaseJsonSerializer().SerializeToJson(database);
             TestContext.Out.WriteLine(json);
         }
 

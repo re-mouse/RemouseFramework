@@ -36,14 +36,19 @@ namespace Remouse.DatabaseLib
             return null;
         }
 
-        public T GetTableData<T>(string id) where T : TableData
+        public Table<T> GetTable<T>() where T : TableData
         {
             var dataType = typeof(T);
 
             if (!_tablesByDataType.TryGetValue(dataType, out var tableData))
                 return null;
 
-            var table = (Table<T>)tableData;
+            return (Table<T>)tableData;
+        }
+
+        public T GetTableData<T>(string id) where T : TableData
+        {
+            var table = GetTable<T>();
 
             return table?.GetData(id);
         }

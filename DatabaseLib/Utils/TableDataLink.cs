@@ -4,9 +4,14 @@ using Remouse.DatabaseLib;
 namespace Remouse.Core.Configs
 {
     [Serializable]
-    public class TableDataLink<T> where T : TableData
+    public abstract class TableDataLinkBase
     {
         public string Id;
+    }
+    
+    [Serializable]
+    public class TableDataLink<T> :TableDataLinkBase where T : TableData
+    {
     }
     
     public static class TableLinkExtensions

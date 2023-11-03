@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Remouse.Core.Configs;
+using Remouse.Shared.Utils.Log;
 using Utils;
 
 namespace Remouse.DatabaseLib
 {
-    public class DatabaseSerializer
+    public class DatabaseJsonSerializer
     {
         private static Type[] _settingTypes = TypeUtils<Settings>.DerivedInstanceTypes;
         private static Type[] _tableDataTypes = TypeUtils<TableData>.DerivedInstanceTypes;
@@ -18,7 +19,7 @@ namespace Remouse.DatabaseLib
         
         private Encoding DefaultEncoding => Encoding.UTF8;
 
-        public DatabaseSerializer()
+        public DatabaseJsonSerializer()
         {
             var defaultConverters = new List<JsonConverter>()
             {
@@ -105,18 +106,29 @@ namespace Remouse.DatabaseLib
         private void DeserializeAndAddTable(KeyValuePair<string, object> item, List<Table> tableList, Type type)
         {
             var tableType = typeof(Table<>).MakeGenericType(type);
-            var deserializedTable = JsonConvert.DeserializeObject(item.Value.ToString(), tableType, _settings);
-            tableList.Add(deserializedTable as Table);
+            try
+            {
+                var deserializedTable = JsonConvert.DeserializeObject(item.Value.ToString(), tableType, _settings);
+                tableList.Add(deserializedTable as Table);
+            }
+            catch (Exception e)
+            {
+                Logger.Current.LogError(this, $"Invalid value on table. Table {type.Name}, exception, {item} {e.Message}");
+            }
         }
 
         private void DeserializeAndAddSetting(KeyValuePair<string, object> item, List<Settings> settingsList, Type type)
         {
-            var settingValue = JsonConvert.DeserializeObject(item.Value.ToString(), type, _settings) as Settings;
-            if (settingValue == null)
+            try
             {
-                throw new InvalidOperationException($"Failed to deserialize setting for type: {type.FullName}");
+                var settingValue = JsonConvert.DeserializeObject(item.Value.ToString(), type, _settings) as Settings;
+                if (settingValue != null)
+                    settingsList.Add(settingValue);
             }
-            settingsList.Add(settingValue);
+            catch (Exception e)
+            {
+                Logger.Current.LogError(this, $"Error on deserializing settings. {e.Message}");
+            }
         }
         
         public void AddJsonConverter<T>(T converter) where T : JsonConverter

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,8 @@ namespace Remouse.DatabaseLib
 {
     public abstract class Table
     {
-        
+        public abstract Type GetDataType();
+        public abstract List<TableData> GetRowsRaw();
     }
     
     [Serializable]
@@ -33,6 +35,16 @@ namespace Remouse.DatabaseLib
                 if (!ids.Add(row.id))
                     throw new AggregateException($"Duplicate id found in table {GetType()}, rowId: {row.id}");
             }
+        }
+
+        public override Type GetDataType()
+        {
+            return typeof(T);
+        }
+
+        public override List<TableData> GetRowsRaw()
+        {
+            return rows.Cast<TableData>().ToList();
         }
     }
 }

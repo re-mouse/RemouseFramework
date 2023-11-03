@@ -9,12 +9,12 @@ namespace Remouse.DatabaseLib
     {
         private Database _database;
         private IResources _resources;
-        private DatabaseSerializer _serializer;
+        private DatabaseJsonSerializer _serializer;
 
         public void Construct(Container container)
         {
             _resources = container.Resolve<IResources>();
-            _serializer = container.Resolve<DatabaseSerializer>();
+            _serializer = container.Resolve<DatabaseJsonSerializer>();
         }
 
         public Database Get()

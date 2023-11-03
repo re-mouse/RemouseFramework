@@ -8,7 +8,7 @@ namespace Remouse.DatabaseLib
         {
             typeBinder.AddSingleton<DatabaseHost>();
             typeBinder.AddTransient<DatabaseBuilder>();
-            typeBinder.AddTransient<DatabaseSerializer>();
+            typeBinder.AddTransient<DatabaseJsonSerializer>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

@@ -39,15 +39,15 @@ namespace Remouse.DatabaseLib
             _tablesByDataType[dataType] = table;
         }
 
-        public void BindSettings<T>(T settings) where T : Settings
+        public void BindSettings(Settings settings)
         {
             if (settings == null)
                 throw new NullReferenceException("Settings is null");
             
-            var settingsType = typeof(T);
+            var settingsType = settings.GetType();
             
             if (_settingsByType.ContainsKey(settingsType))
-                throw new ArgumentException("Settings of this type of data already added");
+                throw new ArgumentException($"Settings of {settingsType} type of data already added");
 
             _settingsByType[settingsType] = settings;
         }

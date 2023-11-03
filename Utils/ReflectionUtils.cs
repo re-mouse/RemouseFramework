@@ -10,6 +10,28 @@ namespace Utils
         private static Type[] derivedInstanceTypes = ReflectionUtils.GetAllDerivedTypes(typeof(T));
 
         public static Type[] DerivedInstanceTypes { get => derivedInstanceTypes; }
+
+        public static Type FindInDerived(Func<Type, bool> predicate)
+        {
+            foreach (var derivedInstanceType in derivedInstanceTypes)
+            {
+                if (predicate(derivedInstanceType))
+                    return derivedInstanceType;
+            }
+
+            return null;
+        }
+        
+        public static Type FindInDerivedByName(string name)
+        {
+            foreach (var derivedInstanceType in derivedInstanceTypes)
+            {
+                if (name == derivedInstanceType.Name)
+                    return derivedInstanceType;
+            }
+
+            return null;
+        }
     }
     
     public static class ReflectionUtils
