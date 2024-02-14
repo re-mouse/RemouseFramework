@@ -1,0 +1,22 @@
+{
+    "name": "Remouse.Network.Client",
+    "rootNamespace": "Remouse.Network.Client",
+    "references": [
+        "GUID:9150146f9f01e4468a1e7d8dd746bca7",
+        "GUID:095bfa3ea9f844d9995536a7db66046d",
+        "GUID:cd767a65437434379b23bfd1e0c96624",
+        "GUID:d9228d3a41b4245ada4b1e159bd3a899",
+        "GUID:ca0a418ba8324e26ad7cb877b4557e3c",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:df954c114602c44628dc45c93905f0b7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

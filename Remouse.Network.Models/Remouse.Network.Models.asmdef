@@ -1,0 +1,16 @@
+{
+    "name": "Remouse.Network.Models",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9150146f9f01e4468a1e7d8dd746bca7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

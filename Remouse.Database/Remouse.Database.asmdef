@@ -1,0 +1,19 @@
+{
+    "name": "Remouse.Database",
+    "rootNamespace": "",
+    "references": [
+        "GUID:095bfa3ea9f844d9995536a7db66046d",
+        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af",
+        "GUID:34b9d43b9ab9847b4baffc4ad08890eb",
+        "GUID:cd767a65437434379b23bfd1e0c96624"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

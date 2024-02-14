@@ -1,0 +1,27 @@
+{
+    "name": "Remouse.GameServer",
+    "rootNamespace": "Remouse.GameServer",
+    "references": [
+        "GUID:2a7a9d99ff145428ca8bfe4d20ebca89",
+        "GUID:175f764e0c1194f3fa83bd43ee357179",
+        "GUID:095bfa3ea9f844d9995536a7db66046d",
+        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af",
+        "GUID:cd767a65437434379b23bfd1e0c96624",
+        "GUID:06f8db61e2ed94145934e4e7faa9089a",
+        "GUID:4d1903d62e7ad471ca4efc1077a0bb51",
+        "GUID:ca0a418ba8324e26ad7cb877b4557e3c",
+        "GUID:34b9d43b9ab9847b4baffc4ad08890eb",
+        "GUID:9150146f9f01e4468a1e7d8dd746bca7",
+        "GUID:df954c114602c44628dc45c93905f0b7",
+        "GUID:8578780a2d5504d1da4a29bcf63c46d1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

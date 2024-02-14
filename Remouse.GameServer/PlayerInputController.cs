@@ -1,0 +1,40 @@
+using Remouse.Simulation;
+using Remouse.DI;
+using Remouse.Network.Models;
+using Remouse.Network.Server;
+using Remouse.Simulation.Network;
+using Remouse.Utils;
+
+namespace Remouse.GameServer
+{
+    internal class PlayerInputController
+    {
+        private ICommandRunner _commandRunner;
+        private IServerTransportEvents _serversTransport;
+
+        public void Construct(Container container)
+        {
+            _commandRunner = container.Resolve<ICommandRunner>();
+            _serversTransport = container.Resolve<IServerTransportEvents>();
+            
+            _serversTransport.MessageReceived += HandleMessage;
+        }
+
+        private void HandleMessage(IPlayer player, NetworkMessage message)
+        {
+            if (message is not BasePlayerInputMessage playerInputMessage)
+                return;
+            
+            HandleInputMessage(player, playerInputMessage);
+        }
+
+        private void HandleInputMessage(IPlayer player, BasePlayerInputMessage playerInput)
+        {
+            var command = playerInput.AsCommand();
+            command.playerGameId = player.GameId;
+            _commandRunner.EnqueueCommand(command);
+        
+            LLogger.Current.LogPlayerTrace(this, player, $"Enqueued command [WorldCommand:{command}]");
+        }
+    }
+}

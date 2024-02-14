@@ -1,0 +1,20 @@
+{
+    "name": "Remouse.UnityEngine.UI",
+    "rootNamespace": "Remouse.UnityEngine.UI",
+    "references": [
+        "GUID:325a9126c66174290ae5f267fdfb0618",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:095bfa3ea9f844d9995536a7db66046d",
+        "GUID:cd767a65437434379b23bfd1e0c96624",
+        "GUID:2659779a8d7814f8b8c3bfe79ff2487e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

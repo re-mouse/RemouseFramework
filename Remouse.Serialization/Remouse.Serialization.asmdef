@@ -1,0 +1,17 @@
+{
+    "name": "Remouse.Serialization",
+    "rootNamespace": "Remouse.Serialization",
+    "references": [
+        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af",
+        "GUID:cd767a65437434379b23bfd1e0c96624"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

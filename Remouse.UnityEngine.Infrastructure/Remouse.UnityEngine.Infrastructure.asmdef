@@ -1,0 +1,18 @@
+{
+    "name": "Remouse.UnityEngine.Infrastructure",
+    "rootNamespace": "Remouse.UnityEngine.Infrastructure",
+    "references": [
+        "GUID:cd767a65437434379b23bfd1e0c96624",
+        "GUID:34b9d43b9ab9847b4baffc4ad08890eb",
+        "GUID:095bfa3ea9f844d9995536a7db66046d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

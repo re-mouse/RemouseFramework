@@ -1,0 +1,31 @@
+{
+    "name": "Remouse.UnityEngine.Editor",
+    "rootNamespace": "Remouse.UnityEngine.Editor",
+    "references": [
+        "GUID:325a9126c66174290ae5f267fdfb0618",
+        "GUID:cd767a65437434379b23bfd1e0c96624",
+        "GUID:de4c97cae5c6c427396eb304a6baaa33",
+        "GUID:2a7a9d99ff145428ca8bfe4d20ebca89",
+        "GUID:34b9d43b9ab9847b4baffc4ad08890eb",
+        "GUID:175f764e0c1194f3fa83bd43ee357179",
+        "GUID:2659779a8d7814f8b8c3bfe79ff2487e",
+        "GUID:fc58f5c720a9643489878e2a66ba2ae1",
+        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af",
+        "GUID:1ca6952bccb0a430d9caac998e489b7e",
+        "GUID:84651a3751eca9349aac36a66bba901b",
+        "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:69448af7b92c7f342b298e06a37122aa",
+        "GUID:4d1903d62e7ad471ca4efc1077a0bb51"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

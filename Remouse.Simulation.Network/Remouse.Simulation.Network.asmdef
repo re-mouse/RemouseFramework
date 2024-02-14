@@ -1,0 +1,22 @@
+{
+    "name": "Remouse.Simulation.Network",
+    "rootNamespace": "",
+    "references": [
+        "GUID:175f764e0c1194f3fa83bd43ee357179",
+        "GUID:df954c114602c44628dc45c93905f0b7",
+        "GUID:9150146f9f01e4468a1e7d8dd746bca7",
+        "GUID:4d1903d62e7ad471ca4efc1077a0bb51",
+        "GUID:095bfa3ea9f844d9995536a7db66046d",
+        "GUID:cd767a65437434379b23bfd1e0c96624",
+        "GUID:a1cb8cfc114cb4ce2ac80013a284a9af"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}
