@@ -4,7 +4,6 @@ using UnityEngine;
 namespace Remouse.UnityEngine.SimulationRender
 {
     [RequireComponent(typeof(EntityInstallerComponent))]
-    [RequireComponent(typeof(EntityRender))]
     public class LoadableEntityRender : LoadableAsset
     {
         public override string GetAssetKey()

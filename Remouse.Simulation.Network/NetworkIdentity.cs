@@ -5,6 +5,8 @@ namespace Remouse.Simulation.Network
 {
     public struct NetworkIdentity : IBytesSerializableComponent
     {
+        public long playerOwnerId;
+        public bool isPlayerOwned;
         public int id;
 
         public void Serialize(IBytesWriter writer)

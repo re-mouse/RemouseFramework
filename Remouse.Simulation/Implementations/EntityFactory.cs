@@ -1,40 +1,66 @@
 using System.Collections.Generic;
 using Remouse.World;
 using Remouse.Database;
-using Remouse.DI;
+using ReDI;
 using Models.Database;
 using Remouse.Utils;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation
 {
     internal class EntityFactory : IEntityFactory
     {
-        private IDatabase _database;
+        [Inject] private IDatabase _database;
+        [Inject] private SimulationHost _simulationHost;
         
-        public void Construct(Container container)
+        private EcsWorld _world;
+        private EcsPool<TypeInfo> _typeInfoPool;
+        private EcsPool<CreatedEntityEvent> _createdEntityEventsPool;
+
+        [Inject]
+        private void SubscribeToEvents(SimulationHost host)
         {
-            _database = container.Resolve<IDatabase>();
+            host.SimulationChanged += HandleSimulationChange;
+        }
+
+        private void HandleSimulationChange(ISimulation simulation)
+        {
+            _world = simulation?.World;
+            _typeInfoPool = _world?.GetPoolOrCreate<TypeInfo>();
+            _createdEntityEventsPool = _world?.GetPoolOrCreate<CreatedEntityEvent>();
         }
         
-        public int Create(IWorld world)
+        public int Create()
         {
-            var entityId = world.NewEntity();
-            world.GetOrAddComponent<CreatedEntityEvent>(entityId);
+            if (_world == null)
+            {
+                LLogger.Current.LogError(this, "Load simulation first");
+                return -1;
+            }
+            
+            var entityId = _world.NewEntity();
+            _createdEntityEventsPool.Add(entityId);
             return entityId;
         }
         
-        public int Create(IWorld world, string typeId)
+        public int Create(string typeId)
         {
-            var entityId = world.NewEntity();
+            if (_world == null)
+            {
+                LLogger.Current.LogError(this, "Load simulation first");
+                return -1;
+            }
+            
+            var entityId = _world.NewEntity();
             
             var typeConfig = _database.GetTableData<EntityTypeConfig>(typeId);
-            ApplyComponentConfigs(typeConfig.components, world, entityId);
-            ApplyTypeIdInfo(world, entityId, typeId);
-            world.GetOrAddComponent<CreatedEntityEvent>(entityId);
+            ApplyComponentConfigs(typeConfig.components, entityId);
+            ApplyTypeIdInfo(entityId, typeId);
+            _createdEntityEventsPool.Add(entityId);
             return entityId;
         }
 
-        private void ApplyComponentConfigs(List<ComponentConfig> componentConfigs, IWorld world, int entityId)
+        private void ApplyComponentConfigs(List<ComponentConfig> componentConfigs, int entityId)
         {
             foreach (var componentConfig in componentConfigs)
             {
@@ -52,13 +78,14 @@ namespace Remouse.Simulation
                     continue;
                 }
 
-                world.SetComponent(component.GetType(), entityId, component);
+                var pool = _world.GetPoolOrCreateByType(component.GetType());
+                pool?.AddOrSetRaw(entityId, component);
             }
         }
         
-        private void ApplyTypeIdInfo(IWorld world, int entityId, string typeId)
+        private void ApplyTypeIdInfo(int entityId, string typeId)
         {
-            ref var typeInfo = ref world.GetOrAddComponent<TypeInfo>(entityId);
+            ref var typeInfo = ref _typeInfoPool.AddOrGet(entityId);
             typeInfo.typeId = typeId;
         }
     }

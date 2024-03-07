@@ -1,5 +1,5 @@
 using Remouse.Simulation;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Client;
 using Remouse.Simulation.Network;
 using Remouse.Utils;
@@ -8,20 +8,16 @@ namespace Remouse.GameClient
 {
     public class SimulationUpdatesListener
     {
-        private IClientMessageBus _clientMessageBus;
-        private SimulationStateRequester _simulationStateRequester;
-        private ReceivedWorldCommandsBuffer _receivedWorldCommandsBuffer;
-        private ISimulationHost _simulationHost;
+        [Inject] private SimulationStateRequester _simulationStateRequester;
+        [Inject] private ReceivedWorldCommandsBuffer _receivedWorldCommandsBuffer;
+        [Inject] private ISimulationHost _simulationHost;
 
         private bool _isListening;
         
-        public void Construct(Container container)
+        [Inject]
+        private void SubscribeToEvents(IClientMessageBus messageBus)
         {
-            _simulationHost = container.Resolve<ISimulationHost>();
-            _clientMessageBus = container.Resolve<IClientMessageBus>();
-            _simulationStateRequester = container.Resolve<SimulationStateRequester>();
-            _receivedWorldCommandsBuffer = container.Resolve<ReceivedWorldCommandsBuffer>();
-            _clientMessageBus.SubscribeToMessage<SimulationUpdateMessage>(HandleSimulationUpdate);
+            messageBus.SubscribeToMessage<SimulationUpdateMessage>(HandleSimulationUpdate);
         }
 
         public void StartListening()

@@ -16,7 +16,7 @@ namespace Remouse.UnityEngine.Editor
     public class EntityInstallerComponentEditor : UnityEditor.Editor
     {
         private static Type[] componentTypes = TypeUtils<IComponent>.DerivedInstanceTypes;
-        private static Type[] hideInSelectTypes = new Type[] { typeof(ReTransform), typeof(TypeInfo), typeof(Render) };
+        private static Type[] hideInSelectTypes = new Type[] { typeof(ReTransform), typeof(TypeInfo) };
         
         private EntityInstallerComponent component { get => (EntityInstallerComponent)target; }
 
@@ -55,25 +55,16 @@ namespace Remouse.UnityEngine.Editor
 
         private void DrawRenderInfo()
         {
-            if (component.GetComponent<LoadableEntityRender>() != null)
+            if (component.componentConfigs.Exists(c => c.componentType == nameof(Render)))
             {
                 GUILayout.Label("Entity will be rendered in scene");
-
-                if (!component.componentConfigs.Exists(c => c.componentType == nameof(Render)))
-                {
-                    component.componentConfigs.Add(new ComponentConfig() {componentType = nameof(Render)});
-                }
-                
-                DrawComponentTypeFields(component.componentConfigs.FirstOrDefault(c => c.componentType == nameof(Render)), typeof(Render));
             }
             else
             {
-                GUILayout.Label("Entity will not be rendered in scene");
-                component.componentConfigs.RemoveAll(c => c.componentType == nameof(Render));
                 
                 if (GUILayout.Button("Add Default Renderer"))
                 {
-                    component.gameObject.AddComponent<LoadableEntityRender>();
+                    component.componentConfigs.Add(new ComponentConfig() {componentType = nameof(Render)});
                     EditorUtility.SetDirty(component);
                 }
             }

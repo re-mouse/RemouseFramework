@@ -1,4 +1,4 @@
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Client;
 using Remouse.Simulation.Network;
 
@@ -8,11 +8,12 @@ namespace Remouse.GameClient
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.AddSingleton<PackedSimulationListener>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<SimulationStateRequester>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<SimulationUpdatesListener>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<ReceivedWorldCommandsBuffer>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<GameClientSimulationLoop>().ConstructOnContainerBuild();
+            typeBinder.AddSingleton<PackedSimulationListener>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<SimulationStateRequester>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<SimulationUpdatesListener>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<ReceivedWorldCommandsBuffer>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<GameClientSimulationLoop>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<GameClientIdController>().CreateOnContainerBuild();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

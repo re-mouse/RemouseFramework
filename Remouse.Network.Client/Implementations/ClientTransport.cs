@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Models;
 using Remouse.Serialization;
 using Remouse.Utils;
@@ -13,19 +13,18 @@ namespace Remouse.Network.Client
 {
     internal class ClientTransport : IClientTransport
     {
-        private IClientSocket _socket;
-        private ClientTransportEvents _transportEvents;
+        [Inject] private IClientSocket _socket;
+        [Inject] private ClientTransportEvents _transportEvents;
+        [Inject] private IAuthorizeProvider _authorizeProvider;
+        
         private IBytesWriter _bytesWriter = new BytesWriter();
-        private IAuthorizeProvider _authorizeProvider;
 
         public bool IsConnected { get; private set; }
+        public int PingInMilliseconds { get => _socket.PingInMilliseconds; }
 
-        public void Construct(Container container)
+        [Inject]
+        private void SubscribeOnEvents()
         {
-            _socket = container.Resolve<IClientSocket>();
-            _transportEvents = container.Resolve<ClientTransportEvents>();
-            _authorizeProvider = container.Resolve<IAuthorizeProvider>();
-
             _socket.Connected += HandleSocketConnected;
             _socket.Disconnected += HandleSocketDisconnected;
             _socket.DataReceived += HandleSocketData;

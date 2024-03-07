@@ -1,4 +1,4 @@
-using Remouse.DI;
+using ReDI;
 using Remouse.UnityEngine.Assets;
 
 namespace Remouse.UnityEngine

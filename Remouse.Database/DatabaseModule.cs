@@ -1,4 +1,4 @@
-using Remouse.DI;
+using ReDI;
 
 namespace Remouse.Database
 {

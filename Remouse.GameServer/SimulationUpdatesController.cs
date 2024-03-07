@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Remouse.Simulation;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Server;
 using Remouse.Simulation.Network;
 using Remouse.Utils;
@@ -10,15 +10,10 @@ namespace Remouse.GameServer
 {
     internal class SimulationUpdatesController
     {
-        private IConnectedPlayers _players;
-        private ICommandRunner _commandRunner;
-        private ISimulationHost _simulationHost;
+        [Inject] private IConnectedPlayers _players;
+        [Inject] private ICommandRunner _commandRunner;
+        [Inject] private ISimulationHost _simulationHost;
 
-        public void Construct(Container container)
-        {
-            _simulationHost = container.Resolve<ISimulationHost>();
-        }
-        
         public void SendEnqueuedCommands()
         {
             long tick = _simulationHost.Simulation.CurrentTick;

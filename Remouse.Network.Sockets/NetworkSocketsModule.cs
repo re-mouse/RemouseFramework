@@ -1,4 +1,4 @@
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Sockets.Implementations;
 
 namespace Remouse.Network.Sockets

@@ -1,22 +1,20 @@
 using System.Collections.Generic;
 using Remouse.World;
 using Models;
-using Remouse.DI;
+using ReDI;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation
 {
     public class SimulationSerializer : ISimulationSerializer
     {
-        private ISimulationHost _simulationHost;
+        [Inject] private ISimulationHost _simulationHost;
 
-        public void Construct(Container container)
-        {
-            _simulationHost = container.Resolve<ISimulationHost>();
-        }
         public WorldState Serialize()
         {
             var world = _simulationHost.Simulation.World;
-            var entities = world.GetEntities();
+            int[] entities = null;
+            world.GetAllEntities(ref entities);
             WorldState packedWorldState = new WorldState();
 
             foreach (var entityId in entities)
@@ -27,14 +25,19 @@ namespace Remouse.Simulation
             return packedWorldState;
         }
         
-        public static EntityState SerializeEntity(IReadOnlyWorld world, int entityId)
+        public static EntityState SerializeEntity(EcsWorld world, int entityId)
         {
             var entityInfo = new EntityState();
             entityInfo.components = new List<SerializedComponent>();
-            
-            foreach (var componentType in world.ComponentTypes)
+
+            IEcsPool[] pools = null;
+            world.GetAllPools(ref pools);
+            foreach (var pool in pools)
             {
-                var component = world.GetComponent(componentType, entityId) as IBytesSerializableComponent;
+                if (!pool.Has(entityId))
+                    continue;
+                
+                var component = pool.GetRaw(entityId) as IBytesSerializableComponent;
                 if (component == null)
                     continue;
                 

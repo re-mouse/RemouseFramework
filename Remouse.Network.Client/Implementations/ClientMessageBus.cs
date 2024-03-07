@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Models;
 using Remouse.Utils;
 
@@ -14,12 +14,9 @@ namespace Remouse.Network.Client
 
         private readonly CollectionsDictionary<Type, UniTaskCompletionSource<NetworkMessage>> _awaitingMessages = new CollectionsDictionary<Type, UniTaskCompletionSource<NetworkMessage>>();
         
-        private IClientTransportEvents _clientTransportEvents;
-        
-        public void Construct(Container container)
+        private void SubscribeOnEvents(IClientTransportEvents events)
         {
-            _clientTransportEvents = container.Resolve<IClientTransportEvents>();
-            _clientTransportEvents.MessageReceived += HandleMessage;
+            events.MessageReceived += HandleMessage;
         }
 
         public void SubscribeToMessage<T>(Action<T> handler) where T : NetworkMessage

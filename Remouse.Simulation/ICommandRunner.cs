@@ -5,6 +5,7 @@ namespace Remouse.Simulation
 {
     public interface ICommandRunner
     {
+        public bool IsEmpty();
         public IEnumerable<BaseWorldCommand> EnqueuedCommands { get; }
         public void EnqueueCommand(BaseWorldCommand command);
         public void RunEnqueuedCommands();

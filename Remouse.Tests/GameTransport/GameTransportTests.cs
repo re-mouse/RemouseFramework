@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Client;
 using Remouse.Network.Server;
 using NUnit.Framework;

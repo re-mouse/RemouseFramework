@@ -8,7 +8,8 @@ namespace Remouse.Simulation
         private double _millisecondsPerTick;
         private Stopwatch _stopwatch = new Stopwatch();
         private double _lastTickMilliseconds;
-        
+        private int _millisecondsDelay;
+
         public TickClock(int ticksInSecond)
         {
             _millisecondsPerTick = 1000 / ticksInSecond;
@@ -20,9 +21,16 @@ namespace Remouse.Simulation
             _lastTickMilliseconds = _stopwatch.Elapsed.TotalMilliseconds;
         }
 
+        public void SetMillisecondsDelay(int milliseconds)
+        {
+            _millisecondsDelay = milliseconds;
+        }
+
         public int CalculateTicksElapsed()
         {
-            double elapsed = _stopwatch.Elapsed.TotalMilliseconds - _lastTickMilliseconds;
+            double elapsed = _stopwatch.Elapsed.TotalMilliseconds - _millisecondsDelay - _lastTickMilliseconds;
+            if (elapsed < 0)
+                return 0;
             int requiredTicks = (int) (elapsed / _millisecondsPerTick);
             _lastTickMilliseconds += _millisecondsPerTick * requiredTicks;
 

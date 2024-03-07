@@ -1,5 +1,5 @@
 using Infrastructure;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Client;
 using Remouse.Simulation;
 using Remouse.Utils;
@@ -8,23 +8,16 @@ namespace Remouse.GameClient
 {
     public class GameClientSimulationLoop
     {
-        private ICommandRunner _commandRunner;
-        private ReceivedWorldCommandsBuffer _receivedWorldCommandsBuffer;
-        private ISimulationHost _simulationHost;
-        private IClientTransport _clientTransport;
+        [Inject] private ICommandRunner _commandRunner;
+        [Inject] private ReceivedWorldCommandsBuffer _receivedWorldCommandsBuffer;
+        [Inject] private ISimulationHost _simulationHost;
+        [Inject] private IClientTransport _clientTransport;
+        
         private TickClock _tickClock;
-
-        public void Construct(Container container)
-        {
-            _tickClock = new TickClock(Project.TicksInSecond);
-            _receivedWorldCommandsBuffer = container.Resolve<ReceivedWorldCommandsBuffer>();
-            _simulationHost = container.Resolve<ISimulationHost>();
-            _commandRunner = container.Resolve<ICommandRunner>();
-            _clientTransport = container.Resolve<IClientTransport>();
-        }
 
         internal void Start()
         {
+            _tickClock = new TickClock(Project.TicksInSecond); 
             _tickClock.Start();
         }
 
@@ -37,6 +30,8 @@ namespace Remouse.GameClient
                 LLogger.Current.LogWarning(this , "Simulation not loaded");
                 return;
             }
+
+            _tickClock.SetMillisecondsDelay(_clientTransport.PingInMilliseconds + 100);
             
             for (int i = 0; i < _tickClock.CalculateTicksElapsed(); i++)
             {

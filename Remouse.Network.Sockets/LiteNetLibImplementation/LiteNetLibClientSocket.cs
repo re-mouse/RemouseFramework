@@ -20,7 +20,7 @@ namespace Remouse.Network.Sockets
 
         private NetPeer? _connectionToServer;
         public bool IsConnecting { get => _connectingTcs != null; }
-        
+        public int PingInMilliseconds { get => _connectionToServer?.Ping ?? 0; }
         public bool IsConnected { get => _connectionToServer != null; }
         public event Action Connected;
         public event Action Disconnected;
@@ -37,6 +37,10 @@ namespace Remouse.Network.Sockets
             _listener.PeerDisconnectedEvent += HandleDisconnect;
             _listener.NetworkReceiveEvent += HandleReceive;
             _listener.NetworkErrorEvent += HandleNetworkError;
+            
+            #if DEBUG
+            _netManager.DisconnectTimeout = 2000000;
+#endif
         }
 
         private void HandleDisconnect(NetPeer peer, DisconnectInfo disconnectInfo)

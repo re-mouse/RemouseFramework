@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Remouse.DI;
+using ReDI;
 using Remouse.UnityEngine.Assets;
 using UnityEngine;
 using Remouse.Utils;
@@ -9,15 +9,10 @@ namespace Remouse.UnityEngine
 {
     public class GameObjectFactory : IGameObjectFactory
     {
+        [Inject] private IAssetLoader _assetLoader;
+        
         private Dictionary<string, IAsyncAssetContainer<GameObject>> _assetContainers =
             new Dictionary<string, IAsyncAssetContainer<GameObject>>();
-
-        private IAssetLoader _assetLoader;
-
-        public void Construct(Container container)
-        {
-            _assetLoader = container.Resolve<IAssetLoader>();
-        }
         
         public async UniTask<GameObject> CreateGameObjectAsync(string key, bool unloadAfterCreate)
         {

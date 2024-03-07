@@ -28,7 +28,7 @@ namespace Remouse.Utils
             _registeredStates[typeof(TState)] = state;
         }
 
-        public async void SetState<TState>() where TState : BaseState
+        public async UniTaskVoid SetState<TState>() where TState : BaseState
         {
             var type = typeof(TState);
             if (!_registeredStates.ContainsKey(type))

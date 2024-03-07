@@ -1,29 +1,33 @@
 using System.Collections.Generic;
-using Remouse.DI;
+using System.Linq;
+using ReDI;
 
 namespace Remouse.Simulation
 {
     public class CommandRunner : ICommandRunner
     {
         private List<BaseWorldCommand> _worldCommands = new List<BaseWorldCommand>(10);
-        
-        public IEnumerable<BaseWorldCommand> EnqueuedCommands { get => _worldCommands; }
-        private SimulationHost _simulationHost;
-        private Container _container;
+        private List<BaseWorldCommand> _worldCommandsBuffer = new List<BaseWorldCommand>(10);
 
-        public void Construct(Container container)
+        public IEnumerable<BaseWorldCommand> EnqueuedCommands { get => _worldCommandsBuffer; }
+        
+        [Inject] private SimulationHost _simulationHost;
+        
+        public bool IsEmpty()
         {
-            _container = container;
-            _simulationHost = container.Resolve<SimulationHost>();
+            return _worldCommandsBuffer.Count == 0;
         }
         
         public void EnqueueCommand(BaseWorldCommand command)
         {
-            _worldCommands.Add(command);
+            _worldCommandsBuffer.Add(command);
         }
 
         public void RunEnqueuedCommands()
         {
+            var commandsBuffer = _worldCommandsBuffer;
+            _worldCommandsBuffer = _worldCommands;
+            _worldCommands = commandsBuffer;
             RunCommands(_worldCommands);
             _worldCommands.Clear();
         }
@@ -31,11 +35,8 @@ namespace Remouse.Simulation
         public void RunCommands(IEnumerable<BaseWorldCommand> commands)
         {
             var simulation = _simulationHost.GetSimulationInternal();
-            foreach (var command in _worldCommands)
+            foreach (var command in commands)
             {
-                if (command is IConstructable constructableCommand)
-                    constructableCommand.Construct(_container);
-                
                 simulation.RunCommand(command);
             }
         }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Remouse.DI;
+using ReDI;
 using Remouse.Utils;
 using UnityEngine;
 
@@ -8,16 +8,11 @@ namespace Remouse.UnityEngine
 {
     public class CameraFactory : ICameraFactory
     {
+        [Inject] private IGameObjectFactory _gameObjectFactory;
+        
         private readonly Dictionary<LoadableCameraType, Camera> _loadedCameras = new Dictionary<LoadableCameraType, Camera>();
 
         private readonly Dictionary<LoadableCameraType, UniTask> _loadingTasks = new Dictionary<LoadableCameraType, UniTask>();
-
-        private IGameObjectFactory _gameObjectFactory;
-
-        public void Construct(Container container)
-        {
-            _gameObjectFactory = container.Resolve<IGameObjectFactory>();
-        }
 
         public async UniTask<Camera> GetAsync(LoadableCameraType loadableCameraType)
         {

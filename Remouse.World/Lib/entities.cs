@@ -6,11 +6,13 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Shared.EcsLib.LeoEcsLite;
 #if ENABLE_IL2CPP
 using Unity.IL2CPP.CompilerServices;
 #endif
 
-namespace Shared.EcsLib.LeoEcsLite {
+namespace Remouse.EcsLib
+{
     public struct EcsPackedEntity {
         internal int id;
         internal int gen;
@@ -60,11 +62,7 @@ namespace Shared.EcsLib.LeoEcsLite {
 #endif
     }
 
-#if ENABLE_IL2CPP
-    [Il2CppSetOption (Option.NullChecks, false)]
-    [Il2CppSetOption (Option.ArrayBoundsChecks, false)]
-#endif
-    internal static class EcsEntityExtensions {
+    public static class EcsEntityExtensions {
         [MethodImpl (MethodImplOptions.AggressiveInlining)]
         public static EcsPackedEntity PackEntity (this EcsWorld world, int entity) {
             EcsPackedEntity packed;

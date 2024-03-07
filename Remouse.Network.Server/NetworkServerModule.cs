@@ -1,4 +1,4 @@
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Sockets;
 
 namespace Remouse.Network.Server
@@ -7,9 +7,9 @@ namespace Remouse.Network.Server
     {
         public override void BindDependencies(TypeManager typeBinder) 
         { 
-            typeBinder.AddSingleton<ServerTransport>().As<IServerTransport>().As<IConnectedPlayers>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<ServerMessageBus>().As<IServerMessageBus>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<ServerTransportEvents>().As<IServerTransportEvents>().ConstructOnContainerBuild();
+            typeBinder.AddSingleton<ServerTransport>().As<IServerTransport>().As<IConnectedPlayers>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<ServerMessageBus>().As<IServerMessageBus>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<ServerTransportEvents>().As<IServerTransportEvents>().CreateOnContainerBuild();
             typeBinder.AddSingleton<TAuthorizer>().As<IAuthorizer>(); 
         }
 

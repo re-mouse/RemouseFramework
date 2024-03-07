@@ -1,18 +1,19 @@
 ﻿using System;
 using Remouse.World;
 using Remouse.Database;
-using Remouse.DI;
+using ReDI;
 using Remouse.Serialization;
 using Remouse.Utils;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation
 {
     public class Simulation : ISimulation
     {
-        private readonly IWorld _world;
-        private readonly Container _container;
+        private readonly EcsWorld _world;
+        private readonly EcsSystems _systems;
         
-        public IReadOnlyWorld World { get => _world; }
+        public EcsWorld World { get => _world; }
         public long CurrentTick { get; private set; }
 
         internal event Action<BaseWorldCommand> WorldCommandRunned;
@@ -20,10 +21,10 @@ namespace Remouse.Simulation
 
         private bool _initialized;
         
-        internal Simulation(IWorld world, Container container, long startTick = 0)
+        internal Simulation(EcsWorld world, EcsSystems systems, long startTick = 0)
         {
             _world = world;
-            _container = container;
+            _systems = systems;
             CurrentTick = startTick;
         }
 
@@ -35,7 +36,7 @@ namespace Remouse.Simulation
                 return;
             }
             
-            _world.Initialize();
+            _systems.Init();
             _initialized = true;
         }
 
@@ -47,14 +48,14 @@ namespace Remouse.Simulation
                 return;
             }
 
-            _world.Tick();
+            _systems.Run();
                 
             CurrentTick++;
                 
             TickRunned?.Invoke();
         }
 
-        public void RunCommand(BaseWorldCommand command)
+        internal void RunCommand(BaseWorldCommand command)
         {
             if (!_initialized)
             {

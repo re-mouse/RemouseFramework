@@ -1,4 +1,4 @@
-using Remouse.DI;
+using ReDI;
 
 namespace Remouse.World
 {
@@ -6,7 +6,7 @@ namespace Remouse.World
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.AddSingleton<IWorldBuilder, LeoEcsWorldBuilder>();
+            typeBinder.AddSingleton<EcsSystemsBuilder>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder) { }

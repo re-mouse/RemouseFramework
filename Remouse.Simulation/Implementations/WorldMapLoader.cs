@@ -1,44 +1,35 @@
 ﻿using Remouse.World;
 using Remouse.Database;
 using Models.Database;
-using Remouse.DI;
+using ReDI;
 using Remouse.Utils;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation
 {
     internal class WorldMapLoader
     {
-        private IDatabase _database;
-        private IEntityFactory _entityFactory;
-        private IWorldBuilder _worldBuilder;
-
-        public void Construct(Container container)
-        {
-            _database = container.Resolve<IDatabase>();
-            _worldBuilder = container.Resolve<IWorldBuilder>();
-            _entityFactory = container.Resolve<IEntityFactory>();
-        }
+        [Inject] private IDatabase _database;
+        [Inject] private IEntityFactory _entityFactory;
         
-        public IWorld Load(string mapId)
+        public void Load(EcsWorld world, string mapId)
         {
             if (mapId.IsNullOrEmpty())
             {
                 LLogger.Current.LogError(this , $"MapId is null");
-                return null;
+                return;
             }
 
-            var world = _worldBuilder.Build();
             var mapConfig = _database.GetTableData<MapConfig>(mapId);
             if (mapConfig == null)
             {
                 LLogger.Current.LogError(this, $"Map not found [MapId:{mapId}]");
             }
                 
-            AddEntitiesFromConfig(mapConfig, world);
-            return world;
+            AddEntitiesFromConfig(world, mapConfig);
         }
 
-        private void AddEntitiesFromConfig(MapConfig config, IWorld world)
+        private void AddEntitiesFromConfig(EcsWorld world, MapConfig config)
         {
             foreach (var entityConfig in config.entities)
             {
@@ -46,18 +37,18 @@ namespace Remouse.Simulation
             }
         }
 
-        private void CreateEntity(IWorld world, EntityMapConfig entityConfig)
+        private void CreateEntity(EcsWorld world, EntityMapConfig entityConfig)
         {
             var typeId = entityConfig.typeId.Id;
 
-            int entity = _entityFactory.Create(world, typeId);
-
-            ApplyTransformValues(world, entity, entityConfig);
+            int entity = _entityFactory.Create(typeId);
+            
+            ApplyTransformValues(world.GetPoolOrCreate<ReTransform>(), entity, entityConfig);
         }
 
-        private void ApplyTransformValues(IWorld world, int entityId, EntityMapConfig entityMapConfig)
+        private void ApplyTransformValues(EcsPool<ReTransform> pool, int entityId, EntityMapConfig entityMapConfig)
         {
-            ref var transform = ref world.GetOrAddComponent<ReTransform>(entityId);
+            ref ReTransform transform = ref pool.AddOrGet(entityId);
             transform.position = entityMapConfig.position.ToVec2();
             transform.rotation = entityMapConfig.rotation.eulerAngles.y;
         }

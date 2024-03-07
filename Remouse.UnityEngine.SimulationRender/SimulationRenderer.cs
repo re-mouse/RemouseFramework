@@ -2,10 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Remouse.DI;
+using ReDI;
+using Remouse.EcsLib;
 using Remouse.Simulation;
+using Remouse.UnityEngine.Utils;
 using Remouse.Utils.ObjectPool;
 using Remouse.World;
+using Shared.EcsLib.LeoEcsLite;
 using UnityEngine;
 
 namespace Remouse.UnityEngine.SimulationRender
@@ -14,8 +17,9 @@ namespace Remouse.UnityEngine.SimulationRender
     {
         private class EntityRenderBind
         {
-            public IPackedEntity packedEntity;
+            public EcsPackedEntity packedEntity;
             public EntityRender entityRender;
+            public Transform transform;
             public PooledObject<GameObject> pooledObject;
         }
 
@@ -27,6 +31,9 @@ namespace Remouse.UnityEngine.SimulationRender
         private ISimulationHost _simulationHost;
         private ISimulation _simulation;
         private CancellationTokenSource _simulationCts;
+        private EcsPool<ReTransform> _transformPool;
+        private EcsPool<TypeInfo> _typeInfoPool;
+        private EcsFilter _filter;
 
         public void Construct(Container container)
         {
@@ -60,6 +67,7 @@ namespace Remouse.UnityEngine.SimulationRender
             }
             
             _entityPools.Clear();
+            _poolLoadingTasks.Clear();
         }
         
         private void HandleSimulationChanged(ISimulation simulation)
@@ -74,6 +82,9 @@ namespace Remouse.UnityEngine.SimulationRender
             
             if (_simulation != null)
             {
+                _transformPool = _simulation.World.GetPoolOrCreate<ReTransform>();
+                _typeInfoPool = _simulation.World.GetPoolOrCreate<TypeInfo>();
+                _filter = _simulation.World.Filter<Render>().Inc<TypeInfo>().Inc<ReTransform>().End();
                 _simulationCts = new CancellationTokenSource();
             }
             else
@@ -82,7 +93,7 @@ namespace Remouse.UnityEngine.SimulationRender
             }
         }
 
-        private void HandleExistingEntities(IReadOnlyWorld world)
+        private void HandleExistingEntities(EcsWorld world)
         {
             var toRemove = new List<int>();
 
@@ -91,7 +102,7 @@ namespace Remouse.UnityEngine.SimulationRender
                 var entityId = entityRenderBind.Key;
                 var entity = entityRenderBind.Value.packedEntity;
 
-                if (entity.IsAlive())
+                if (entity.Unpack(world, out _))
                 {
                     UpdateRender(world, entityId);
                 }
@@ -108,11 +119,17 @@ namespace Remouse.UnityEngine.SimulationRender
             }
         }
 
-        private void UpdateRender(IReadOnlyWorld world, int entityId)
+        private void UpdateRender(EcsWorld world, int entityId)
         {
             if (_entityRenderBinds.TryGetValue(entityId, out var renderInfo))
             {
                 renderInfo.entityRender?.UpdateRender(world, entityId);
+                if (renderInfo.transform == null)
+                    return;
+                
+                var reTransform = _transformPool.Get(entityId);
+                renderInfo.transform.position = reTransform.position.ToVector2();
+                renderInfo.transform.rotation = Quaternion.Euler(0, reTransform.rotation, 0);
             }
         }
 
@@ -125,26 +142,26 @@ namespace Remouse.UnityEngine.SimulationRender
             }
         }
         
-        private void HandleNewEntities(IReadOnlyWorld world, CancellationToken cancellationToken)
+        private void HandleNewEntities(EcsWorld world, CancellationToken cancellationToken)
         {
-            var filter = world.Query().Inc<Render>().Inc<TypeInfo>().Inc<ReTransform>().End();
-            foreach (var entityId in filter)
+            _filter = _simulation.World.Filter<Render>().Inc<TypeInfo>().Inc<ReTransform>().End();
+            foreach (var entityId in _filter)
             {
                 if (_entityRenderBinds.ContainsKey(entityId)) //render already exist
                     continue; 
                 
                 var entity = new EntityRenderBind();
                 
-                entity.packedEntity = world.PackEntity(entityId);;
+                entity.packedEntity = world.PackEntity(entityId);
                 _entityRenderBinds[entityId] = entity;
                 
                 LoadAndCreateRenderAsync(world, entityId, cancellationToken).Forget();
             }
         }
 
-        private async UniTask LoadAndCreateRenderAsync(IReadOnlyWorld world, int entityId, CancellationToken cancellationToken)
+        private async UniTask LoadAndCreateRenderAsync(EcsWorld world, int entityId, CancellationToken cancellationToken)
         {
-            var typeId = world.GetComponent<TypeInfo>(entityId).typeId;
+            var typeId = _typeInfoPool.Get(entityId).typeId;
 
             var key = EntityRenderAssetKeys.GetKey(typeId);
 
@@ -153,25 +170,27 @@ namespace Remouse.UnityEngine.SimulationRender
                 if (!_poolLoadingTasks.ContainsKey(key))
                 {
                     _poolLoadingTasks[key] = LoadPool(key).ToAsyncLazy();
+                    await _poolLoadingTasks[key];
                 }
 
                 await _poolLoadingTasks[key];
             }
             
-            CreateRender(entityId, cancellationToken, key);
+            CreateRender(world, entityId, cancellationToken, key);
         }
 
-        private void CreateRender(int entityId, CancellationToken cancellationToken, string key)
+        private void CreateRender(EcsWorld world, int entityId, CancellationToken cancellationToken, string key)
         {
             var renderBind = _entityRenderBinds[entityId];
 
-            if (!renderBind.packedEntity.IsAlive() || cancellationToken.IsCancellationRequested)
+            if (!renderBind.packedEntity.Unpack(world, out _) || cancellationToken.IsCancellationRequested)
             {
                 return;
             }
 
             var gameObject = _entityPools[key].Pool.Get();
             renderBind.entityRender = gameObject.Value.GetComponent<EntityRender>();
+            renderBind.transform = gameObject.Value.transform;
             renderBind.pooledObject = gameObject;
             _entityRenderBinds[entityId] = renderBind;
         }
@@ -185,7 +204,7 @@ namespace Remouse.UnityEngine.SimulationRender
         {
             foreach (var entityRender in _entityRenderBinds)
             {
-                entityRender.Value.pooledObject.Return();
+                entityRender.Value?.pooledObject?.Return();
             }
 
             _entityRenderBinds.Clear();

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Remouse.DI;
+using ReDI;
 using Remouse.UnityEngine.Assets;
 using Remouse.UnityEngine.Utils;
 using Remouse.Utils;
@@ -10,16 +10,12 @@ namespace Remouse.UnityEngine
 {
     public class GameObjectsPoolManager : IGameObjectsPoolManager
     {
+        [Inject] private IAssetLoader _assetLoader;
+        
         private Dictionary<string, HashSet<PoolReserveToken>> _poolReferenceTokens = new Dictionary<string, HashSet<PoolReserveToken>>();
         private Dictionary<string, GameObjectPool> _pools = new Dictionary<string, GameObjectPool>();
 
         private Dictionary<string, IAsyncAssetContainer<GameObject>> _gameObjectAssetContainers = new Dictionary<string, IAsyncAssetContainer<GameObject>>();
-        private IAssetLoader _assetLoader;
-
-        public void Construct(Container container)
-        {
-            _assetLoader = container.Resolve<IAssetLoader>();
-        }
         
         public async UniTask<PoolReserveToken> GetPoolAsync(string key)
         {

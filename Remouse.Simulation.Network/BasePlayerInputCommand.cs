@@ -1,5 +1,7 @@
+using ReDI;
 using Remouse.Serialization;
 using Remouse.World;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation.Network
 {
@@ -7,7 +9,7 @@ namespace Remouse.Simulation.Network
     {
         public int playerGameId;
 
-        public abstract bool Validate(IReadOnlyWorld world);
+        public abstract bool Validate(EcsWorld world);
 
         public override void Serialize(IBytesWriter writer)
         {

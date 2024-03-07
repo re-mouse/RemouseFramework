@@ -1,6 +1,6 @@
 using Remouse.Simulation;
 using Remouse.World;
-using Remouse.DI;
+using ReDI;
 using NUnit.Framework;
 using Remouse.Utils;
 
@@ -23,8 +23,8 @@ namespace Shared.Test.WorldTests
         public void TestSimulationSendingCorrect()
         {
             var container = _containerBuilder.Build();
-            var worldBuilder = container.Resolve<IWorldBuilder>();
-            worldBuilder.AddSystem<TestSystem>();
+            var systemsBuilder = container.Resolve<EcsSystemsBuilder>();
+            systemsBuilder.Add<TestSystem>(10);
             var simulationLoader = container.Resolve<ISimulationLoader>();
             
             simulationLoader.LoadEmpty();
@@ -49,7 +49,7 @@ namespace Shared.Test.WorldTests
             simulation.Tick();
             passedTicks++;
 
-            var filter = simulation.World.Query().Inc<TestComponent>().End();
+            var filter = simulation.World.Filter<TestComponent>().End();
 
             int actualEntityCount = 0;
             long targetCount = startCount + passedTicks;

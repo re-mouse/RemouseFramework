@@ -8,17 +8,17 @@ namespace Remouse.UnityEngine.Assets
     {
         public void LogError(object sender, string error)
         {
-            Debug.LogError($"[{sender?.GetType().Name}] {error}");
+            Debug.LogError($"[ERROR][{sender?.GetType().Name}] {error}");
         }
 
         public void LogInfo(object sender, string info)
         {
-            Debug.Log($"[{sender?.GetType().Name}] {info}");
+            Debug.Log($"[INFO][{sender?.GetType().Name}] {info}");
         }
 
         public void LogWarning(object sender, string warning)
         {
-            Debug.LogWarning($"[{sender?.GetType().Name}] {warning}");
+            Debug.LogWarning($"[WARNING][{sender?.GetType().Name}] {warning}");
         }
 
         public void LogTrace(object sender, string trace)

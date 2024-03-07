@@ -9,6 +9,7 @@ namespace Remouse.Network.Client
     public interface IClientTransport
     {
         public bool IsConnected { get; }
+        public int PingInMilliseconds { get; }
         public UniTask<ClientConnectResult> ConnectAsync(IPEndPoint endPoint, CancellationToken cancellationToken);
         public void Disconnect();
         public void Update();

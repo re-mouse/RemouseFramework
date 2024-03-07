@@ -29,7 +29,7 @@ namespace Remouse.UnityEngine.Utils
 
         protected override GameObject CreateNew()
         {
-            return GameObject.Instantiate(_original);
+            return GameObject.Instantiate(_original, _poolParent.transform);
         }
 
         public override void OnDispose()

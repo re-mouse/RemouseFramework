@@ -1,5 +1,5 @@
 using Remouse.Database;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Server;
 using Remouse.Simulation.Network;
 
@@ -9,9 +9,9 @@ namespace Remouse.GameServer
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.AddSingleton<SimulationUpdatesController>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<SimulationStateController>().ConstructOnContainerBuild();
-            typeBinder.AddSingleton<PlayerInputController>().ConstructOnContainerBuild();
+            typeBinder.AddSingleton<SimulationUpdatesController>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<SimulationStateController>().CreateOnContainerBuild();
+            typeBinder.AddSingleton<PlayerInputController>().CreateOnContainerBuild();
             typeBinder.AddSingleton<GameServerLoop>();
         }
 

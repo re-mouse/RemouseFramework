@@ -1,8 +1,9 @@
 using Remouse.Simulation;
 using Remouse.World;
 using Remouse.Database;
-using Remouse.DI;
+using ReDI;
 using Remouse.Serialization;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Shared.Test.WorldTests
 {
@@ -10,12 +11,14 @@ namespace Shared.Test.WorldTests
     {
         public long startingSpawnCounter;
 
-        public override void Run(IWorld world)
+        public override void Run(EcsWorld world)
         {
             var entity = world.NewEntity();
-            ref var component = ref world.AddComponent<TestComponent>(entity);
+            var pool = world.GetPoolOrCreate<TestComponent>();
+            ref var component = ref pool.Add(entity);
             component.counter = startingSpawnCounter;
         }
+
 
         public override void Serialize(IBytesWriter writer)
         {

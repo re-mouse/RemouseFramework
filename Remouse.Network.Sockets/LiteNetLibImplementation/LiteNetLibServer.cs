@@ -30,6 +30,10 @@ namespace Remouse.Network.Sockets.Implementations
             listener.PeerDisconnectedEvent += HandleDisconnected;
             
             listener.NetworkReceiveEvent += HandleNetworkReceive;
+            
+#if DEBUG
+            _netManager.DisconnectTimeout = 2000000;
+#endif
         }
         
         void IServerSocket.Start(ushort port, int maxConnections)

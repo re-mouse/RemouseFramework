@@ -1,5 +1,5 @@
 using Remouse.Simulation;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Server;
 using Remouse.Simulation.Network;
 using Remouse.Utils;
@@ -8,19 +8,14 @@ namespace Remouse.GameServer
 {
     internal class SimulationStateController
     {
-        private ISimulationHost _simulationHost;
-        private NetworkEntityRegistry _networkEntityRegistry;
-        private IServerMessageBus _serverMessageBus;
-        private ISimulationSerializer _simulationSerializer;
+        [Inject] private ISimulationHost _simulationHost;
+        [Inject] private NetworkEntityRegistry _networkEntityRegistry;
+        [Inject] private ISimulationSerializer _simulationSerializer;
 
-        public void Construct(Container container)
+        [Inject]
+        private void SubscribeOnEvents(IServerMessageBus messageBus)
         {
-            _simulationSerializer = container.Resolve<ISimulationSerializer>();
-            _networkEntityRegistry = container.Resolve<NetworkEntityRegistry>();
-            _simulationHost = container.Resolve<ISimulationHost>();
-            _serverMessageBus = container.Resolve<IServerMessageBus>();
-            
-            _serverMessageBus.SubscribeToMessage<SimulationStateRequestMessage>(HandlePackedSimulationRequest);
+            messageBus.SubscribeToMessage<SimulationStateRequestMessage>(HandlePackedSimulationRequest);
         }
         
         private void HandlePackedSimulationRequest(IPlayer player, SimulationStateRequestMessage message)

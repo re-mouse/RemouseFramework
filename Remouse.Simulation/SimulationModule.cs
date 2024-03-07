@@ -1,6 +1,6 @@
 using Remouse.World;
 using Remouse.Database;
-using Remouse.DI;
+using ReDI;
 
 namespace Remouse.Simulation
 {
@@ -14,6 +14,8 @@ namespace Remouse.Simulation
             typeBinder.AddSingleton<ISimulationLoader, SimulationLoader>();
             typeBinder.AddSingleton<ISimulationSerializer, SimulationSerializer>();
             typeBinder.AddSingleton<ICommandRunner, CommandRunner>();
+            typeBinder.AddWorldSystem<EntityCreationEventsClearSystem>(10000);
+            typeBinder.AddWorldSystem<EntityDestroySystem>(20000);
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

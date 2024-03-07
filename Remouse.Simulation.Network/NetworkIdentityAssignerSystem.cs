@@ -1,37 +1,37 @@
-using Remouse.DI;
+using ReDI;
 using Remouse.World;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation.Network
 {
-    public class NetworkIdentityAssignerSystem : IInitSystem, IRunSystem
+    public class NetworkIdentityAssignerSystem : IEcsInitSystem, IEcsRunSystem
     {
-        private NetworkEntityRegistry _entityRegistry;
-
-        public void Construct(Container container)
-        {
-            _entityRegistry = container.Resolve<NetworkEntityRegistry>();
-        }
+        [Inject] private NetworkEntityRegistry _entityRegistry;
         
-        public void Run(IWorld world)
+        private EcsWorld _world;
+        private EcsPool<NetworkIdentity> _pool;
+        private EcsFilter _createdEntitysFilter;
+        
+        public void Init(IEcsSystems systems)
         {
-            var filter = world.Query().Inc<NetworkIdentity>().Inc<CreatedEntityEvent>().End();
-            
-            foreach (var entityId in filter)
-            {
-                ref var networkIdentity = ref world.GetComponentRef<NetworkIdentity>(entityId);
+            _world = systems.GetWorld();
+            _createdEntitysFilter = _world.Filter<NetworkIdentity>().Inc<CreatedEntityEvent>().End();
+            _pool = _world.GetPoolOrCreate<NetworkIdentity>();
 
-                networkIdentity.id = _entityRegistry.AssignNetworkId(entityId);
+            foreach (var entity in _createdEntitysFilter)
+            {
+                var identity = _pool.Get(entity);
+                _entityRegistry.SetEntity(entity, identity.id);
             }
         }
-
-        public void Init(IWorld world)
+        
+        public void Run(IEcsSystems systems)
         {
-            var filter = world.Query().Inc<NetworkIdentity>().End();
-
-            foreach (var entity in filter)
+            foreach (var entityId in _createdEntitysFilter)
             {
-                var identity = world.GetComponent<NetworkIdentity>(entity);
-                _entityRegistry.SetEntity(entity, identity.id);
+                ref var networkIdentity = ref _pool.Get(entityId);
+
+                networkIdentity.id = _entityRegistry.AssignNetworkId(entityId);
             }
         }
     }

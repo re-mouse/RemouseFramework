@@ -14,11 +14,6 @@ namespace Remouse.Simulation.Network
             _lastUsedId = 0;
             _entities.Clear();
         }
-
-        public bool IsEntityExist(int networkId)
-        {
-            return _entities.ContainsKey(networkId);
-        }
         
         public void SetLastUsedNetworkId(int networkId)
         {
@@ -45,6 +40,11 @@ namespace Remouse.Simulation.Network
             _entities[_lastUsedId] = entityId;
 
             return _lastUsedId++;
+        }
+
+        public void DeleteEntity(int entityId)
+        {
+            
         }
     }
 }

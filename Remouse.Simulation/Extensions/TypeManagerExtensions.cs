@@ -1,57 +1,64 @@
-using Remouse.DI;
+using ReDI;
 using Remouse.World;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation
 {
     public static class TypeManagerExtensions
     {
-        public static BindingConfigurator<TSystem> AddWorldSystem<TSystem>(this TypeManager typeManager, int priority = 0) where TSystem : class, ISystem, new()
+        public static BindingConfigurator<TSystem> AddWorldSystem<TSystem>(this TypeManager typeManager, ushort priority = 0) where TSystem : class, IEcsSystem, new()
         {
             typeManager
                 .AddSingleton<WorldSystemInitializer<TSystem>>()
                 .FromInstance(new WorldSystemInitializer<TSystem>(priority))
-                .ConstructOnContainerBuild();
+                .CreateOnContainerBuild();
 
             return typeManager.AddSingleton<TSystem>();
         }
         
-        public static BindingConfigurator<TSystem> AddWorldSystem<TSystem>(this TypeManager typeManager, TSystem system, int priority = 0) where TSystem : class, ISystem, new()
+        public static BindingConfigurator<TSystem> AddWorldSystem<TSystem>(this TypeManager typeManager, TSystem system, ushort priority = 0) where TSystem : class, IEcsSystem, new()
         {
             typeManager
                 .AddSingleton<WorldSystemInitializer<TSystem>>()
                 .FromInstance(new WorldSystemInitializer<TSystem>(system, priority))
-                .ConstructOnContainerBuild();
+                .CreateOnContainerBuild();
             
             return typeManager.AddSingleton<TSystem>().FromInstance(system);
         }
     }
 
-    class WorldSystemInitializer<TSystem> where TSystem : class, ISystem, new()
+    class WorldSystemInitializer<TSystem> where TSystem : class, IEcsSystem, new()
     {
         private readonly TSystem _system;
-        private readonly int _priority;
+        private readonly ushort _priority;
 
-        public WorldSystemInitializer(int priority)
+        [Inject]
+        public WorldSystemInitializer()
+        {
+            
+        }
+
+        public WorldSystemInitializer(ushort priority)
         {
             _priority = priority;
         }
 
-        public WorldSystemInitializer(TSystem system, int priority) : this(priority)
+        public WorldSystemInitializer(TSystem system, ushort priority) : this(priority)
         {
             _system = system; 
         }
         
         public void Construct(Container container)
         {
-            var worldBuilder = container.Resolve<IWorldBuilder>();
+            var worldBuilder = container.Resolve<EcsSystemsBuilder>();
             if (_system != null)
             {
-                worldBuilder.AddSystem(_system, _priority);
+                worldBuilder.Add(_system, _priority);
             }
             else
             {
                 var system = container.Resolve<TSystem>();
-                worldBuilder.AddSystem(system, _priority);
+                worldBuilder.Add(system, _priority);
             }
         }
     }

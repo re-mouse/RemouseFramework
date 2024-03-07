@@ -1,19 +1,14 @@
-using Remouse.DI;
+using ReDI;
 using Infrastructure;
 
 namespace Remouse.Database
 {
     internal class DatabaseProxy : IDatabase
     {
+        [Inject] private IResources _resources;
+        [Inject] private IDatabaseSerializer _serializer;
+        
         private IDatabase _database;
-        private IResources _resources;
-        private IDatabaseSerializer _serializer;
-
-        public void Construct(Container container)
-        {
-            _resources = container.Resolve<IResources>();
-            _serializer = container.Resolve<IDatabaseSerializer>();
-        }
 
         private void EnsureLoaded()
         {

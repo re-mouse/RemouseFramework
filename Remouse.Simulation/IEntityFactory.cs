@@ -1,10 +1,11 @@
 using Remouse.World;
+using Shared.EcsLib.LeoEcsLite;
 
 namespace Remouse.Simulation
 {
     public interface IEntityFactory
     {
-        public int Create(IWorld world);
-        public int Create(IWorld world, string typeId);
+        public int Create();
+        public int Create(string typeId);
     }
 }

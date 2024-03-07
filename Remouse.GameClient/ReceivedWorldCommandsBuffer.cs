@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Remouse.Simulation;
-using Remouse.DI;
+using ReDI;
 
 namespace Remouse.GameClient
 {
@@ -9,13 +9,10 @@ namespace Remouse.GameClient
         private Dictionary<long, HashSet<BaseWorldCommand>> _worldCommands = new Dictionary<long, HashSet<BaseWorldCommand>>();
         private readonly HashSet<BaseWorldCommand> _emptyCommands = new HashSet<BaseWorldCommand>();
 
-        private ISimulationHost _simulationHost;
-        private ISimulation _currentSimulation;
-        
-        public void Construct(Container container)
+        [Inject]
+        private void SubscribeToEvents(ISimulationHost host)
         {
-            _simulationHost = container.Resolve<ISimulationHost>();
-            _simulationHost.SimulationChanged += HandleSimulationChanged;
+            host.SimulationChanged += HandleSimulationChanged;
         }
 
         private void HandleSimulationChanged(ISimulation simulation)

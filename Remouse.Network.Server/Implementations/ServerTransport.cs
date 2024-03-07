@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Models;
 using Remouse.Serialization;
 using Remouse.Utils;
@@ -10,20 +10,17 @@ namespace Remouse.Network.Server
 {
     internal class ServerTransport : IServerTransport, IConnectedPlayers
     {
-        private IServerSocket _socket;
-        private IAuthorizer _authorizer;
-        private ServerTransportEvents _transportEvents;
+        [Inject] private IServerSocket _socket;
+        [Inject] private IAuthorizer _authorizer;
+        [Inject] private ServerTransportEvents _transportEvents;
         
         private Dictionary<Connection, Player> _playersByConnection = new Dictionary<Connection, Player>();
         
         IEnumerable<IPlayer> IConnectedPlayers.Players { get => _playersByConnection.Values; }
 
-        public void Construct(Container container)
+        [Inject]
+        private void SubscribeOnEvents()
         {
-            _socket = container.Resolve<IServerSocket>();
-            _authorizer = container.Resolve<IAuthorizer>();
-            _transportEvents = container.Resolve<ServerTransportEvents>();
-
             _socket.DataReceived += HandleData;
             _socket.Connected += HandleConnected;
             _socket.Disconnected += HandleDisconnected;

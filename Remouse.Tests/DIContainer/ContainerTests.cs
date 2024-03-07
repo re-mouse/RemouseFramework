@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System;
 
-namespace Remouse.DI.Tests
+namespace ReDI.Tests
 {
     [TestFixture]
     public class ContainerTests

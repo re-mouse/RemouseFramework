@@ -1,5 +1,5 @@
 using Remouse.Simulation;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Models;
 using Remouse.Network.Server;
 using Remouse.Simulation.Network;
@@ -9,15 +9,12 @@ namespace Remouse.GameServer
 {
     internal class PlayerInputController
     {
-        private ICommandRunner _commandRunner;
-        private IServerTransportEvents _serversTransport;
+        [Inject] private ICommandRunner _commandRunner;
 
-        public void Construct(Container container)
+        [Inject]
+        private void SubscribeOnEvents(IServerTransportEvents events)
         {
-            _commandRunner = container.Resolve<ICommandRunner>();
-            _serversTransport = container.Resolve<IServerTransportEvents>();
-            
-            _serversTransport.MessageReceived += HandleMessage;
+            events.MessageReceived += HandleMessage;
         }
 
         private void HandleMessage(IPlayer player, NetworkMessage message)

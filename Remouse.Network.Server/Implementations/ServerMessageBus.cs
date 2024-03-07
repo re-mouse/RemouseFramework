@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Models;
 
 namespace Remouse.Network.Server
@@ -9,9 +9,10 @@ namespace Remouse.Network.Server
     {
         private readonly Dictionary<Type, Delegate> _subscriptions = new Dictionary<Type, Delegate>();
 
-        public void Construct(Container container)
+        [Inject]
+        private void SubscribeOnMessages(IServerTransportEvents events)
         {
-            container.Resolve<IServerTransportEvents>().MessageReceived += HandleMessage;
+            events.MessageReceived += HandleMessage;
         }
 
         public void SubscribeToMessage<T>(Action<IPlayer, T> handler)

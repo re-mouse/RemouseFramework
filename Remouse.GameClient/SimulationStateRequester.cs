@@ -1,4 +1,4 @@
-using Remouse.DI;
+using ReDI;
 using Remouse.Network.Client;
 using Remouse.Network.Sockets;
 using Remouse.Simulation.Network;
@@ -8,12 +8,7 @@ namespace Remouse.GameClient
 {
     public class SimulationStateRequester
     {
-        private IClientTransport _clientTransport;
-
-        public void Construct(Container container)
-        {
-            _clientTransport = container.Resolve<IClientTransport>();
-        }
+        [Inject] private IClientTransport _clientTransport;
 
         public void RequestPackedSimulation()
         {

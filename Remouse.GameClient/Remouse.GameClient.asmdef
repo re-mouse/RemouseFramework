@@ -1,7 +1,7 @@
 {
     "name": "Remouse.GameClient",
     "rootNamespace": "Remouse.GameClient",
-    "references": ["GUID:175f764e0c1194f3fa83bd43ee357179","GUID:095bfa3ea9f844d9995536a7db66046d","GUID:304215f4e59fd4988b1269ddc7c71d81","GUID:8578780a2d5504d1da4a29bcf63c46d1","GUID:cd767a65437434379b23bfd1e0c96624","GUID:ca0a418ba8324e26ad7cb877b4557e3c","GUID:df954c114602c44628dc45c93905f0b7","GUID:34b9d43b9ab9847b4baffc4ad08890eb"],
+    "references": ["GUID:175f764e0c1194f3fa83bd43ee357179","GUID:095bfa3ea9f844d9995536a7db66046d","GUID:304215f4e59fd4988b1269ddc7c71d81","GUID:8578780a2d5504d1da4a29bcf63c46d1","GUID:cd767a65437434379b23bfd1e0c96624","GUID:ca0a418ba8324e26ad7cb877b4557e3c","GUID:df954c114602c44628dc45c93905f0b7","GUID:34b9d43b9ab9847b4baffc4ad08890eb","GUID:f51ebe6a0ceec4240a699833d6309b23"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

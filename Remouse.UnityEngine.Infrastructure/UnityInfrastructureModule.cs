@@ -1,5 +1,5 @@
 using Infrastructure;
-using Remouse.DI;
+using ReDI;
 using Remouse.Utils;
 
 namespace Remouse.UnityEngine.Assets

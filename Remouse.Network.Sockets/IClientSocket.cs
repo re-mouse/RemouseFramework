@@ -9,6 +9,7 @@ namespace Remouse.Network.Sockets
     public interface IClientSocket : IClientSocketEvents, IDisposable
     {
         bool IsConnected { get; }
+        public int PingInMilliseconds { get; }
         Task<SocketConnectResult> ConnectAsync(IPEndPoint host, IBytesWriter connectData = null, CancellationToken cancellationToken = default);
         void Disconnect();
         void Send(IBytesWriter data, DeliveryMethod deliveryMethod);
