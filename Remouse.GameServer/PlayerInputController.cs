@@ -30,7 +30,7 @@ namespace Remouse.GameServer
             var command = playerInput.AsCommand();
             command.playerGameId = player.GameId;
             _commandRunner.EnqueueCommand(command);
-        
+            
             LLogger.Current.LogPlayerTrace(this, player, $"Enqueued command [WorldCommand:{command}]");
         }
     }

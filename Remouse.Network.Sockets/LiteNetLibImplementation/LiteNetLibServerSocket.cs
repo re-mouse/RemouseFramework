@@ -6,7 +6,7 @@ using Remouse.Utils;
 
 namespace Remouse.Network.Sockets.Implementations
 {
-    public class LiteNetLibServer : IServerSocket
+    public class LiteNetLibServerSocket : IServerSocket
     {
         private readonly NetManager _netManager;
         private readonly Dictionary<NetPeer, Connection> _connections = new Dictionary<NetPeer, Connection>();
@@ -17,7 +17,7 @@ namespace Remouse.Network.Sockets.Implementations
         public event Action<Connection> Disconnected;
         public event Action<Connection, IBytesReader> DataReceived;
 
-        public LiteNetLibServer()
+        public LiteNetLibServerSocket()
         {
             var listener = new EventBasedNetListener();
             _netManager = new NetManager(listener);
@@ -72,9 +72,15 @@ namespace Remouse.Network.Sockets.Implementations
                 return;
             }
 
-            var data = new byte[request.Data.AvailableBytes];
-            Array.Copy(request.Data.RawData, request.Data.Position, data, 0, request.Data.AvailableBytes);
-            GotConnectionRequest?.Invoke(new LiteNetLibConnectionRequest(data, request, this));
+            try
+            {
+                var authString = request.Data.GetString();
+                GotConnectionRequest?.Invoke(new LiteNetLibConnectionRequest(authString, request, this));
+            }
+            catch (Exception e)
+            {
+                request.Reject();
+            }
         }
         
         private void HandlePeerConnected(NetPeer peer)
@@ -82,7 +88,7 @@ namespace Remouse.Network.Sockets.Implementations
             if (!_connections.ContainsKey(peer))
                 return;
 
-            LLogger.Current.LogTrace(this, $"Connection connected [Ip:{peer.EndPoint}]");
+            LLogger.Current.LogTrace(this, $"Connection connected [Ip:{peer.Address}]");
             
             var connection = _connections[peer];
             
@@ -96,7 +102,7 @@ namespace Remouse.Network.Sockets.Implementations
 
             var connection = _connections[peer];
             
-            LLogger.Current.LogTrace(this, $"Connection disconnected [Ip:{peer.EndPoint}] [Reason:{disconnectinfo.Reason}] [SocketErrorCode:{disconnectinfo.SocketErrorCode}]");
+            LLogger.Current.LogTrace(this, $"Connection disconnected [Ip:{peer.Address}] [Reason:{disconnectinfo.Reason}] [SocketErrorCode:{disconnectinfo.SocketErrorCode}]");
             
             Disconnected?.Invoke(connection);
             
@@ -105,16 +111,11 @@ namespace Remouse.Network.Sockets.Implementations
         
         private void HandleNetworkReceive(NetPeer peer, NetPacketReader reader, byte channel, LiteNetLib.DeliveryMethod deliverymethod)
         {
-            LLogger.Current.LogTrace(this, $"Received data [Ip:{peer.EndPoint}] [ByteSize:{reader.AvailableBytes}]");
+            LLogger.Current.LogTrace(this, $"Received data [Ip:{peer.Address}] [ByteSize:{reader.AvailableBytes}]");
 
             var connection = _connections[peer];
 
-            DataReceived?.Invoke(connection, new LiteNetLibReader(reader));
-        }
-
-        public void Dispose()
-        {
-            _netManager.Stop();
+            DataReceived?.Invoke(connection, new BytesReader(reader.GetRemainingBytes()));
         }
     }
 }

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ReDI\ReDI.csproj" />
+      <ProjectReference Include="..\Remouse.Network.Models\Remouse.Network.Models.csproj" />
+      <ProjectReference Include="..\Remouse.Serialization\Remouse.Serialization.csproj" />
+      <ProjectReference Include="..\Remouse.Simulation\Remouse.Simulation.csproj" />
+    </ItemGroup>
+
+</Project>

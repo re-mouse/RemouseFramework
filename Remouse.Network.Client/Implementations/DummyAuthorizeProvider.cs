@@ -9,11 +9,7 @@ namespace Remouse.Network.Client
     {
         public async UniTask<AuthenticationCredentials> ProvideCredentialsAsync(CancellationToken cancellationToken)
         {
-            return new AuthenticationCredentials()
-            {
-                authData = Encoding.UTF8.GetBytes("as"),
-                method = AuthenticationCredentials.Method.Debug
-            };
+            return new AuthenticationCredentials("Somecode");
         }
     }
 }

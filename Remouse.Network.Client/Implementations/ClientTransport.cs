@@ -37,10 +37,7 @@ namespace Remouse.Network.Client
 
             var authenticationCredentials = await _authorizeProvider.ProvideCredentialsAsync(cancellationToken);
             
-            _bytesWriter.Clear();
-            authenticationCredentials.Serialize(_bytesWriter);
-            
-            var result = await _socket.ConnectAsync(endPoint, _bytesWriter, cancellationToken);
+            var result = await _socket.ConnectAsync(endPoint, authenticationCredentials.AuthorizationString, cancellationToken);
 
             switch (result)
             {

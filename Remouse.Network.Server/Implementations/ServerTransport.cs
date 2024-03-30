@@ -54,20 +54,8 @@ namespace Remouse.Network.Server
         {
             LLogger.Current.LogInfo(this, $"Connection request [Ip:{request.EndPoint}]");
 
-            var authRequest = new AuthenticationCredentials();
-            var reader = new BytesReader(request.Data);
+            var authRequest = new AuthenticationCredentials(request.Authorization);
             
-            try
-            {
-                authRequest.Deserialize(reader);
-            }
-            catch (Exception exception)
-            {
-                LLogger.Current.LogInfo(this, $"Exception on deserializing received authorization request [Ip:{request.EndPoint} connection request reject]. Message: {exception.Message}");
-                request.Reject();
-                return;
-            }
-
             AuthorizeResult result;
             try
             {

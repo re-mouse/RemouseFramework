@@ -4,12 +4,12 @@ namespace Remouse.Network.Sockets
 {
     public abstract class ConnectionRequest
     {
-        public string Authorization { get; }
+        public byte[] Data { get; }
         public IPEndPoint EndPoint { get; }
 
-        internal ConnectionRequest(string authorization, IPEndPoint endPoint)
+        internal ConnectionRequest(byte[] data, IPEndPoint endPoint)
         {
-            Authorization = authorization;
+            Data = data;
             EndPoint = endPoint;
         }
         

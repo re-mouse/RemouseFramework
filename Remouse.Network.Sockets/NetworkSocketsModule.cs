@@ -7,9 +7,9 @@ namespace Remouse.Network.Sockets
     {
         public override void BindDependencies(TypeManager typeBinder)
         {
-            typeBinder.AddTransient<IServerSocket, LiteNetLibServer>().As<IServerSocketEvents>();
+            typeBinder.AddTransient<IServerSocket, LiteNetLibServerSocket>();
 
-            typeBinder.AddTransient<IClientSocket, LiteNetLibClientSocket>().As<IClientSocketEvents>();
+            typeBinder.AddTransient<IClientSocket, LiteNetLibClientSocket>();
         }
 
         public override void BindModuleDependencies(ModuleManager moduleBinder)

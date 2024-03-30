@@ -2,7 +2,6 @@ using Remouse.Simulation;
 using Remouse.World;
 using ReDI;
 using NUnit.Framework;
-using Remouse.Network.Sockets;
 using Remouse.Utils;
 
 namespace Shared.Test.WorldTests

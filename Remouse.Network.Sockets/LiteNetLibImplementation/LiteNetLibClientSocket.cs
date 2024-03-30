@@ -4,6 +4,7 @@ using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using LiteNetLib.Utils;
 using Remouse.Serialization;
 using Remouse.Utils;
@@ -66,7 +67,7 @@ namespace Remouse.Network.Sockets
         {
             LLogger.Current.LogTrace(this, $"Received data  [ByteSize:{reader.AvailableBytes}]");
 
-            DataReceived?.Invoke(new LiteNetLibReader(reader));
+            DataReceived?.Invoke(new BytesReader(reader.GetRemainingBytes()));
         }
 
         private void HandleConnect(NetPeer peer)
@@ -89,26 +90,24 @@ namespace Remouse.Network.Sockets
             Disconnected?.Invoke();
         }
         
-        public async Task<SocketConnectResult> ConnectAsync(IPEndPoint host, IBytesWriter connectData,
+        public async Task<SocketConnectResult> ConnectAsync(IPEndPoint host, string authorizationString,
             CancellationToken cancellationToken = default)
         {
             LLogger.Current.LogInfo(this, $"Start connecting [ServerIp:{host}]");
 
+            _connectingTcs = new TaskCompletionSource<SocketConnectResult>(cancellationToken);
+            
+            cancellationToken.Register(() => _connectingTcs?.TrySetResult(SocketConnectResult.Cancelled));
+            
             if (!_netManager.IsRunning)
             {
                 _netManager.Start();
             }
-
-            _connectingTcs = new TaskCompletionSource<SocketConnectResult>(cancellationToken);
             
-            cancellationToken.Register(() => _connectingTcs?.TrySetResult(SocketConnectResult.Cancelled));
-
-            if (connectData != null)
+            if (authorizationString != null)
             {
-
-                var bytes = connectData.GetBytes().ToArray();
-                LLogger.Current.LogInfo(this, $"Connecting with connection data [ByteSize:{bytes.Length}]");
-                _netManager.Connect(host, NetDataWriter.FromBytes(bytes, true));
+                LLogger.Current.LogInfo(this, $"Connecting with connection string [AuthorizationString:{authorizationString}]");
+                _netManager.Connect(host, authorizationString);
             }
             else
             {
@@ -155,17 +154,6 @@ namespace Remouse.Network.Sockets
         public void PollEvents()
         {
             _netManager.PollEvents();
-        }
-
-        public void Dispose()
-        {
-            Disconnected = null;
-            Connected = null;
-            DataReceived = null;
-            
-            TrySetConnectResult(SocketConnectResult.Cancelled);
-            
-            _netManager.Stop();
         }
     }
 }

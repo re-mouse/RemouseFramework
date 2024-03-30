@@ -1,17 +1,17 @@
-using System;
-using Remouse.Serialization;
-
 namespace Remouse.Network.Sockets
 {
-    public interface IServerSocket
+    public interface IServerSocket : IServerSocketEvents, IDisposable
     {
         void Start(ushort port, int maxConnections);
         void Stop();
-        void PollEvents();
-        
         event Action<ConnectionRequest> GotConnectionRequest;
         event Action<Connection> Connected;
         event Action<Connection> Disconnected;
-        event Action<Connection, IBytesReader> DataReceived;
+        event Action<Connection, byte[]> DataReceived;
+    }
+    
+    public interface IServerSocketEvents
+    {
+       
     }
 }

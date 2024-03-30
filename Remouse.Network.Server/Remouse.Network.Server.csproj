@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Remouse.Network.Models\Remouse.Network.Models.csproj" />
+      <ProjectReference Include="..\Remouse.Network.Sockets\Remouse.Network.Sockets.csproj" />
+      <ProjectReference Include="..\Remouse.Utils\Remouse.Utils.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="UniTask" Version="2.5.3" />
+    </ItemGroup>
+
+</Project>

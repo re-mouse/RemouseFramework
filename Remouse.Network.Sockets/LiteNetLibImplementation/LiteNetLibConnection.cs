@@ -1,3 +1,4 @@
+using System.Net;
 using LiteNetLib;
 using Remouse.Serialization;
 using Remouse.Utils;
@@ -8,7 +9,7 @@ namespace Remouse.Network.Sockets.Implementations
     {
         private readonly NetPeer _peer;
 
-        public LiteNetLibConnection(NetPeer peer) : base(peer.EndPoint)
+        public LiteNetLibConnection(NetPeer peer) : base(new IPEndPoint(peer.Address, peer.Port))
         {
             _peer = peer;
         }
@@ -17,12 +18,12 @@ namespace Remouse.Network.Sockets.Implementations
         {
             var dataArray = data.GetBytes().ToArray();
             _peer.Send(dataArray, (LiteNetLib.DeliveryMethod)deliveryMethod);
-            LLogger.Current.LogTrace(this, $"Sended data [Ip:{_peer.EndPoint}] [ByteSize:{dataArray.Length}]");
+            LLogger.Current.LogTrace(this, $"Sended data [Ip:{_peer.Address}] [ByteSize:{dataArray.Length}]");
         }
 
         public override void Disconnect()
         {
-            LLogger.Current.LogTrace(this, $"Disconnect requested [Ip:{_peer.EndPoint}]");
+            LLogger.Current.LogTrace(this, $"Disconnect requested [Ip:{_peer.Address}]");
             _peer.Disconnect();
         }
     }

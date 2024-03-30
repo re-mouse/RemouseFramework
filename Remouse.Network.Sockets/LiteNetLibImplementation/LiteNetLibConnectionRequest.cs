@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Unicode;
 using Remouse.Utils;
 
 namespace Remouse.Network.Sockets.Implementations
@@ -5,18 +7,18 @@ namespace Remouse.Network.Sockets.Implementations
     public class LiteNetLibConnectionRequest : ConnectionRequest
     {
         private readonly LiteNetLib.ConnectionRequest _request;
-        private readonly LiteNetLibServer _server;
+        private readonly LiteNetLibServerSocket _serverSocket;
 
-        public LiteNetLibConnectionRequest(byte[] data, LiteNetLib.ConnectionRequest request, LiteNetLibServer server) : base(data, request.RemoteEndPoint)
+        public LiteNetLibConnectionRequest(string authorizationString, LiteNetLib.ConnectionRequest request, LiteNetLibServerSocket serverSocket) : base(authorizationString, request.RemoteEndPoint)
         {
             _request = request;
-            _server = server;
+            _serverSocket = serverSocket;
         }
 
         public override Connection Accept()
         {
             LLogger.Current.LogTrace(this, $"[Ip:{_request.RemoteEndPoint}] connection request accepted");
-            return _server.CreateConnection(_request.Accept());
+            return _serverSocket.CreateConnection(_request.Accept());
         }
 
         public override void Reject()

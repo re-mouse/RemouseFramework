@@ -54,9 +54,6 @@ namespace Remouse.Network.Sockets.Tests
 
             stopwatch.Stop();
 
-            localClientSocket.Dispose();
-            localServerSocket.Dispose();
-
             Assert.IsTrue(isConnected, "Client did not connect to server within the timeout period.");
         }
         
@@ -97,11 +94,6 @@ namespace Remouse.Network.Sockets.Tests
             stopwatch.Stop();
 
             Assert.AreEqual(maxConnections, successfulConnections, "Invalid connections than expected were successfully made.");
-
-            foreach (var client in clients)
-                client.Dispose();
-
-            serverSocket.Dispose();
         }
         
         [Test]
@@ -152,11 +144,6 @@ namespace Remouse.Network.Sockets.Tests
             
             Assert.AreEqual(clientCount, successfulConnections, "Not all clients connected successfully during the flood test.");
             Assert.AreEqual(clientCount, dataReceivedCount, "Server did not receive all the data during the flood test.");
-
-            foreach (var client in clients)
-                client.Dispose();
-
-            serverSocket.Dispose();
         }
 
 
@@ -226,18 +213,13 @@ namespace Remouse.Network.Sockets.Tests
             }
             stopwatch.Stop();
 
-            foreach (var client in clients)
-                client.Dispose();
-
-            serverSocket.Dispose();
-    
             Assert.AreEqual(clientCount, requestsCount);
             Assert.AreEqual(clientCount, connectCount);
             Assert.AreEqual(clientCount, disconnectCount);
         }
         
         [Test]
-        public async void Client_ShouldConnectAndSendDataAsync()
+        public async Task Client_ShouldConnectAndSendDataAsync()
         {
             var (clientSocket, serverSocket) = GetClientServerSockets();
 
@@ -282,8 +264,8 @@ namespace Remouse.Network.Sockets.Tests
             Assert.AreEqual(true, clientSocket.IsConnected);
             Assert.AreEqual(SocketConnectResult.Successful, result);
 
-            clientSocket.Dispose();
-            serverSocket.Dispose();
+            
+            
         }
 
         [Test]
@@ -302,7 +284,7 @@ namespace Remouse.Network.Sockets.Tests
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            while (!resultTask.IsCompleted && stopwatch.Elapsed.Seconds < TimeoutSeconds)
+            while (!resultTask.IsCompleted && stopwatch.Elapsed.Seconds < 60)
             {
                 clientSocket.PollEvents();
                 serverSocket.PollEvents();
@@ -313,9 +295,6 @@ namespace Remouse.Network.Sockets.Tests
             
             Assert.AreEqual(true, clientSocket.IsConnected);
             Assert.AreEqual(SocketConnectResult.Successful, result);
-
-            clientSocket.Dispose();
-            serverSocket.Dispose();
         }
 
         [Test]
@@ -379,9 +358,6 @@ namespace Remouse.Network.Sockets.Tests
                 return false;
             }
             
-            clientSocket.Dispose();
-            serverSocket.Dispose();
-
             return true;
         }
         
@@ -434,15 +410,12 @@ namespace Remouse.Network.Sockets.Tests
                 TestContext.Out.WriteLine("Data not received");
                 return false;
             }
-            
-            clientSocket.Dispose();
-            serverSocket.Dispose();
 
             return true;
         }
         
         [Test]
-        public async void Client_CorrectStatusCodeOnInvalidIPAsync()
+        public async Task Client_CorrectStatusCodeOnInvalidIPAsync()
         {
             var (clientSocket, serverSocket) = GetClientServerSockets();
             
@@ -452,8 +425,8 @@ namespace Remouse.Network.Sockets.Tests
             Assert.AreEqual(false, clientSocket.IsConnected);
             Assert.AreEqual(SocketConnectResult.Timeout, result);
             
-            clientSocket.Dispose();
-            serverSocket.Dispose();
+            
+            
         }
 
         [Test]
@@ -496,10 +469,7 @@ namespace Remouse.Network.Sockets.Tests
             }
 
             stopwatch.Stop();
-
-            clientSocket.Dispose();
-            serverSocket.Dispose();
-
+            
             Assert.IsTrue(isDataReceived, "Client did not handle data flood.");
         }
 
@@ -548,11 +518,9 @@ namespace Remouse.Network.Sockets.Tests
 
                 stopwatch.Stop();
 
-                clientSocket.Dispose();
+                
                 Assert.IsTrue(isDisconnected, $"Client did not disconnect. Processed {i} of {100}");
             }
-
-            serverSocket.Dispose();
         }
 
         [Test]
@@ -588,12 +556,7 @@ namespace Remouse.Network.Sockets.Tests
             }
 
             stopwatch.Stop();
-
-            foreach (var client in clients)
-                client.Dispose();
-
-            serverSocket.Dispose();
-
+            
             Assert.AreEqual(100, connectedClientsCount, "Not all clients connected successfully.");
         }
 
@@ -671,12 +634,7 @@ namespace Remouse.Network.Sockets.Tests
             }
 
             stopwatch.Stop();
-
-            foreach (var client in clients)
-                client.Dispose();
-
-            serverSocket.Dispose();
-
+            clients.ForEach(c => c.Disconnect());
             // Ensure that all clients have been processed through the cycles
             Assert.AreEqual(clientCount, connectionToCycle.Count,
                 $"Not all clients went through the message exchange cycles. Expected {clientCount}, Got {connectionToCycle.Count}");

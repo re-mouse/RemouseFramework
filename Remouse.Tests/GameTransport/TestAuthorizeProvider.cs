@@ -1,7 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Remouse.Network.Client;
-using Models;
 using Remouse.Network.Models;
 using Remouse.Serialization;
 using Remouse.Utils;
@@ -31,11 +30,7 @@ namespace Remouse.Network.Sockets.Tests
             writer.WriteString(_secret);
             writer.WriteInt(_playerId);
             
-            return new AuthenticationCredentials()
-            {
-                authData = writer.GetBytes().ToArray(),
-                method = AuthenticationCredentials.Method.Debug
-            };
+            return new AuthenticationCredentials(_secret);
         }
     }
 }

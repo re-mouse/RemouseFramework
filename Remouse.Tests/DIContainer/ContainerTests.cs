@@ -3,7 +3,6 @@ using System;
 
 namespace ReDI.Tests
 {
-    [TestFixture]
     public class ContainerTests
     {
         private interface IService {}
@@ -64,6 +63,12 @@ namespace ReDI.Tests
                 moduleBinder.RegisterModule<TestModule>();
                 moduleBinder.RegisterModule<TestModule>();
             }
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            
         }
 
         [Test]
